@@ -1,0 +1,5 @@
+.hg/*
+.hgignore
+GemiNaut/bin/*
+GemiNaut/.vs/*
+GemiNaut/obj/*
