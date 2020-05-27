@@ -1,0 +1,79 @@
+<!doctype html>
+    <html>
+    <!-- uses theme-css, site-id-md5, site-id-md5-reverse, content, site-id-->
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=10">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+        
+            {{theme-css}}
+            
+        </style>
+        
+        <!--darken background image slightly to be less saturated
+        https://stackoverflow.com/questions/26621513/darken-css-background-image
+        -->
+        <style>
+                    /* make background slightly faded so not too eye popping*/
+                    /* needs to match second end of gradient in div.background 
+                    otherwise there can be a boundary on smaller pages*/
+                    
+                    body {
+                        background: linear-gradient( rgba(0, 0, 20, 0.2) , rgba(0, 0, 20, 0.2)), 
+                        url("https://www.gravatar.com/avatar/{{site-id-md5-reversed}}.jpg?d=identicon&size=13");
+                    } 
+                    
+
+        </style>
+        <style>
+        
+            /*slight sunburst from top of page*/
+            div.background {
+                  background: linear-gradient(  rgba(255,235,220,0.4), rgba(0,0,20,0.2)),
+                        url("https://www.gravatar.com/avatar/{{site-id-md5-reversed}}.jpg?d=identicon&size=13");          
+                                        padding:2em;
+
+            }
+            
+            div.rounded-element {
+                border-radius: 10px;
+                border:1px solid #262018;
+                margin:0.4em;
+                padding:2em;
+                background: #fffdfa;
+                
+        }
+        
+        </style>
+        <title>{{title}}</title>
+    </head>
+    
+    <body>
+    
+        <div class=background>
+        <div class="rounded-element">
+        
+        <div style="float:right;height:90px;width:90px;margin-left:1.2em;margin-bottom:1em;border-radius:45px;background:#fffdfa;">
+        <a href="gemini://{{site-id}}" title="Go to: {{site-id}}">
+        <img 
+            style="
+                    height:74px;
+                    width:74px;
+                    margin-bottom:1em;
+                    border-radius:39px;
+                    border:8px solid #fffdfa;
+                    margin-right:1em;"
+            src="https://www.gravatar.com/avatar/{{site-id-md5}}.jpg?d=identicon&size=74"
+        >
+        </a>
+        </div> 
+        
+        {{content}}
+        
+
+        </div>
+        </div>
+    </body>
+
+</html>

@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- normalise with Bootstrap -->
+    <link rel="stylesheet" href="css/bootstrap.css" >
+    
+    <style>
+    	body {
+			margin-left: 4em;
+			margin-right: 4em;
+			margin-top: 2em;
+			background: #FAF8E6;
+			color: #4D4646;
+			line-height:1.4em;
+			
+		}
+		
+		h1, h2, h3 {
+            color: #2E3833;
+
+        }
+
+    </style>
+    <title>Help for GemiNaut</title>
+
+</head>
+ 
+ <body>
+
+<h1>Help for GemiNaut</h1>
+
+<p>GemiNaut is a user friendly GUI client for the Gemini protocol by Luke Emmet. 
+It aims to provide a comfortable and user friendly experience of Gemini on MS Windows.</p>
+ <p>In many ways it behaves just like a normal web browser, except it is for 
+ viewing gemini:// pages.</p>
+ <ul>
+	 <li>Send feedback to luke [at] gmail [dot] com</li>
+ </ul>
+ <h3>What is Gemini?</h3>
+ <p>Gemini is a protocol and text format designed to radically simpify the experience of 
+ writing and sharing hypertext content on the Internet:</p>
+ <ul>
+	 <li><a  href="gemini://gemini.circumlunar.space/">
+	 gemini://gemini.circumlunar.space/</a> - Gemini Project home (gemini)</li>
+	 <li><a target="_blank" href="https://gemini.circumlunar.space/">
+	 https://gemini.circumlunar.space/</a> - Gemini Project home (www)</li>
+ </ul>
+ <h3>Key Features of GemiNaut</h3>
+ <ul>
+	 <li>Attractive GUI with familiar browser navigation features</li>
+	 <li>Smooth content wrap and flow</li>
+	 <li>Content theming engine - view the same content in different visual 
+	 modes</li>
+	 <li>Automatic site based themes - help to distinguish one site from another</li>
+	 <li>Easily distinguish links outside of Gemini (e.g. to HTTP web servers) 
+	 from the link style</li>
+	 <li>View source</li>
+ </ul>
+ <p>These are described in more detail below.</p>
+ <h3>Familiar browser design</h3>
+ <p>GemiNaut provides a usable and familiar browsing experience for exploring 
+ Geminispace. Using your keyboard and mouse you click on links and use the 
+ back/forward/home buttons.</p>
+ <p>You can use your wheelmouse to scroll or to zoom in and out 
+ (Ctrl+Wheelmouse)</p>
+ <p>You can set your own home pag via the <em>View-&gt;Settings-&gt;Set home page</em> 
+ menu</p>
+ <h3>Smooth content wrap and flow</h3>
+ <p>GMI content from servers will be shown wrapped to your current window. </p>
+ <ul>
+	 <li>Bullets and links are indented as expected </li>
+ </ul>
+ <h3>Content theming engine</h3>
+ <p>GemiNaut has a number of rendering themes to present the content. This 
+ allows themes to be readily developed. These include:</p>
+ <ul>
+	 <li>Fabric (default) - a site-specific theme that shows each Gemini site 
+	 with a slightly different visual theme. This is described in more detail 
+	 below.</li>
+	 <li>Plain - a simple plain text theme, black text on a white background</li>
+	 <li>Terminal - a monospaced terminal theme - white text on a black 
+	 background</li>
+	 <li>Unified - a theme showing common navigation links and search options on 
+	 every page</li>
+ </ul>
+ <p>To switch between themes, choose the options below the <em>View-&gt;Themes</em> 
+ menu</p>
+ <h3>Site specific themes</h3>
+ <p>A unique feature of GemiNaut is its ability to create site specific themes. 
+ Unlike HTML pages on the web, Gemini pages (GMI) do not have visual style 
+ information. This is an intentional part of Gemini's design and keeps 
+ everything simple.</p>
+ <p>You can use one of the generic themes (e.g. Plain, Terminal) to view all 
+ content in GemiNaut. However these themes do not visually distinguish one site 
+ from another. So it is harder to determine when you traverse from one site to 
+ another - this can only be confirmed by looking at the address bar.</p>
+ <p>The <em>Fabric</em> theme provides a solution to this problem by automatically 
+ creating a unique theme for each Gemini site. Each site will be distinguished 
+ by:</p>
+ <ul>
+	 <li>Page background - a &quot;fabric&quot; unique to the current site.</li>
+	 <li>Page marker - an icon for each site. You can click the page marker to 
+	 go to the &quot;home&quot; of each site.</li>
+ </ul>
+ <p>Sites are identified as follows:</p>
+ <ul>
+	 <li>If the URL contains &quot;/users&quot; or &quot;/~&quot; then this is a user specific sub 
+	 site, and the theme will be specific to that user on that server.</li>
+	 <li>Otherwise, the domain is used to determine the theme.</li>
+ </ul>
+ <h3>Link styles</h3>
+ <p>Link types in GemiNaut can be easily distinguished:</p>
+ <p style="margin-left:2em"><span style="font-size:1.5em;">&rArr;</span>&nbsp;&nbsp;Gemini links start with a "fat" arrow. 
+ These will open in GemiNaut.</p>
+ <p style="margin-left:2em"><span style="font-size:1.5em;">&#8669;</span>&nbsp;&nbsp;External links have a "squiggly" arrow. 
+ These will open in the system web browser.</p>
+ 
+ <p>Additionally, links to probable binary files are labelled for ease of 
+ identification. These will open in an external browser.</p>
+ <h3>View source</h3>
+ <p>You can view the source of any GMI page via the <em>View-&gt;Source</em> menu.</p>
+ 
+</body>
+
+</html>
