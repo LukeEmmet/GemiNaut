@@ -16,20 +16,20 @@
         <CommandBinding Command="NavigationCommands.GoToPage" CanExecute="GoToPage_CanExecute" Executed="GoToPage_Executed" />
     </Window.CommandBindings>
 
-    <DockPanel>
+    <DockPanel Name="TopDock">
 
         <!--include Menus control-->
-        <DockPanel DockPanel.Dock="Top">
+        <DockPanel DockPanel.Dock="Top" Name="DockMenu">
             <Menu>
                 <MenuItem Header="File">
                     <MenuItem Header="Exit" Click="MenuFileExit_Click" ></MenuItem>
                 </MenuItem>
                 <MenuItem Header="View">
-                    <MenuItem Header="Source" IsChecked="False" Click="ViewSource_Click">
+                    <MenuItem Header="Source" IsChecked="False" Click="MenuViewSource_Click">
 
                     </MenuItem>
                     <MenuItem Header="Settings">
-                        <MenuItem Header="Set Home page" Click="ViewSettingsHome_Click">
+                        <MenuItem Header="Set Home page" Click="MenuViewSettingsHome_Click">
 
                         </MenuItem>
                     </MenuItem>
@@ -50,9 +50,9 @@
         </DockPanel>
 
 
-        <DockPanel>
+        <DockPanel Name="DockLower">
 
-            <Grid DockPanel.Dock="Top">
+            <Grid DockPanel.Dock="Top" Name="GridMain">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="45" />
@@ -82,7 +82,14 @@
                 </Button>
 
             </Grid>
-            <WebBrowser Name="wbSample" LoadCompleted="wbSample_LoadCompleted"   Navigated="wbSample_Navigated" Navigating="wbSample_Navigating" DockPanel.Dock="Bottom" Margin="0,0,0,0"></WebBrowser>
+            <WebBrowser 
+                        KeyboardNavigation.TabIndex="0"
+                        Focusable="True"
+                        Name="BrowserControl" 
+                        LoadCompleted="BrowserControl_LoadCompleted"   
+                        Navigated="BrowserControl_Navigated" 
+                        Navigating="BrowserControl_Navigating" 
+                        DockPanel.Dock="Bottom" Margin="0,0,0,0"></WebBrowser>
         </DockPanel>
     </DockPanel>
 </Window>
