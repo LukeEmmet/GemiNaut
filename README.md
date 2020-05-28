@@ -7,8 +7,7 @@ For more information see <a href="https://gemini.circumlunar.space/">https://gem
 
 # Download
 
-You can download a pre-built application for Windows from the GemiNaut home page: 
-<a href="https://www.marmaladefoo.com/pages/geminaut">https://www.marmaladefoo.com/pages/geminaut</a>
+You can download a pre-built application for Windows from the <a href="https://www.marmaladefoo.com/pages/geminaut">GemiNaut home page</a>
 
 # Key features
 
