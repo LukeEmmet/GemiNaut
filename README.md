@@ -24,6 +24,8 @@ GPL 3
 
 # History
 
+## 0.8.1 - first public release
+
 * added simple userguide
 * infer the document title from the first heading or para text line and show in window caption
 * darken the background a tiny bit in Fabric theme to be less saturated
@@ -62,7 +64,7 @@ GPL 3
 * prettify links, headings and bullets
 
 
-# Free in virture of using web browser
+# Intrinsic features in virture of using a web browser
 
 * go back and forward remembers scroll offset
 * rich CSS styling and visual design
