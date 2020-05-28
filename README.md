@@ -23,6 +23,10 @@ GPL 3
 
 # History
 
+## 0.8.3, 28-May-2020
+
+* add automatic page level table of contents for Fabric theme
+
 ## 0.8.2, 28-May-2020
 
 * fix keyboard focus problem so you dont have to click into browser on each page

@@ -20,13 +20,14 @@
 
 # Nice to have
 
+* darken the background a tiny bit in Fabric theme to be less saturated
+* rounded borders in Fabric theme
 * FAQ/design concepts
 * strip out terminal colour escape codes - e.g. on 
    gemini://bleyble.com/users/quokka/run2plan/couch25k.gmi
 * navigation buttons with the usual images
 * theme look up from a themes folder
 * register with windows to handle gemini:// protocol
-* put document title in window title: {title of doc} - Geminaut v1.2
 * startup with passed url on commandline
 * open link in new window
 * show same theme for /~foo as users/foo
@@ -45,15 +46,15 @@
 * use EdgeHtml for rendering engine
 * integrate c# library for gemini protocol
 * zoom reset to 100%
-* page specific table of contents
 * page specifc deep linking e.g. foo.gmi#foo links to the foo heading in that doc
 
 # Done
 
+* only show TOC if more than one entry
+* show site id in window title
+* page specific table of contents
 * added simple userguide
 * infer the document title from the first heading or para text line and show in window caption
-* darken the background a tiny bit in Fabric theme to be less saturated
-* rounded borders in Fabric theme
 * workaround for GemGet bug which overwrites into the output file, rather than replacing the whole file
 * user selectable themes (4 to start with Fabric, Plain, Terminal and Unified UI)
 * html escape source content before display

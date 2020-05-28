@@ -22,24 +22,90 @@
         -->
         <style>
                 
-                    body {
-                        background-image: url("https://www.gravatar.com/avatar/{{site-id-md5-reversed}}.jpg?d=identicon&size=13");
-                        background-repeat: repeat;
-                        margin:2em;
-                    } 
+            body {
+                background-image: url("https://www.gravatar.com/avatar/{{site-id-md5-reversed}}.jpg?d=identicon&size=13");
+                background-repeat: repeat;
+                margin:2em;
+            } 
                     
 
         </style>
         <style>
 
             
-            div.content-container{
-                border-radius: 10px;
-                border:1px solid #262018;
-                margin:0.4em;
-                padding:2em;
-                background: #fffdfa;
+        div.content-container{
+            border-radius: 10px;
+            border:1px solid #262018;
+            margin:0.4em;
+            padding:2em;
+            background: #fffdfa;
+        }
+        
+        div.toc1 {
+            margin-left:0em;
+            margin-top:0.5em;
+            line-height:1.2em;
+        }
+        
+        div.toc2 {
+            margin-left:1em;
+            margin-top:0.3em;
+            line-height:1.2em;
+        }
+        
+        div.toc3 {
+            margin-left:1.5em;
+            margin-top:0.3em;
+            line-height:1.2em;
+        }
+        
+        /*
+        
+        */
+        
+        #toc-container {
+            width:150px;
+            font-size:0.85em;
+            margin-top:2.5em;
+            background:#fffdfa;
+            clear:both;
+            padding:1em;
+            float:right;
+            border:1px solid #e0e0e0;
+        }
+        
+        #toc-label {
+            margin-bottom:1em;
+            font-weight:bold
+        }
+
+        a.toc {
+            text-decoration: none;
+            color: #262018;
+            font-height:0.5em;
+        }
+        
+        a.toc:hover {
+            background:#efefef;
+        }
+        
+        #navigation-container {
+            float:right;
+            width:200px;
+            margin-left:1em;
+        }
+        
+        #identicon-container {
+            float:right;
+            border-radius:45px;
+        }
                 
+        
+        #identicon {
+            border:0px;
+            float:right;
+            height:74px;
+            width:74px;
         }
         
         </style>
@@ -49,26 +115,26 @@
     <body>
     
         <div class=background>
-        <div class="content-container">
         
-        <div style="float:right;height:90px;width:90px;margin-left:1.2em;margin-bottom:1em;border-radius:45px;background:#fffdfa;">
-        <a href="gemini://{{site-id}}" title="Go to: {{site-id}}">
-        <img 
-            style="
-                    height:74px;
-                    width:74px;
-                    margin-bottom:1em;
-                    border:8px solid #fffdfa;
-                    margin-right:1em;"
-            src="https://www.gravatar.com/avatar/{{site-id-md5}}.jpg?d=identicon&size=74"
-        >
-        </a>
-        </div> 
-        
-        {{content}}
-        
+            <div class="content-container">
+            
+                <div id=navigation-container >
+                
+                    <div id=identicon-container>
+                        <a href="gemini://{{site-id}}" title="{{title}}">
+                                <img id=identicon src="https://www.gravatar.com/avatar/{{site-id-md5}}.jpg?d=identicon&size=74">
+                        </a>
+                    </div> 
+                
+                    {{table-of-contents}}
+            
+                </div> 
 
-        </div>
+            
+            {{content}}
+            
+
+            </div>
         </div>
     </body>
 

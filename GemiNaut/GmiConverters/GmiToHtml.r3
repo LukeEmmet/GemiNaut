@@ -51,7 +51,7 @@ if (error? try [
     
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\9fdfcb2ef4244d6821091d62e3a0e06a.gmi}
-    ; in-path: to-rebol-file {C:/Users/lukee/AppData/Local/Temp/geminaut_hotlqkcz.e2l/118bce470e8723a2fdc1eec74dfcf991.txt}
+    in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_hmu2ptv3.qvv\b24b7e36ef997fb83cc2b81a0d69fd6f.txt}
     ; uri: "gemini://gemini.circumlunar.space:1965/users/supurb/"
      
 ]
@@ -76,6 +76,23 @@ previous-element-is-linkbullet: off
 
 first-heading: copy ""
 first-text-line: copy ""
+
+table-of-contents: copy []
+table-of-contents-string: copy ""
+heading-count: 0
+
+make-toc-entry: func [heading-text heading-level id] [
+
+         rejoin  [
+            {<div class="toc} heading-level {"><a class=toc title="Item on this page" href="#} id {">} 
+            (markup-escape heading-text) 
+            {</a></div>} 
+            newline
+        ]
+    
+]
+
+
 
 foreach line lines [
 
@@ -118,20 +135,26 @@ foreach line lines [
             if (words/1 = "###") or ("###" = substring line 1 3) [
                  insert-missing-preceding-line
                  if first-heading = "" [first-heading: reform next words]
-                 rejoin ["<h3>" (markup-escape reform next words) "</h3>"]
+                 heading-count: heading-count + 1
+                 append table-of-contents make-toc-entry  (reform next words)  3 (join "id" heading-count )
+                 rejoin [{<h3 id="} (join "id" heading-count) {">} (markup-escape reform next words) "</h3>"]
             ]
 
 
             if (words/1 = "##") or ("##" = substring line 1 2) [
                  insert-missing-preceding-line
                  if first-heading = "" [first-heading: reform next words]
-                rejoin ["<h2>" (markup-escape reform next words) "</h2>"]
+                 heading-count: heading-count + 1
+                 append table-of-contents make-toc-entry  (reform next words) 2 (join "id" heading-count )
+                 rejoin [{<h2 id="} (join "id" heading-count) {">} (markup-escape reform next words) "</h2>"]
             ]
 
             if (words/1 = "#") or ("#" = substring line 1 1) [
                  insert-missing-preceding-line
                  if first-heading = "" [first-heading: reform next words]
-                 rejoin ["<h1>" (markup-escape reform next words) "</h1>"]
+                 heading-count: heading-count + 1
+                 append table-of-contents make-toc-entry  (reform next words)  1 (join "id" heading-count )
+                 rejoin [{<h1 id="} (join "id" heading-count) {">} (markup-escape reform next words) "</h1>"]
             ]
         
 
@@ -249,7 +272,7 @@ foreach line lines [
                         previous-element-is-linkbullet: off
                     ]    
                     
-                    if first-text-line = "" [first-text-line: join (substring line 1 100) "..."]
+                    if first-text-line = "" [first-text-line: join (substring line 1 60) "..."]
 
                     display-html:  rejoin ["<div>" markup-escape line "</div>"]
                 ]
@@ -283,6 +306,27 @@ page-title: any [
     if first-text-line <> "" [first-text-line]
     uri
 ]
+
+if (page-title <> uri)  and (page-title <> "") [
+    page-title: rejoin [
+        site-id
+        " - "
+        page-title
+    ]
+]
+
+;---heuristic of only showing TOC if more than one
+;--quite often a simple page has a single heading at the top
+if  (1 < length? table-of-contents ) [
+    table-of-contents-string: rejoin [
+        {<div id=toc-container>} newline
+        newline
+        {<div id=toc-label>Contents</div>}  newline
+        (rejoin table-of-contents) newline
+        {</div>} newline
+        newline
+    ]
+]
     
 ;--save the content to a HTML file
 ;--theme html should be UTF-8 charset, which is the standard format.
@@ -293,6 +337,7 @@ theme-css: read/string to-file rejoin [theme ".css"]
 ;populate the theme
 replace/all theme-html "{{title}}" page-title
 replace/all theme-html "{{theme-css}}" theme-css
+replace/all theme-html "{{table-of-contents}}" table-of-contents-string
 replace/all theme-html "{{site-id}}" site-id
 replace/all theme-html "{{site-id-md5}}" uri-md5
 replace/all theme-html "{{site-id-md5-reversed}}" (reverse copy uri-md5)
