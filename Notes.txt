@@ -15,7 +15,7 @@
 
 # To do
 
-* Github repo and project page
+* bring back the nice rounded borders in Fabric theme, recently turned off for 0.8.1
 * page in gemini space
 
 # Nice to have

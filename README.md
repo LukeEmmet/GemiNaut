@@ -5,6 +5,11 @@ A user friendly client to browse Gemini from Windows.
 Gemini is a radically simple protocol and text format for browsing on the Internet.
 For more information see <a href="https://gemini.circumlunar.space/">https://gemini.circumlunar.space/</a>
 
+# Download
+
+You can download a pre-built application for Windows from the GemiNaut home page: 
+<a href="https://www.marmaladefoo.com/pages/geminaut">https://www.marmaladefoo.com/pages/geminaut</a>
+
 # Key features
 
 * Familiar navigation actions, smooth scrolling and text wrap
@@ -13,12 +18,15 @@ For more information see <a href="https://gemini.circumlunar.space/">https://gem
 * Visually distinguish gemini from other links
 * View source
 
+# License 
+
+GPL 3
+
 # History
 
 * added simple userguide
 * infer the document title from the first heading or para text line and show in window caption
 * darken the background a tiny bit in Fabric theme to be less saturated
-* rounded borders in Fabric theme
 * workaround for GemGet bug which overwrites into the output file, rather than replacing the whole file
 * user selectable themes (4 to start with Fabric, Plain, Terminal and Unified UI)
 * html escape source content before display
