@@ -3,7 +3,11 @@
     <!-- uses theme-css, site-id-md5, site-id-md5-reverse, content, site-id-->
     <head>
         <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=10">
+        <!--it would be nice to turn on modern mode so we can get rounded corners, but this seems to break
+        keyboard events in the hosted webbrowser in GemiNaut. very strange. So until we have Chrome based
+        browser just stick in legacy mode.
+        -->
+        <!--<meta http-equiv="X-UA-Compatible" content="IE=10">-->
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
         
@@ -11,32 +15,25 @@
             
         </style>
         
-        <!--darken background image slightly to be less saturated
-        https://stackoverflow.com/questions/26621513/darken-css-background-image
+        <!--
+        could use linear graident in this legacy mode perhaps if necessary
+        
+        filter: progid:DXImageTransform.Microsoft.gradient (startColorstr=#550000FF, endColorstr=#5ffffff);
         -->
         <style>
-                    /* make background slightly faded so not too eye popping*/
-                    /* needs to match second end of gradient in div.background 
-                    otherwise there can be a boundary on smaller pages*/
-                    
+                
                     body {
-                        background: linear-gradient( rgba(0, 0, 20, 0.2) , rgba(0, 0, 20, 0.2)), 
-                        url("https://www.gravatar.com/avatar/{{site-id-md5-reversed}}.jpg?d=identicon&size=13");
+                        background-image: url("https://www.gravatar.com/avatar/{{site-id-md5-reversed}}.jpg?d=identicon&size=13");
+                        background-repeat: repeat;
+                        margin:2em;
                     } 
                     
 
         </style>
         <style>
-        
-            /*slight sunburst from top of page*/
-            div.background {
-                  background: linear-gradient(  rgba(255,235,220,0.4), rgba(0,0,20,0.2)),
-                        url("https://www.gravatar.com/avatar/{{site-id-md5-reversed}}.jpg?d=identicon&size=13");          
-                                        padding:2em;
 
-            }
             
-            div.rounded-element {
+            div.content-container{
                 border-radius: 10px;
                 border:1px solid #262018;
                 margin:0.4em;
@@ -52,7 +49,7 @@
     <body>
     
         <div class=background>
-        <div class="rounded-element">
+        <div class="content-container">
         
         <div style="float:right;height:90px;width:90px;margin-left:1.2em;margin-bottom:1em;border-radius:45px;background:#fffdfa;">
         <a href="gemini://{{site-id}}" title="Go to: {{site-id}}">
@@ -61,7 +58,6 @@
                     height:74px;
                     width:74px;
                     margin-bottom:1em;
-                    border-radius:39px;
                     border:8px solid #fffdfa;
                     margin-right:1em;"
             src="https://www.gravatar.com/avatar/{{site-id-md5}}.jpg?d=identicon&size=74"
