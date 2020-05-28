@@ -23,7 +23,14 @@ GPL 3
 
 # History
 
-## 0.8.1 - first public release
+## 0.8.2, 28-May-2020
+
+* fix keyboard focus problem so you dont have to click into browser on each page
+* display view->source GMI as utf-8
+
+## 0.8.1, 27-May-2020
+
+First public release
 
 * added simple userguide
 * infer the document title from the first heading or para text line and show in window caption
