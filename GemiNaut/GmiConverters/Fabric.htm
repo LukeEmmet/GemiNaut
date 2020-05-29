@@ -30,85 +30,7 @@
                     
 
         </style>
-        <style>
 
-            
-        div.content-container{
-            border-radius: 10px;
-            border:1px solid #262018;
-            margin:0.4em;
-            padding:2em;
-            background: #fffdfa;
-        }
-        
-        div.toc1 {
-            margin-left:0em;
-            margin-top:0.5em;
-            line-height:1.2em;
-        }
-        
-        div.toc2 {
-            margin-left:1em;
-            margin-top:0.3em;
-            line-height:1.2em;
-        }
-        
-        div.toc3 {
-            margin-left:1.5em;
-            margin-top:0.3em;
-            line-height:1.2em;
-        }
-        
-        /*
-        
-        */
-        
-        #toc-container {
-            width:150px;
-            font-size:0.85em;
-            margin-top:2.5em;
-            background:#fffdfa;
-            clear:both;
-            padding:1em;
-            float:right;
-            border:1px solid #e0e0e0;
-        }
-        
-        #toc-label {
-            margin-bottom:1em;
-            font-weight:bold
-        }
-
-        a.toc {
-            text-decoration: none;
-            color: #262018;
-            font-height:0.5em;
-        }
-        
-        a.toc:hover {
-            background:#efefef;
-        }
-        
-        #navigation-container {
-            float:right;
-            width:200px;
-            margin-left:1em;
-        }
-        
-        #identicon-container {
-            float:right;
-            border-radius:45px;
-        }
-                
-        
-        #identicon {
-            border:0px;
-            float:right;
-            height:74px;
-            width:74px;
-        }
-        
-        </style>
         <title>{{title}}</title>
     </head>
     
@@ -120,11 +42,15 @@
             
                 <div id=navigation-container >
                 
-                    <div id=identicon-container>
-                        <a href="gemini://{{site-id}}" title="{{title}}">
-                                <img id=identicon src="https://www.gravatar.com/avatar/{{site-id-md5}}.jpg?d=identicon&size=74">
-                        </a>
-                    </div> 
+                        <div class=placeholder-mask-container>
+                            <div class="identicon-container" >
+                                <!--we dont have rounded borders (due to mshtml hosting webbrowser), but we can use an image mask to get close-->
+                                <a href="gemini://gemini.circumlunar.space/users/foo" title="Go to: gemini.circumlunar.space/users/foo">
+                                        <img class="cropped" src="https://www.gravatar.com/avatar/{{site-id-md5}}.jpg?d=identicon&size=80">
+                                        <img class="cropped mask" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Transparent_circle.svg/500px-Transparent_circle.svg.png"   >
+                                </a>
+                            </div>
+                        </div>
                 
                     {{table-of-contents}}
             
