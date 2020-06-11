@@ -15,11 +15,20 @@
 
 # To do
 
-* bring back the nice rounded borders in Fabric theme, recently turned off for 0.8.1
-* page in gemini space
+* quotation marks are being removed from bullets (maybe headings, links too)
 
 # Nice to have
 
+* File-Print menu
+* Ctrl-R refreshes
+* find text on current page (works, but wire up to menu)
+* add favourite
+* global switch between stylesheets or maybe templates including any CSS
+* alternative html renderers
+* integrate c# library for gemini protocol
+* zoom reset to 100%
+* bring back the nice rounded borders in Fabric theme, recently turned off for 0.8.1
+* link ids in headings - lower-kebab-case
 * darken the background a tiny bit in Fabric theme to be less saturated
 * rounded borders in Fabric theme
 * FAQ/design concepts
@@ -32,24 +41,21 @@
 * open link in new window
 * show same theme for /~foo as users/foo
 * accomodate non-standard ports when link building (currently ignored)
-* get windows client to download gravatars without cookies etc
+* get windows client to download gravatars or make its own
 * footnotes style for inline links
 * navigate to parent folder
 * launchers.xml for alternative renderers, choosable by user
-* File-Print menu
-* Ctrl-R refreshes
-* find text on current page (works, but wire up to menu)
-* add favourite
-* global switch between stylesheets or maybe templates including any CSS
-* alternative html renderers
 * .net based identikons
 * use EdgeHtml for rendering engine
-* integrate c# library for gemini protocol
-* zoom reset to 100%
 * page specifc deep linking e.g. foo.gmi#foo links to the foo heading in that doc
 
 # Done
 
+* icon hinting at probable links to binary files such as images, audio, video, pdf, zip etc.
+* don't remove commas and other separators from text lines
+* link formation if there is a slash in query string is not handled correctly
+* page in gemini space
+* url escaping (percent encoding) fixed for input params (esp when contain + / and <space>)
 * only show TOC if more than one entry
 * show site id in window title
 * page specific table of contents

@@ -46,12 +46,12 @@ if (error? try [
 
     in-path: to-rebol-file join folder {test1.gmi}
     out-path: to-rebol-file join folder {test1.htm}
-    uri: "gemini://gemini.circumlunar.space/users/foo"
+    uri: "gemini://gemini.circumlunar.space/users/foo?.gz"
     theme: "Fabric"
     
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\9fdfcb2ef4244d6821091d62e3a0e06a.gmi}
-    in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_hmu2ptv3.qvv\b24b7e36ef997fb83cc2b81a0d69fd6f.txt}
+   ;in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_hmu2ptv3.qvv\b24b7e36ef997fb83cc2b81a0d69fd6f.txt}
     ; uri: "gemini://gemini.circumlunar.space:1965/users/supurb/"
      
 ]
@@ -99,11 +99,11 @@ foreach line lines [
     ;---simple hack for when user didnt add whitespace after link marker :-/
     replace line "=>" "=> "
     
-    words: parse line none
+    words: parse line " "
     
     ;--start or end preformatted block. Use any label as the tooltip as
     ;-- a hint to the user -e.g. ```python
-    if ((substring (trim copy line) 1 3) = "```") [
+    if ((substring (copy line) 1 3) = "```") [
         
         pre-label: trim any [(substring line 4 (length? line))]
         if pre-label = "" [pre-label:  "preformatted text"]
@@ -160,11 +160,21 @@ foreach line lines [
 
 
             ;---handle *  bullets
-            if (words/1 = "*") or ("*" = substring line 1 1) [
+            ;bullet asterisks must have a space after
+            if (words/1 = "*")  [
                 if not previous-element-is-linkbullet [ insert-missing-preceding-line]
                  previous-element-is-linkbullet: on
                  rejoin ["<div class=bullet>&bull;&nbsp;" (markup-escape reform  next words) "</div>"]
             ]
+
+            ;---handle *  bullets
+            ;bullet asterisks must have a space after
+            if (words/1 = ">") or (">" = substring line 1 1)  [
+                if not previous-element-is-linkbullet [ insert-missing-preceding-line]
+                 previous-element-is-linkbullet: on
+                 rejoin ["<div class=blockquote>" (markup-escape reform  next words) "</div>"]
+            ]
+
 
             ;---handle links
             ;---assumes white space between "=>" and url (not always valid - can use substring or better parsing...
@@ -194,32 +204,91 @@ foreach line lines [
                     ;---and warn the user in the tooltip. we cannot know for certain as we cannot do any kind of HEAD
                     ;---request in gemini. Here are the most common binary file types we might expect.
                     binary-extensions: [
-                        "png" "gif" "jpg" "jpeg" 
-                        "mp3" "wav" "ogg" "mp4" "midi" "flac"
-                        "pdf" "doc" "docx" "odf" "epub" "mobi"
-                        "tar" "gz" "zip"
+                        "tar" "gz" "zip" "exe" "7z" "tar"
                     ]
+                    
+                    image-extensions: [
+                        "png" "gif" "jpg" "jpeg" "svg"  "bmp"                
+                    ]
+                    
+                    audio-extensions: [
+                        "mp3" "wav" "ogg"  "midi" "flac"                        
+                    ]
+                    
+                    document-extensions: [
+                       "htm" "html" "pdf" "ps" "odf" "epub" "mobi"
+                        "xls" "xlsx" "ppt" "pptx" "doc" "docx" 
+                    ]
+                    
+                    video-extensions: [
+                        "wmv" "mp4" "mov" "swf"
+                    ]
+                    
+                    display-extensions: [
+                        ;for info put md txt in here as we dont want them externally opened, we will render them
+                        ;but otherwise this colleciton is not used, just for info
+                        "txt" "md" "gmi" "gemini"
+                    ]
+                    
+                    
+                    ;--we launch external all known extensions but not display-extensions
+                    launch-external-extensions:  join binary-extensions join image-extensions join audio-extensions join document-extensions video-extensions
                     
                     url-split: parse/all link-part "."
                     link-extension: (lowercase last copy url-split)
                     display-extension: (lowercase last parse display-part ".")
                     
-                    either find binary-extensions last url-split [
+                    ;see if it is a plain path (not a dynamic page) and a known extension
+                    either (not none? find launch-external-extensions last url-split)  and (none? find link "?") [
+                                
                         final-link-object: probe decode-url to-url link
                         
+                        show-extension: copy ""
+                        
+                        any [
+                        
+                            ;images -> losange flower
+                            if find image-extensions last url-split [decorator-glyph: "&#128160;"  ]
+
+                            ;audio-> headphones
+                            if find audio-extensions last url-split [ decorator-glyph: "&#127911;"  ]
+                            
+                            ;video->film frames
+                            if find video-extensions last url-split [decorator-glyph: "&#127902;" ]
+                            
+                            ;document-> page facing up
+                            if find document-extensions last url-split [decorator-glyph: "&#128196;"]
+                            
+                           ;default - a generic cabinet
+                           if true [
+                            decorator-glyph: "&#128452;"            ;document
+                            show-extension:  rejoin [" [" link-extension "]"]
+                            ]
+                            
+                        ]
+
+                        
+                        tooltip:  rejoin [
+                                        decorator-glyph
+                                        { opens link to expected } 
+                                        (uppercase copy link-extension)
+                                        { file in system web browser:}
+                                        { } (last parse/all link   "/")
+                                    ]
+                                    
                         ;--decorate links to binary files with a unicode document glyph (&#128462;), 
                         ;--their expected file type and a tooltip to explain these are opened in system browser
                         display-html: rejoin [
-                                {<span class=link-gliph>&#128462</span>&nbsp;<span }
-                                    { title="Opens link to expected } (uppercase copy link-extension)
-                                    { file in system web browser:}
-                                    { } (last parse/all link   "/")
-                                {">} 
+                                {<span class=decorator-gliph }
+                                    { title="} tooltip {">} decorator-glyph {</span>}
+                                    {<span style=text-decoration:none>&nbsp;</span>}
+                                    {<span title="} tooltip {"}
+                                {>}
                                 (markup-escape display-part)
                                 
                                 ;show extension if not visible 
                                 either (link-extension <> display-extension) [
-                                    rejoin [" [" link-extension "]"]
+                                   show-extension
                                 ] [""]
                                                                 
                                 "</span>"]
@@ -257,7 +326,7 @@ foreach line lines [
                 ]
             ]
             
-            if ((substring (trim copy line) 1 3) = "```") [""]
+            if ((substring (copy line) 1 3) = "```") [""]
 
             ;--default - not a spaced item
             if true [                
@@ -283,7 +352,7 @@ foreach line lines [
             ]
         ]
     ] [
-            if ((substring (trim copy line) 1 3) <> "```") [
+            if ((substring (copy line) 1 3) <> "```") [
                 append/only out markup-escape line
             ]
     ]

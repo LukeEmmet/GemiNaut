@@ -18,6 +18,7 @@ using Microsoft.VisualBasic;
 using System.Web;
 using GemiNaut.Properties;
 using mshtml;
+using System.Net;
 
 namespace GemiNaut
 {
@@ -109,7 +110,11 @@ namespace GemiNaut
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
             string geminiUri;
 
-            geminiUri = e.Uri.ToString();
+            geminiUri = e.Uri.OriginalString;
+
+            var fullQuery = e.Uri.OriginalString;
+
+            //ToastNotify(string.Format("{0}\n\n{1}\n\n{2}", e.Uri.ToString(), fullQuery, e.Uri.OriginalString));
 
             //use the current session folder
             var sessionPath = Session.Instance.SessionPath;
@@ -131,7 +136,7 @@ namespace GemiNaut
 
                 using (MD5 md5Hash = MD5.Create())
                 {
-                     hash = GetMd5Hash(md5Hash, e.Uri.ToString());
+                     hash = GetMd5Hash(md5Hash, fullQuery);
                 }
 
                 //uses .txt as extension so content loaded as text/plain not interpreted by the browser
@@ -146,7 +151,7 @@ namespace GemiNaut
                 File.Delete(htmlFile);
 
                 //use insecure flag as gemget does not check certs correctly in current version
-                var command = string.Format("\"{0}\" -i -o \"{1}\" \"{2}\"", gemGet, gmiFile, e.Uri.ToString());
+                var command = string.Format("\"{0}\" -i -o \"{1}\" \"{2}\"", gemGet, gmiFile, fullQuery);
                 
                 var result = proc.ExecuteCommand(command, true, true);
                 
@@ -205,7 +210,7 @@ namespace GemiNaut
 
                     } else
                     {
-                        geminiUri = e.Uri.ToString();
+                        geminiUri = fullQuery;
                     }
 
                     var settings = new Settings();
@@ -295,7 +300,6 @@ namespace GemiNaut
         //navigate to a url but get some user input first
         private void NavigateWithUserInput(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
-            var currentSearch = (e.Uri.Query.Length > 1) ? e.Uri.Query.Substring(1) : "";
 
             //position input box approx in middle of main window
 
@@ -304,14 +308,22 @@ namespace GemiNaut
                 "  " + e.Uri.Host + e.Uri.LocalPath.ToString() + "\n\n" +
                 "Please provide your input:";
 
-            string input = Interaction.InputBox(inputPrompt, "Server input request", currentSearch, windowCentre.Item1, windowCentre.Item2);
+            string input = Interaction.InputBox(inputPrompt, "Server input request", "", windowCentre.Item1, windowCentre.Item2);
 
             if (input != "")
             {
-                //at present use URL path encode, but maybe this ought to be URL encode.
-                //main differences is treatment of space as + or %20
-                var newUri = e.Uri.Scheme + @"://" + e.Uri.Host + e.Uri.LocalPath + "?" + HttpUtility.UrlPathEncode(input);
-                BrowserControl.Navigate(newUri);
+                //encode the query
+                var b = new UriBuilder();
+                b.Scheme = e.Uri.Scheme;
+                b.Host = e.Uri.Host;
+                if (e.Uri.Port != -1) { b.Port = e.Uri.Port; }
+                b.Path = e.Uri.LocalPath;
+                //!%22%C2%A3$%25%5E&*()_+1234567890-=%7B%7D:@~%3C%3E?[];'#,./
+                b.Query = System.Uri.EscapeDataString(input);      //escape the query result
+
+                //ToastNotify(b.ToString());
+
+                BrowserControl.Navigate(b.ToString());
             }
             else
             {

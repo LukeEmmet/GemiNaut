@@ -12,18 +12,38 @@ You can download a pre-built application for Windows from the <a href="https://w
 # Key features
 
 * Familiar navigation actions, smooth scrolling and text wrap
-* flexible theming engine
+* Keyboard shortcuts, wheelmouse zoom
+* Fast navigation through history, including remembering scroll offset
+* Support bullet, heading and quote line styles
+* Flexible theming engine
 * Site based themes
 * Visually distinguish gemini from other links
+* Table of contents (Fabric theme)
+* Icon hints to common non textual content (images, audio, video, docs) 
 * View source
 
 # License 
 
 GPL 3
 
+# Screenshot
+
+![](GemiNaut\Docs\images\gemini_home.png)
+
 # History
 
-## 0.8.3, 28-May-2020
+## 0.8.4, 10-Jun-2020
+
+* use correct percent encoding for URL requests with input
+* links with encoded query expression now passed on to server correctly
+* support quotation line style (new addition to Gemini spec)
+* show an icon on links to probable images (png, jpg etc) as a visual hint
+* asterisks must be followed by space to become a bullet (Gemini spec update)
+* remove debug white border around navigation in Fabric theme
+* minor style updates
+* bug fix: don't remove commas and separators from text lines
+
+## 0.8.3, 29-May-2020
 
 * add automatic page level table of contents for Fabric theme
 
@@ -44,8 +64,7 @@ First public release
 * html escape source content before display
 * pass torture tests relating to link formation 
 * detect response redirect urls and adjust links accordingly
-  (e.g. gemini://gemini.circumlunar.space/users/solderpunk -> 
-   gemini://gemini.circumlunar.space/users/solderpunk/)
+  (e.g. gemini://domain/users/user -> gemini://domain/users/user/)
 * pad output with blank lines at end for better display of short content
 * new plain line blocks always preceded by at least one blank line
 * prettify spacing of headings, always have a blank line before these.

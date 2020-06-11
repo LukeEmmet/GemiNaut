@@ -36,9 +36,7 @@ h1, h2 {
 	color: #333300;
 }
 
-span.link-gliph {
-	font-size:1.4em;
-}
+
 pre div {
 	line-height: 0em;
 	border-width: 0em;
@@ -54,6 +52,12 @@ div.bullet {
 } 
 
 
+span.link-gliph {
+		font-size:1.4em;
+}
+span.decorator-gliph {
+	text-decoration: none;
+}
 
 div.gemini-link {
   padding-left: 1.2em ;
@@ -68,6 +72,18 @@ div.other-link {
   margin-left:0.3em;
   margin-top:0.15em;
 } 
+
+div.blockquote {
+	padding-left: 1em ;
+	padding-right: 1em ;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	margin-left: 2em;
+	border-style: solid;
+	border-width: 0 0 0 1px;
+	border-color:#000000;
+	font-style: italic;
+}
 
 pre.inline {
 	background-color: #fafaff;

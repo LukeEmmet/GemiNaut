@@ -42,6 +42,13 @@ h1, h2 {
 span.link-gliph {
 	font-size:1.4em;
 }
+
+span.decorator-gliph {
+	font-size:1.1em;
+	text-decoration: none;
+	color: #004d00;
+}
+
 pre div {
 	line-height: 0em;
 	border-width: 0em;
@@ -56,6 +63,18 @@ div.bullet {
   margin-top:0.15em;
 } 
 
+div.blockquote {
+	padding-left: 1em ;
+	padding-right: 1em ;
+	padding-top:0.25em;
+	padding-bottom:0.25em;
+	margin-left: 2em;
+	border-style: solid;
+	border-width: 0 0 0 1px;
+	background:#fafaff;
+	border-color:#000000;
+	font-style: italic;
+}
 
 
 div.gemini-link {
@@ -144,7 +163,6 @@ pre.inline {
 			max-width:190px;
             margin-left:1em;
             margin-bottom:1em;
-			border:1px solid white;
         }
         
 
