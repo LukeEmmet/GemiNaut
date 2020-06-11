@@ -29,6 +29,15 @@ substring: func [string [string!] offset [integer!] length [integer!]] [
 ]
 
 
+take-from: funct [text start] [
+    substring text start (length? text)
+]
+
+take-left: funct [text length] [
+    substring text 1 length
+]
+
+
 ;---string join ["a" "b"] -> "a/b" (inverse of split)
 ;---from https://stackoverflow.com/questions/46509781/inverse-of-split-function-join-a-string-using-a-delimeter/46511435
 block-join: func [blk[block!] delim [string!]][

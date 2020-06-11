@@ -51,8 +51,8 @@ if (error? try [
     
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\9fdfcb2ef4244d6821091d62e3a0e06a.gmi}
-   ;in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_hmu2ptv3.qvv\b24b7e36ef997fb83cc2b81a0d69fd6f.txt}
-    ; uri: "gemini://gemini.circumlunar.space:1965/users/supurb/"
+   
+    in-path: to-rebol-file {C:/Users/lukee/AppData/Local/Temp/geminaut_t1qyj52a.43x/b25e5c0c2d5f3f2e271f16a7c17429e7.txt}
      
 ]
 
@@ -71,8 +71,8 @@ out: copy []
 in-block: false
 
 
-newline-latch: off
-previous-element-is-linkbullet: off
+
+last-element: 'empty
 
 first-heading: copy ""
 first-text-line: copy ""
@@ -81,33 +81,54 @@ table-of-contents: copy []
 table-of-contents-string: copy ""
 heading-count: 0
 
-make-toc-entry: func [heading-text heading-level id] [
-
+make-toc-entry: funct [heading-text heading-level id] [
          rejoin  [
             {<div class="toc} heading-level {"><a class=toc title="Item on this page" href="#} id {">} 
             (markup-escape heading-text) 
             {</a></div>} 
             newline
         ]
+]
+
+insert-missing-preceding-line: funct [] [
     
+    if  0 < length? out [
+        ;ensure certain items are preceded by a blank line
+        ;apart from first line
+        if ("<div>&nbsp;</div>" <> last out) [
+            append out  "<div>&nbsp;</div>" 
+        ]
+    ]
 ]
 
 
 
+add-to-toc: func [display level] [
+         if first-heading = "" [first-heading: display]
+         heading-count:  heading-count + 1
+         append table-of-contents make-toc-entry display level (join "id" heading-count )
+]
+
+process-heading: func [line level] [
+         insert-missing-preceding-line
+         display: trim take-from  line (level + 1)
+         add-to-toc (copy display) level
+         last-element: 'heading
+         rejoin [{<h} level { id="} (join "id" heading-count) {">} (markup-escape display) {</h} level {>}]
+]    
+
+
 foreach line lines [
 
-    ;---simple hack for when user didnt add whitespace after link marker :-/
-    replace line "=>" "=> "
-    
-    words: parse line " "
     
     ;--start or end preformatted block. Use any label as the tooltip as
     ;-- a hint to the user -e.g. ```python
-    if ((substring (copy line) 1 3) = "```") [
+    if ((take-left line 3) = "```") [
         
-        pre-label: trim any [(substring line 4 (length? line))]
+        pre-label: trim take-from line 4
         if pre-label = "" [pre-label:  "preformatted text"]
        in-block: not in-block
+        last-element: 'preformat
         
         append out either in-block [
              rejoin [{<pre class=inline title="} pre-label {">} ]
@@ -116,86 +137,70 @@ foreach line lines [
         ]
     ]
     
-    insert-missing-preceding-line: func [] [
+
         
-        if 1 < length? out [
-            ;ensure certain items are preceded by a blank line
-            ;apart from first line
-            if (not newline-latch) and ("<div>&nbsp;</div>" <> last out) [
-                append out  "<div>&nbsp;</div>" 
-                newline-latch: on
-            ]
-        ]
-    ]
     
-    either not in-block [
+    
+    either not  in-block [
+    
         append/only out any [
             
+            
             ;--handle headings, do most specific first so not to match later ones
-            if (words/1 = "###") or ("###" = substring line 1 3) [
-                 insert-missing-preceding-line
-                 if first-heading = "" [first-heading: reform next words]
-                 heading-count: heading-count + 1
-                 append table-of-contents make-toc-entry  (reform next words)  3 (join "id" heading-count )
-                 rejoin [{<h3 id="} (join "id" heading-count) {">} (markup-escape reform next words) "</h3>"]
+            if  ("###" = take-left line 3) [
+                process-heading line 3
             ]
-
-
-            if (words/1 = "##") or ("##" = substring line 1 2) [
-                 insert-missing-preceding-line
-                 if first-heading = "" [first-heading: reform next words]
-                 heading-count: heading-count + 1
-                 append table-of-contents make-toc-entry  (reform next words) 2 (join "id" heading-count )
-                 rejoin [{<h2 id="} (join "id" heading-count) {">} (markup-escape reform next words) "</h2>"]
+            if  ("##" = take-left line 2) [
+                process-heading line 2
             ]
-
-            if (words/1 = "#") or ("#" = substring line 1 1) [
-                 insert-missing-preceding-line
-                 if first-heading = "" [first-heading: reform next words]
-                 heading-count: heading-count + 1
-                 append table-of-contents make-toc-entry  (reform next words)  1 (join "id" heading-count )
-                 rejoin [{<h1 id="} (join "id" heading-count) {">} (markup-escape reform next words) "</h1>"]
+            if  ("#" =  take-left line 1) [
+                process-heading line 1
             ]
         
 
 
-            ;---handle *  bullets
-            ;bullet asterisks must have a space after
-            if (words/1 = "*")  [
-                if not previous-element-is-linkbullet [ insert-missing-preceding-line]
-                 previous-element-is-linkbullet: on
-                 rejoin ["<div class=bullet>&bull;&nbsp;" (markup-escape reform  next words) "</div>"]
+            ;---handle *  bullets, note that bullet asterisks must have a space after
+            if ("* " = take-left line 2)  [
+                if last-element <> 'bullet [ insert-missing-preceding-line]
+                display: trim take-from line 3
+                 last-element: 'bullet
+                 rejoin ["<div class=bullet>&bull;&nbsp;" (markup-escape display) "</div>"]
             ]
 
-            ;---handle *  bullets
-            ;bullet asterisks must have a space after
-            if (words/1 = ">") or (">" = substring line 1 1)  [
-                if not previous-element-is-linkbullet [ insert-missing-preceding-line]
-                 previous-element-is-linkbullet: on
-                 rejoin ["<div class=blockquote>" (markup-escape reform  next words) "</div>"]
+            ;---handle quotes
+            if (">" = take-left line 1)  [
+                if last-element <> 'quote [ insert-missing-preceding-line]
+                display: trim take-from line 2
+                 last-element: 'quote
+                 rejoin ["<div class=blockquote>" (markup-escape display) "</div>"]
             ]
 
 
             ;---handle links
-            ;---assumes white space between "=>" and url (not always valid - can use substring or better parsing...
-            if (words/1 = "=>") or ("=>" = substring line 1 2) [
+            if ("=>" = take-left line 2) [
 
-                if not previous-element-is-linkbullet [ insert-missing-preceding-line]
-                 previous-element-is-linkbullet: on
-
-                link-part:  words/2
+                link-content: trim take-from line 3
                 
-                either 2 < length? words [
-                    display-part: (reform next next words)
+                ws:  [" " | tab]
+                
+                either (parse link-content [copy link-part to ws thru ws copy display-part to end]) [
+                    link-content: trim link-content
+                    display-part: trim display-part                
                 ] [
+                    link-part: trim link-content
+                    display-part: trim link-content
+                ]
+                                
+                if not find [bullet link] last-element [ insert-missing-preceding-line]
+                last-element: 'link
+                
+                if unset? display-part [
                     display-part: link-part
                 ]
                 
-                link: build-link  uri-object link-part
+               link: build-link uri-object link-part
 
-
-                
-                either (substring link 1 9) = "gemini://" [
+                either (take-left link 9) = "gemini://" [
                     class: "gemini"
                     link-gliph: "&rArr;"        ;---fat arrow like =>
                     link-class: "gemini-link"
@@ -326,22 +331,22 @@ foreach line lines [
                 ]
             ]
             
-            if ((substring (copy line) 1 3) = "```") [""]
+            if ((take-left line 3) = "```") [""]
 
             ;--default - not a spaced item
             if true [                
-                newline-latch: off
                 
                 
                either line = "" [
-                        display-html: "<div>&nbsp;</div>"
+                       last-element: 'empty
+                       display-html: "<div>&nbsp;</div>"
                 ] [
-                    if previous-element-is-linkbullet [
+                    if not find [line empty] last-element  [
                         insert-missing-preceding-line
-                        previous-element-is-linkbullet: off
+                        last-element: 'line
                     ]    
                     
-                    if first-text-line = "" [first-text-line: join (substring line 1 60) "..."]
+                    if first-text-line = "" [first-text-line: join (take-left line 60) "..."]
 
                     display-html:  rejoin ["<div>" markup-escape line "</div>"]
                 ]
@@ -352,7 +357,8 @@ foreach line lines [
             ]
         ]
     ] [
-            if ((substring (copy line) 1 3) <> "```") [
+            if ((take-left line 3) <> "```") [
+                last-element: 'preformat
                 append/only out markup-escape line
             ]
     ]
