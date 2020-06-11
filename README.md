@@ -28,7 +28,7 @@ GPL 3
 
 # Screenshot
 
-![](GemiNaut\Docs\images\gemini_home.png)
+![Screenshot](GemiNaut/Docs/images/gemini_home.png)
 
 # History
 
