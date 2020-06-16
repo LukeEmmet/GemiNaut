@@ -41,6 +41,12 @@
                         <MenuItem Name="mnuThemeUnifiedUI" Header="Unified UI (common links)" Click="ViewThemeItem_Click" CommandParameter="UnifiedUI"></MenuItem>
                     </MenuItem>
                 </MenuItem>
+                <MenuItem Header="Bookmarks">
+                    <MenuItem Name="mnuMenuBookmarksAdd" Header="Add bookmark" Click="mnuMenuBookmarksAdd_Click" ></MenuItem>
+                    <MenuItem Name="mnuMenuBookmarkesEdit" Header="Manage bookmarks" Click="mnuMenuBookmarksEdit_Click" ></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Name="mnuBookMarks" Header="Bookmarks"></MenuItem>
+                </MenuItem>
                 <MenuItem Header="Help">
                     <MenuItem Header="Contents" Click="MenuHelpContents_Click" ></MenuItem>
                     <Separator></Separator>

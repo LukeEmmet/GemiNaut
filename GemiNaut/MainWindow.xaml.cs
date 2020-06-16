@@ -52,6 +52,8 @@ namespace GemiNaut
             _urlsByHash = new Dictionary<string, string>();
 
 
+            RefreshBookmarkMenu();
+
             var settings = new Settings();
 
             BrowserControl.Navigate(settings.HomeUrl);
@@ -634,6 +636,115 @@ namespace GemiNaut
             ToggleContainerControlsForBrowser(true);
         }
 
+        private void mnuMenuBookmarksAdd_Click(object sender, RoutedEventArgs e)
+        {
+            var settings = new Settings();
 
+            var doc = (HTMLDocument)BrowserControl.Document;
+
+            var url = txtUrl.Text;
+
+            foreach (var line in BookmarkLines())
+            {
+                var linkParts = ParseGeminiLink(line);
+                if (linkParts[0] == url)
+                {
+                    //already exists
+                    ToastNotify("That URL is already in the bookmarks, skipping.\n" + url, ToastMessageStyles.Warning);
+                    return;
+                }
+            }
+
+            //a new one
+            settings.Bookmarks += "\r\n" + "=> " + url + "\t" + doc.title;
+            settings.Save();
+            RefreshBookmarkMenu();
+            ToastNotify("Bookmark added: " + (doc.title + " " + txtUrl.Text).Trim(), ToastMessageStyles.Success);
+        }
+
+        private void mnuMenuBookmarksEdit_Click(object sender, RoutedEventArgs e)
+        {
+            var settings = new Settings();
+
+            Bookmarks winBookmarks = new Bookmarks();
+            winBookmarks.MainWindow(this);
+
+            winBookmarks.Show();
+
+        }
+
+        private void mnuMenuBookmarksGo_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+
+            BrowserControl.Navigate(menuItem.CommandParameter.ToString());
+
+        }
+
+        private string[] BookmarkLines()
+        {
+            var settings = new Settings();
+            string[] array = new string[2];
+            array[0] = "\r\n";
+
+            return (settings.Bookmarks.Split(array, StringSplitOptions.RemoveEmptyEntries));
+
+        }
+
+        private string[] ParseGeminiLink(string line)
+        {
+            var linkRegex = new Regex(@"\s*=>\s([^\s]*)(.*)");
+            string[] array = new string[2];
+
+            if (linkRegex.IsMatch(line))
+            {
+                Match match = linkRegex.Match(line);
+                array[0] = match.Groups[1].ToString().Trim();
+                array[1] = match.Groups[2].ToString().Trim();
+
+                //if display text is empty, use url
+                if (array[1] == "") {
+                    array[1] = array[0];
+                }
+
+            } else
+            {
+                //isnt a link, return null,null
+                array[0] = null;
+                array[1] = null;
+            }
+
+            return (array);
+        }
+
+        public void RefreshBookmarkMenu()
+        {
+
+            mnuBookMarks.Items.Clear();
+
+            foreach (var line in BookmarkLines())
+            {
+                var bmMenu = new MenuItem();
+
+                var linkParts = ParseGeminiLink(line);
+                if (linkParts[0] != null)
+                {
+                    bmMenu.CommandParameter = linkParts[0];
+                    bmMenu.Header = linkParts[1];
+                    bmMenu.Click += mnuMenuBookmarksGo_Click;
+
+                    mnuBookMarks.Items.Add(bmMenu);
+
+                } else
+                {
+                    //anything else in the bookmarks file ignored for now
+                }
+
+
+            }
+
+
+
+        }
     }
 }

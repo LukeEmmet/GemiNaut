@@ -46,5 +46,18 @@ namespace GemiNaut.Properties {
                 this["Theme"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("=> gemini://gemini.marmaladefoo.com GemNaut home page\r\n=> gemini://gemini.circuml" +
+            "unar.space/ Gemini project home page\r\n=> gemini://gus.guru/ GUS search engine")]
+        public string Bookmarks {
+            get {
+                return ((string)(this["Bookmarks"]));
+            }
+            set {
+                this["Bookmarks"] = value;
+            }
+        }
     }
 }

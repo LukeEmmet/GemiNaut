@@ -161,7 +161,7 @@ foreach line lines [
 
             ;---handle *  bullets, note that bullet asterisks must have a space after
             if ("* " = take-left line 2)  [
-                if last-element <> 'bullet [ insert-missing-preceding-line]
+                if not find [bullet link] last-element [ insert-missing-preceding-line]
                 display: trim take-from line 3
                  last-element: 'bullet
                  rejoin ["<div class=bullet>&bull;&nbsp;" (markup-escape display) "</div>"]
@@ -264,9 +264,9 @@ foreach line lines [
                             ;document-> page facing up
                             if find document-extensions last url-split [decorator-glyph: "&#128196;"]
                             
-                           ;default - a generic cabinet
+                           ;default - a generic cabinet, and show the actual extension on the link if not visible
                            if true [
-                            decorator-glyph: "&#128452;"            ;document
+                            decorator-glyph: "&#128452;"            ;cabinet
                             show-extension:  rejoin [" [" link-extension "]"]
                             ]
                             
@@ -281,7 +281,7 @@ foreach line lines [
                                         { } (last parse/all link   "/")
                                     ]
                                     
-                        ;--decorate links to binary files with a unicode document glyph (&#128462;), 
+                        ;--decorate links to binary files with the glyph and tooltip, and optionally the extension if not shown 
                         ;--their expected file type and a tooltip to explain these are opened in system browser
                         display-html: rejoin [
                                 {<span class=decorator-gliph }
@@ -337,7 +337,7 @@ foreach line lines [
             if true [                
                 
                 
-               either line = "" [
+               either (trim line) = "" [
                        last-element: 'empty
                        display-html: "<div>&nbsp;</div>"
                 ] [

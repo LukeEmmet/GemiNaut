@@ -8,5 +8,10 @@
     <Setting Name="Theme" Type="System.String" Scope="User">
       <Value Profile="(Default)">Fabric</Value>
     </Setting>
+    <Setting Name="Bookmarks" Type="System.String" Scope="User">
+      <Value Profile="(Default)">=&gt; gemini://gemini.marmaladefoo.com GemNaut home page
+=&gt; gemini://gemini.circumlunar.space/ Gemini project home page
+=&gt; gemini://gus.guru/ GUS search engine</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
