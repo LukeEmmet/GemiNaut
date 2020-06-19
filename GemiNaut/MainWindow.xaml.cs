@@ -58,6 +58,7 @@ namespace GemiNaut
 
             BrowserControl.Navigate(settings.HomeUrl);
 
+            BuildThemeMenu();
             TickSelectedThemeMenu();
         }
 
@@ -347,11 +348,16 @@ namespace GemiNaut
         //(only checks for folder existence, not file)
         public string LocalOrDevFile(string startFolder, string localFolder, string devFolder, string filename)
         {
-            var useFolder = Directory.Exists(Path.Combine(startFolder, localFolder))
-                ? startFolder + localFolder
-                : Path.Combine(startFolder, devFolder);
+            var useFolder = LocalOrDevFolder(startFolder, localFolder, devFolder);
             
             return Path.GetFullPath(Path.Combine(startFolder, useFolder, filename));
+        }
+
+        public string LocalOrDevFolder(string startFolder, string localFolder, string devFolder)
+        {
+            return Directory.Exists(Path.Combine(startFolder, localFolder))
+                ? startFolder + localFolder
+                : Path.Combine(startFolder, devFolder);
         }
 
         //convert GMI to HTML for display and save to outpath
@@ -596,21 +602,39 @@ namespace GemiNaut
             }
         }
 
+        private void BuildThemeMenu()
+        {
+            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+            var themeFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+
+
+            foreach (var file in Directory.EnumerateFiles(themeFolder, "*.htm")) {
+
+                var newMenu = new MenuItem();
+                newMenu.Header = Path.GetFileNameWithoutExtension(Path.Combine(themeFolder, file));
+                newMenu.Click += ViewThemeItem_Click;
+
+                mnuTheme.Items.Add(newMenu);
+            }
+
+        }
+
         private void TickSelectedThemeMenu()
         {
             var settings = new Settings();
 
-            mnuThemeFabric.IsChecked = (settings.Theme == mnuThemeFabric.CommandParameter.ToString());
-            mnuThemePlain.IsChecked = (settings.Theme == mnuThemePlain.CommandParameter.ToString());
-            mnuThemeDark.IsChecked = (settings.Theme == mnuThemeDark.CommandParameter.ToString());
-            mnuThemeTerminal.IsChecked = (settings.Theme == mnuThemeTerminal.CommandParameter.ToString());
-            mnuThemeUnifiedUI.IsChecked = (settings.Theme == mnuThemeUnifiedUI.CommandParameter.ToString());
+            foreach (MenuItem themeMenu in mnuTheme.Items)
+            {
+                themeMenu.IsChecked = (themeMenu.Header.ToString() == settings.Theme);
+   
+            }
+            
         }
 
         private void ViewThemeItem_Click(object sender, RoutedEventArgs e)
         {
             var menu = (MenuItem)sender;
-            var themeName = menu.CommandParameter.ToString();
+            var themeName = menu.Header.ToString();
 
             var settings = new Settings();
             if (settings.Theme != themeName)

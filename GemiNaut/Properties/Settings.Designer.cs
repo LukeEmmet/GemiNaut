@@ -37,7 +37,7 @@ namespace GemiNaut.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Fabric")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Fabric (site specific themes)")]
         public string Theme {
             get {
                 return ((string)(this["Theme"]));

@@ -2,7 +2,7 @@ body {
 	background-color: #222827;
 	color: #e0e0e0;
 	font-family:Calibri, Verdana, Sans serif;
-	font-size: 1.0em;
+	font-size: 1.1em;
 	margin-left:3.5em;
 	margin-right:3.5em;
 	
@@ -27,7 +27,6 @@ h2 {
 
 h3 {
 	font-size: 0.9em;
-	color: black;
 	margin-top: 0.2em;
 	margin-bottom: 0;
 }
@@ -52,7 +51,7 @@ div.blockquote {
 }
 
 span.link-gliph {
-		font-size:1.4em;
+		font-size:1.2em;
 }
 span.decorator-gliph {
 	text-decoration: none;

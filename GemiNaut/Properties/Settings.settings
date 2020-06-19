@@ -6,7 +6,7 @@
       <Value Profile="(Default)">gemini://gemini.circumlunar.space/</Value>
     </Setting>
     <Setting Name="Theme" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Fabric</Value>
+      <Value Profile="(Default)">Fabric (site specific themes)</Value>
     </Setting>
     <Setting Name="Bookmarks" Type="System.String" Scope="User">
       <Value Profile="(Default)">=&gt; gemini://gemini.marmaladefoo.com GemNaut home page

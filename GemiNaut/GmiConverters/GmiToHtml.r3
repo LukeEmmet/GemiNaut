@@ -405,8 +405,8 @@ if  (1 < length? table-of-contents ) [
     
 ;--save the content to a HTML file
 ;--theme html should be UTF-8 charset, which is the standard format.
-theme-html: read/string to-file rejoin [theme ".htm"]
-theme-css: read/string to-file rejoin [theme ".css"]
+theme-html: read/string to-file rejoin ["themes/" theme ".htm"]
+theme-css: read/string to-file rejoin ["themes/" theme ".css"]
 
 
 ;populate the theme

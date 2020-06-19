@@ -33,14 +33,7 @@
 
                         </MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Theme">
-                        <MenuItem Name="mnuThemeFabric" Header="Fabric (site specific themes)" Click="ViewThemeItem_Click" CommandParameter="Fabric"></MenuItem>
-                        <Separator></Separator>
-                        <MenuItem Name="mnuThemePlain" Header="Plain" Click="ViewThemeItem_Click" CommandParameter="Plain"></MenuItem>
-                        <MenuItem Name="mnuThemeDark" Header="Dark" Click="ViewThemeItem_Click" CommandParameter="Dark"></MenuItem>
-                        <MenuItem Name="mnuThemeTerminal" Header="Terminal" Click="ViewThemeItem_Click" CommandParameter="Terminal"></MenuItem>
-                        <MenuItem Name="mnuThemeUnifiedUI" Header="Unified UI (common links)" Click="ViewThemeItem_Click" CommandParameter="UnifiedUI"></MenuItem>
-                    </MenuItem>
+                    <MenuItem Name="mnuTheme" Header="Theme"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Bookmarks">
                     <MenuItem Name="mnuMenuBookmarksAdd" Header="Add bookmark" Click="mnuMenuBookmarksAdd_Click" ></MenuItem>
