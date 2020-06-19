@@ -63,4 +63,55 @@ pre.inline {
 	margin:0.7em;
 	border-style: solid;
 	border-color:#a0a0a0;
+	font-family:Consolas;
+	font-size:0.9em;
+}
+
+div.toc1 {
+	margin-left:0em;
+	margin-top:0.5em;
+	line-height:1.2em;
+}
+
+div.toc2 {
+	margin-left:1em;
+	margin-top:0.3em;
+	line-height:1.2em;
+}
+
+div.toc3 {
+	margin-left:1.5em;
+	margin-top:0.3em;
+	line-height:1.2em;
+}
+
+#home {
+	font-size:0.85em;
+	margin-bottom:1em;
+	margin-top:1em;
+}
+
+#toc-container {
+	width:150px;
+	font-size:0.85em;
+	margin-left:2em;
+	margin-bottom:2em;
+	clear:both;
+	padding:1em;
+	float:right;
+	background: #222827;
+	border:1px solid #808080;
+}
+
+#toc-label {
+	margin-bottom:1em;
+	font-weight:bold
+}
+
+a.toc {
+	text-decoration: none;
+}
+
+a.toc:hover {
+	background:#505050;
 }
