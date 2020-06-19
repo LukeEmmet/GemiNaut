@@ -602,6 +602,7 @@ namespace GemiNaut
 
             mnuThemeFabric.IsChecked = (settings.Theme == mnuThemeFabric.CommandParameter.ToString());
             mnuThemePlain.IsChecked = (settings.Theme == mnuThemePlain.CommandParameter.ToString());
+            mnuThemeDark.IsChecked = (settings.Theme == mnuThemeDark.CommandParameter.ToString());
             mnuThemeTerminal.IsChecked = (settings.Theme == mnuThemeTerminal.CommandParameter.ToString());
             mnuThemeUnifiedUI.IsChecked = (settings.Theme == mnuThemeUnifiedUI.CommandParameter.ToString());
         }

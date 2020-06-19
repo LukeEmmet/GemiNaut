@@ -37,6 +37,7 @@
                         <MenuItem Name="mnuThemeFabric" Header="Fabric (site specific themes)" Click="ViewThemeItem_Click" CommandParameter="Fabric"></MenuItem>
                         <Separator></Separator>
                         <MenuItem Name="mnuThemePlain" Header="Plain" Click="ViewThemeItem_Click" CommandParameter="Plain"></MenuItem>
+                        <MenuItem Name="mnuThemeDark" Header="Dark" Click="ViewThemeItem_Click" CommandParameter="Dark"></MenuItem>
                         <MenuItem Name="mnuThemeTerminal" Header="Terminal" Click="ViewThemeItem_Click" CommandParameter="Terminal"></MenuItem>
                         <MenuItem Name="mnuThemeUnifiedUI" Header="Unified UI (common links)" Click="ViewThemeItem_Click" CommandParameter="UnifiedUI"></MenuItem>
                     </MenuItem>
@@ -68,12 +69,12 @@
                 </Grid.ColumnDefinitions>
 
                 <Button Command="NavigationCommands.BrowseBack" Grid.Column="0" Margin="5,5,5,5" FontSize="14" BorderThickness="0" Background="#ffffff">
-                    <TextBlock>&lt;&lt;</TextBlock>
+                    <TextBlock Text="&lt;&lt;"></TextBlock>
                 </Button>
 
 
                 <Button Command="NavigationCommands.BrowseForward" Grid.Column="1" Margin="0,5,5,5" FontSize="14" BorderThickness="0" Background="#ffffff">
-                    <TextBlock>&gt;&gt;</TextBlock>
+                    <TextBlock Text="&gt;&gt;"></TextBlock>
                 </Button>
 
                 <Button Command="NavigationCommands.BrowseHome" Grid.Column="2" Margin="0,5,5,5" FontSize="14" BorderThickness="0" Background="#ffffff">

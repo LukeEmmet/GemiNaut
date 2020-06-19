@@ -1,14 +1,15 @@
 body {
 	background-color: #222827;
 	color: #e0e0e0;
-	font-family:Consolas,Courier New;
-	font-size: 1em;
+	font-family:Calibri, Verdana, Sans serif;
+	font-size: 1.0em;
 	margin-left:3.5em;
 	margin-right:3.5em;
 	
 }
+
 a {
-	color: white;
+	color: #e0e0e0;
 }
 
 h1 {
@@ -26,8 +27,16 @@ h2 {
 
 h3 {
 	font-size: 0.9em;
+	color: black;
 	margin-top: 0.2em;
 	margin-bottom: 0;
+}
+
+pre div {
+	line-height: 0em;
+	border-width: 0em;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
 }
 
 div.blockquote {
@@ -38,7 +47,7 @@ div.blockquote {
 	margin-left: 2em;
 	border-style: solid;
 	border-width: 0 0 0 1px;
-	border-color:#ffffff;
+	border-color:#e0e0e0;
 	font-style: italic;
 }
 
@@ -49,15 +58,7 @@ span.decorator-gliph {
 	text-decoration: none;
 }
 
-pre div {
-	line-height: 0em;
-	border-width: 0em;
-	padding: 0 0 0 0;
-	margin: 0 0 0 0;
-}
-
 pre.inline {
-	font-family:Consolas, Courier;
 	border-width:1px;
 	padding:0.7em;
 	margin:0.7em;
