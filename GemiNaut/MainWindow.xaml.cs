@@ -694,7 +694,10 @@ namespace GemiNaut
             Bookmarks winBookmarks = new Bookmarks();
             winBookmarks.MainWindow(this);
 
-            winBookmarks.Show();
+
+            //show modally
+            winBookmarks.Owner = this;
+            winBookmarks.ShowDialog();
 
         }
 
