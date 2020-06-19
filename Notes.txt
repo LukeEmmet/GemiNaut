@@ -22,7 +22,6 @@
 * File-Print menu
 * Ctrl-R refreshes
 * find text on current page (works, but wire up to menu)
-* add favourite
 * global switch between stylesheets or maybe templates including any CSS
 * alternative html renderers
 * integrate c# library for gemini protocol
@@ -34,8 +33,6 @@
 * FAQ/design concepts
 * strip out terminal colour escape codes - e.g. on 
    gemini://bleyble.com/users/quokka/run2plan/couch25k.gmi
-* navigation buttons with the usual images
-* theme look up from a themes folder
 * register with windows to handle gemini:// protocol
 * startup with passed url on commandline
 * open link in new window
@@ -51,6 +48,12 @@
 
 # Done
 
+* tweaks and minor improvements to plain theme to get hanging indents on links and bullets
+* better vertical formatting - e.g. always have blank space before and after a heading
+* new dark theme
+* add and manage bookmarks
+* theme look up from a themes folder - so users can create their own
+* navigation buttons 
 * icon hinting at probable links to binary files such as images, audio, video, pdf, zip etc.
 * don't remove commas and other separators from text lines
 * link formation if there is a slash in query string is not handled correctly

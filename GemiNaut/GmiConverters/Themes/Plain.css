@@ -8,6 +8,22 @@ body {
 	
 }
 
+a {
+	color: navy;
+}
+
+a.other {
+	color: #404040;
+}
+a.gemini {
+	color: navy;
+}
+
+div {
+	line-height:1.27em;
+	
+}
+
 h1 {
 	font-size: 1.3em;
 	margin-top: 0.3em;
@@ -26,6 +42,13 @@ h3 {
 	color: black;
 	margin-top: 0.2em;
 	margin-bottom: 0;
+}
+
+div.bullet {
+  padding-left: 1.1em ;
+  text-indent: -0.6em ;
+  margin-left:0.3em;
+  margin-top:0.15em;	
 }
 
 pre div {
@@ -59,5 +82,72 @@ pre.inline {
 	padding:0.7em;
 	margin:0.7em;
 	border-style: solid;
-	border-color:#a0a0a0;
+	border-color:#808080;
+	font-family:Consolas;
+	font-size:0.9em;
+	line-height:1em;
+}
+
+div.gemini-link {
+  padding-left: 1.2em ;
+  text-indent: -1.3em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
+
+div.other-link {
+  padding-left: 1.2em ;
+  text-indent: -1.4em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
+
+div.toc1 {
+	margin-left:0em;
+	margin-top:0.5em;
+	line-height:1.2em;
+}
+
+div.toc2 {
+	margin-left:1em;
+	margin-top:0.3em;
+	line-height:1.2em;
+}
+
+div.toc3 {
+	margin-left:1.5em;
+	margin-top:0.3em;
+	line-height:1.2em;
+}
+
+#home {
+	font-size:0.85em;
+	margin-bottom:1em;
+	margin-top:1em;
+}
+
+#toc-container {
+	width:150px;
+	font-size:0.85em;
+	margin-left:2em;
+	margin-bottom:2em;
+	clear:both;
+	padding:1em;
+	float:right;
+	background: #ffffff;
+	border:1px solid #808080;
+}
+
+#toc-label {
+	margin-bottom:1em;
+	font-weight:bold
+}
+
+a.toc {
+	text-decoration: none;
+	color: #e0e0e0;
+}
+
+a.toc:hover {
+	background:#505050;
 }

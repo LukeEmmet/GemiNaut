@@ -32,6 +32,13 @@ GPL 3
 
 # History
 
+## 0.8.5, 19-Jun-2020
+
+* new dark theme
+* bookmarks - source format is just text/gemini
+* better vertical spacing - e.g. headings always have space between them and surrounding paragraphs
+* user definable themes - create your own and drop it in the GmiConverters/themes folder
+
 ## 0.8.4, 10-Jun-2020
 
 * use correct percent encoding for URL requests with input

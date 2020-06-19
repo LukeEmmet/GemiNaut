@@ -48,7 +48,7 @@ h3 {
 
 div.bullet {
   padding-left: 1.1em ;
-  text-indent: -0.7em ;
+  text-indent: -0.6em ;
   margin-left:0.3em;
   margin-top:0.15em;	
 }
@@ -90,6 +90,20 @@ pre.inline {
 	font-size:0.9em;
 	line-height:1em;
 }
+
+div.gemini-link {
+  padding-left: 1.2em ;
+  text-indent: -1.3em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
+
+div.other-link {
+  padding-left: 1.2em ;
+  text-indent: -1.4em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
 
 div.toc1 {
 	margin-left:0em;
