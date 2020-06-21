@@ -224,7 +224,7 @@ namespace GemiNaut
                     }
 
                     var settings = new Settings();
-                    var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverter\themes", @"..\..\GmiConverters\themes");
+                    var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
 
                     var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
@@ -291,10 +291,11 @@ namespace GemiNaut
                 var hashFile = Path.Combine(sessionPath, hash + ".txt");
                 var htmlCreateFile = Path.Combine(sessionPath, hash + ".htm");
 
-                var helpFile = LocalOrDevFile(appDir, "Docs", "..\\..\\Docs", sourceFileName);
+                var helpFolder = LocalOrDevFolder(appDir, @"Docs", @"..\..\Docs");
+                var helpFile = Path.Combine(helpFolder, sourceFileName);
 
                 //use a specific theme so about pages look different to user theme
-                var templateBaseName = Path.Combine(LocalOrDevFolder(appDir, "Docs", "..\\..\\Docs"), "help-theme");
+                var templateBaseName = Path.Combine(helpFolder, "help-theme");
 
 
 
@@ -381,7 +382,7 @@ namespace GemiNaut
                 b.Scheme = e.Uri.Scheme;
                 b.Host = e.Uri.Host;
                 if (e.Uri.Port != -1) { b.Port = e.Uri.Port; }
-                b.Path = e.Uri.LocalPath;
+                b.Path = e.Uri.LocalPath;   
                 //!%22%C2%A3$%25%5E&*()_+1234567890-=%7B%7D:@~%3C%3E?[];'#,./
                 b.Query = System.Uri.EscapeDataString(input);      //escape the query result
 
