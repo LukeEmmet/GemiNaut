@@ -1,0 +1,94 @@
+# Help for GemiNaut
+
+GemiNaut is a user friendly GUI client for the Gemini protocol and content format by Luke Emmet. It aims to provide a comfortable and user friendly experience of Gemini on MS Windows.
+
+In many ways it behaves just like a normal web browser, except it is for viewing gemini:// pages.
+
+* Send feedback to luke [at] marmaladefoo [dot] com
+
+### What is Gemini?
+
+Gemini is a protocol and text format designed to radically simplify the experience of writing and sharing hypertext content on the Internet:
+
+=> gemini://gemini.circumlunar.space Gemini Project home
+=> https://gemini.circumlunar.space Gemini Project home (www)
+
+### Key Features of GemiNaut
+
+* Attractive GUI with familiar browser navigation features
+* Keyboard shortcuts wheelmouse scroll and zoom
+* Smooth content wrap and flow
+* Preformatted text, quotation, bullet and heading styling
+* Fast history navigation remembering page 
+* Content theming engine - view the same content in different visual modes
+* Automatic site based themes - help to distinguish one site from another
+* Easily distinguish links outside of Gemini (e.g. to HTTP web servers) from the link style
+* View source
+* Page based table of contents
+* Bookmarks
+
+These are described in more detail below.
+
+### Familiar browser design
+
+GemiNaut provides a usable and familiar browsing experience for exploring Geminispace. Using your keyboard and mouse you click on links and use the back/forward/home buttons.
+
+You can use your wheelmouse to scroll or to zoom in and out (Ctrl+Wheelmouse) and use Alt+cursor keys to navigate back and forwards. Use Tab to step through the links.
+
+You can set your own home page via the "View->Settings->Set home page" menu.
+
+### Smooth content wrap and flow
+
+Gemini/GMI content from servers will be shown wrapped to your current window. 
+
+* Bullets and links are indented as expected 
+
+### Content theming engine
+
+GemiNaut has a number of rendering themes to present the content. This allows themes to be readily developed. These include:
+
+* Fabric (default) - a site-specific theme that shows each Gemini site with a slightly different visual theme - described below. It also shows a table of contents for those pages that have a heading structure.
+* Dark - a variable font theme whose colours are inspired by dark themes of code editors.
+* Plain - a simple plain text theme, black text on a white background.
+* Terminal - a monospaced terminal theme - white text on a black background.
+* Unified - a theme showing common navigation links and search options on every page.
+
+To switch between themes, choose the options below the "View->Themes" menu.
+
+If you are familiar with HTML and CSS, you can create your own theme by adding an HTML and CSS file with the same name into the GmiConverters/themes folder. Use the existing themes as the basis for your own.
+
+### Site specific themes
+
+A unique feature of GemiNaut is its ability to create site specific themes. Unlike HTML pages on the web, Gemini pages (GMI) do not have visual style information. This is an intentional part of Gemini's design and keeps everything simple.
+
+You can use one of the generic themes (e.g. Dark, Plain, Terminal) to view all content in GemiNaut. However these themes do not visually distinguish one site from another. So it is harder to determine when you traverse from one site to another - this can only be confirmed by looking at the address bar.
+
+The Fabric theme provides a solution to this problem by automatically creating a unique theme for each Gemini site. Each site will be distinguished by:
+
+* Page background - a "fabric" unique to the current site, as if the page is laid out on a different fabric background, like a tablecloth.
+* Page marker - a unique pseudo-icon for each site in the top right hand corner. You can click the page marker to go to the "home" of each site.
+
+Sites are identified as follows:
+
+* If the URL contains /users/<username> or /~<username> then this is taken to be a user specific sub-site, and the theme will be specific to that user on that server.
+* Otherwise, the domain is used to determine the theme.
+
+### Link styles
+
+Link types in GemiNaut can be easily distinguished:
+
+⇒ Gemini links start with a "fat" arrow. These will open in GemiNaut.
+⇝ External links have a "squiggly" arrow. These will open in the system web browser.
+
+Additionally, links to probable binary files are labelled for ease of identification. These will open in an external browser.
+
+### View source
+
+You can view the source of any GMI page via the "View->Source" menu.
+
+### Bookmarks
+
+GemiNaut has a simple bookmarks system. You can add the current page to your bookmarks, via the bookmarks menu.
+
+You can also edit your bookmarks using a simple text window. The bookmarks are stored using Gemini's text format, so each link starts "=> ". Other line types can be included in the bookmarks text, but only the links are shown in the bookmarks menu.
+

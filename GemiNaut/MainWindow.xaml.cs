@@ -129,7 +129,7 @@ namespace GemiNaut
 
                 //these are the only ones we "navigate" to. We do this by downloading the GMI content
                 //converting to HTML and then actually navigating to that.
-                
+
                 var proc = new ExecuteProcess();
 
                 //use local or dev binary for gemget
@@ -139,13 +139,13 @@ namespace GemiNaut
 
                 using (MD5 md5Hash = MD5.Create())
                 {
-                     hash = GetMd5Hash(md5Hash, fullQuery);
+                    hash = GetMd5Hash(md5Hash, fullQuery);
                 }
 
                 //uses .txt as extension so content loaded as text/plain not interpreted by the browser
                 //if user requests a view-source.
                 var gmiFile = sessionPath + "\\" + hash + ".txt";
-                var htmlFile = sessionPath + "\\"  + hash + ".htm";
+                var htmlFile = sessionPath + "\\" + hash + ".htm";
 
                 //delete txt file as GemGet seems to sometimes overwrite not create afresh
                 File.Delete(gmiFile);
@@ -155,33 +155,36 @@ namespace GemiNaut
 
                 //use insecure flag as gemget does not check certs correctly in current version
                 var command = string.Format("\"{0}\" -i -o \"{1}\" \"{2}\"", gemGet, gmiFile, fullQuery);
-                
+
                 var result = proc.ExecuteCommand(command, true, true);
-                
+
                 if (File.Exists(gmiFile))
                 {
                     var regexDetectRedirect = new Regex(@"\*\*\* Redirected to (.*) \*\*\*");
-                    if (regexDetectRedirect.IsMatch(result.Item2)) {
+                    if (regexDetectRedirect.IsMatch(result.Item2))
+                    {
                         var redirectUri = regexDetectRedirect.Match(result.Item2).Groups[1].Value;
 
                         if (redirectUri.Substring(0, 9) != "gemini://")
                         {
                             //need to unpack
-                            var redirectUriObj = new Uri(redirectUri); 
+                            var redirectUriObj = new Uri(redirectUri);
                             if (redirectUriObj.Scheme != "gemini")
                             {
                                 //is external
                                 LaunchExternalUri(redirectUri);
                                 e.Cancel = true;
                                 ToggleContainerControlsForBrowser(true);
-                            } else
+                            }
+                            else
                             {
                                 //is a relative url, not yet implemented
                                 ToastNotify("Redirect to relative URL not yet implemented: " + redirectUri, ToastMessageStyles.Warning);
                                 ToggleContainerControlsForBrowser(true);
                                 e.Cancel = true;
                             }
-                        } else
+                        }
+                        else
                         {
                             //redirected to a full gemini url
                             geminiUri = redirectUri;
@@ -199,11 +202,14 @@ namespace GemiNaut
                         //move the source file
                         try
                         {
-                            if (File.Exists(gmiFileNew)) {
+                            if (File.Exists(gmiFileNew))
+                            {
                                 File.Delete(gmiFileNew);
                             }
                             File.Move(gmiFile, gmiFileNew);
-                        } catch (Exception err) {
+                        }
+                        catch (Exception err)
+                        {
                             ToastNotify(err.ToString(), ToastMessageStyles.Error);
                         }
 
@@ -211,35 +217,21 @@ namespace GemiNaut
                         gmiFile = gmiFileNew;
                         htmlFile = htmlFileNew;
 
-                    } else
+                    }
+                    else
                     {
                         geminiUri = fullQuery;
                     }
 
                     var settings = new Settings();
+                    var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverter\themes", @"..\..\GmiConverters\themes");
 
-                    //create the html file
-                    GmiToHtml(gmiFile, htmlFile, geminiUri, settings.Theme);
+                    var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
-                    if (!File.Exists(htmlFile))
-                    {
-                        ToastNotify("GMI converter could not create display content for " + geminiUri, ToastMessageStyles.Error);
-                        ToggleContainerControlsForBrowser(true);
-                        e.Cancel = true;
-                    }
-                    else
-                    {
+                    ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, e);
 
-                        _urlsByHash[hash] = geminiUri;
-
-                        //no further navigation right now
-                        e.Cancel = true;
-
-                        //instead tell the browser to load the content
-                        BrowserControl.Navigate(@"file:///" + htmlFile);
-                    }
-
-                } else
+                }
+                else
                 {
                     //try to parse the gemget error. This can let us know whether:
                     // - page needs a query parameter,
@@ -250,10 +242,12 @@ namespace GemiNaut
 
                     ToggleContainerControlsForBrowser(true);
 
-                    if (regexRequiresInput.IsMatch(result.Item3)) {
+                    if (regexRequiresInput.IsMatch(result.Item3))
+                    {
                         NavigateWithUserInput(e);
                     }
-                    else if(regexNotFound.IsMatch(result.Item3)){
+                    else if (regexNotFound.IsMatch(result.Item3))
+                    {
                         ToastNotify("Page not found (status 51)\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
                     }
                     else
@@ -263,24 +257,58 @@ namespace GemiNaut
                     }
 
                     ToggleContainerControlsForBrowser(true);
-                    
+
                     //no further navigation right now
                     e.Cancel = true;
 
                 }
-                
+
             }
 
             else if (e.Uri.Scheme == "file")
             {
                 //just load the converted html file
                 //no further action.
-            } else if (e.Uri.Scheme == "about")
+            }
+            else if (e.Uri.Scheme == "about")
             {
                 //just load the help file
                 //no further action
                 ToggleContainerControlsForBrowser(true);
-                e.Cancel = true;
+
+                var sourceFileName = e.Uri.PathAndQuery.Substring(1);      //trim off leading /
+
+                //this expects uri has a "geminaut" domain so gmitohtml converter can proceed for now
+                //I think it requires a domain for parsing...
+                fullQuery = e.Uri.OriginalString;
+
+                string hash;
+                using (MD5 md5Hash = MD5.Create())
+                {
+                    hash = GetMd5Hash(md5Hash, fullQuery);
+                }
+
+                var hashFile = Path.Combine(sessionPath, hash + ".txt");
+                var htmlCreateFile = Path.Combine(sessionPath, hash + ".htm");
+
+                var helpFile = LocalOrDevFile(appDir, "Docs", "..\\..\\Docs", sourceFileName);
+
+                //use a specific theme so about pages look different to user theme
+                var templateBaseName = Path.Combine(LocalOrDevFolder(appDir, "Docs", "..\\..\\Docs"), "help-theme");
+
+
+
+                if (File.Exists(helpFile))
+                {
+                    File.Copy(helpFile, hashFile, true);
+                    ShowUrl(fullQuery, hashFile, htmlCreateFile, templateBaseName, e);
+                }
+                else
+                {
+                    ToastNotify("No content was found for: " + fullQuery, ToastMessageStyles.Warning);
+                    e.Cancel = true;
+                }
+
             }
             else
             {
@@ -290,6 +318,39 @@ namespace GemiNaut
                 ToggleContainerControlsForBrowser(true);
                 e.Cancel = true;
             }
+        }
+
+        private void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+
+            string hash;
+
+            using (MD5 md5Hash = MD5.Create())
+            {
+                hash = GetMd5Hash(md5Hash, sourceUrl);
+            }
+
+            //create the html file
+            GmiToHtml(gmiFile, htmlFile, sourceUrl, themePath);
+
+            if (!File.Exists(htmlFile))
+            {
+                ToastNotify("GMI converter could not create display content for " + sourceUrl, ToastMessageStyles.Error);
+                ToggleContainerControlsForBrowser(true);
+                e.Cancel = true;
+            }
+            else
+            {
+
+                _urlsByHash[hash] = sourceUrl;
+
+                //no further navigation right now
+                e.Cancel = true;
+
+                //instead tell the browser to load the content
+                BrowserControl.Navigate(@"file:///" + htmlFile);
+            }
+
         }
 
         //launch url in system browser
@@ -495,11 +556,10 @@ namespace GemiNaut
 
         private void MenuHelpContents_Click(object sender, RoutedEventArgs e)
         {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
-            var helpFile = LocalOrDevFile(appDir, "Docs", "..\\..\\Docs", "help.htm");
 
-            BrowserControl.Navigate(helpFile);
-            txtUrl.Text = "about:GemiNaut";
+            //this will be a look up into docs folder
+            BrowserControl.Navigate("about://geminaut/help.gmi");
+
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

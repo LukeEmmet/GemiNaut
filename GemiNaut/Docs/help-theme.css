@@ -1,0 +1,156 @@
+body {
+	background-color: #E0EDD5;
+	color: black;
+	font-family:Calibri, Verdana, Sans serif;
+	font-size: 1.1em;
+	margin-left:3.5em;
+	margin-right:3.5em;
+	
+}
+
+a {
+	color: #718ea8;
+}
+
+a.other {
+	color: #404040;
+}
+a.gemini {
+	color: navy;
+}
+
+div {
+	line-height:1.27em;
+	
+}
+
+h1 {
+	font-size: 1.3em;
+	margin-top: 0.3em;
+	margin-bottom: 0;
+	color: #BA6547;
+}
+
+h2 {
+	font-size: 1.1em;
+	margin-top: 0.2em;
+	margin-bottom: 0;
+	color: #BA6547;
+
+}
+
+h3 {
+	font-size: 0.9em;
+	margin-top: 0.2em;
+	margin-bottom: 0;
+	color: #BA6547;
+}
+
+div.bullet {
+  padding-left: 1.1em ;
+  text-indent: -0.6em ;
+  margin-left:0.3em;
+  margin-top:0.15em;	
+}
+
+pre div {
+	line-height: 0em;
+	border-width: 0em;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+}
+
+div.blockquote {
+	padding-left: 1em ;
+	padding-right: 1em ;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	margin-left: 2em;
+	border-style: solid;
+	border-width: 0 0 0 1px;
+	border-color:#e0e0e0;
+	font-style: italic;
+}
+
+span.link-gliph {
+		font-size:1.2em;
+}
+span.decorator-gliph {
+	text-decoration: none;
+	color: #ba9480;
+}
+
+pre.inline {
+	border-width:1px;
+	padding:0.7em;
+	margin:0.7em;
+	border-style: solid;
+	border-color:#808080;
+	font-family:Consolas;
+	font-size:0.9em;
+	line-height:1em;
+}
+
+div.gemini-link {
+  padding-left: 1.2em ;
+  text-indent: -1.3em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
+
+div.other-link {
+  padding-left: 1.2em ;
+  text-indent: -1.4em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
+
+div.toc1 {
+	margin-left:0em;
+	margin-top:0.5em;
+	line-height:1.2em;
+}
+
+div.toc2 {
+	margin-left:1em;
+	margin-top:0.3em;
+	line-height:1.2em;
+}
+
+div.toc3 {
+	margin-left:1.5em;
+	margin-top:0.3em;
+	line-height:1.2em;
+}
+
+#home {
+	font-size:0.85em;
+	margin-bottom:1em;
+	margin-top:1em;
+}
+
+#toc-container {
+	width:150px;
+	font-size:0.85em;
+	margin-left:2em;
+	margin-bottom:2em;
+	clear:both;
+	padding:1em;
+	float:right;
+	background: #E0EDD5;
+	border:1px solid #808080;
+}
+
+#toc-label {
+	margin-bottom:1em;
+	font-weight:bold
+}
+
+a.toc {
+	text-decoration: none;
+	color: black;
+}
+
+a.toc:hover {
+	background:#e0e0e0;
+}

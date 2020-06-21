@@ -48,6 +48,8 @@
 
 # Done
 
+* help pages now use text/gemini and have table of contents
+* about:// protocol with help files now dogfooded using local GMI files
 * tweaks and minor improvements to plain theme to get hanging indents on links and bullets
 * better vertical formatting - e.g. always have blank space before and after a heading
 * new dark theme

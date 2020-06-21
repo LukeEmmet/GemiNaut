@@ -36,7 +36,7 @@ if (error? try [
     in-path:  to-rebol-file (to-string debase/base arg-block/1 64)
     out-path:  to-rebol-file (to-string debase/base arg-block/2 64)
     uri:   (to-string debase/base arg-block/3 64)
-    theme:   (to-string debase/base arg-block/4 64)
+    theme:  to-rebol-file (to-string debase/base arg-block/4 64)
 
         ;uri: "gemini://gemini.circumlunar.space/"
 
@@ -47,12 +47,12 @@ if (error? try [
     in-path: to-rebol-file join folder {test1.gmi}
     out-path: to-rebol-file join folder {test1.htm}
     uri: "gemini://gemini.circumlunar.space/users/foo?.gz"
-    theme: "Fabric"
+    theme: %Themes/Plain
     
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\9fdfcb2ef4244d6821091d62e3a0e06a.gmi}
    
-    in-path: to-rebol-file {C:/Users/lukee/AppData/Local/Temp/geminaut_t1qyj52a.43x/b25e5c0c2d5f3f2e271f16a7c17429e7.txt}
+   ; in-path: to-rebol-file {C:/Users/lukee/AppData/Local/Temp/geminaut_t1qyj52a.43x/b25e5c0c2d5f3f2e271f16a7c17429e7.txt}
      
 ]
 
@@ -405,8 +405,8 @@ if  (1 < length? table-of-contents ) [
     
 ;--save the content to a HTML file
 ;--theme html should be UTF-8 charset, which is the standard format.
-theme-html: read/string to-file rejoin ["themes/" theme ".htm"]
-theme-css: read/string to-file rejoin ["themes/" theme ".css"]
+theme-html: read/string to-file rejoin [theme ".htm"]
+theme-css: read/string to-file rejoin [theme ".css"]
 
 
 ;populate the theme

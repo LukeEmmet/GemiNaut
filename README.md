@@ -26,18 +26,26 @@ You can download a pre-built application for Windows from the <a href="https://w
 
 GPL 3
 
-# Screenshot
+# Screenshots
+
+Fabric theme (site specific themes):
 
 ![Screenshot](GemiNaut/Docs/images/gemini_home.png)
+
+Dark theme:
+
+![Screenshot](GemiNaut/Docs/images/dark_theme.png)
 
 # History
 
 ## 0.8.5, 19-Jun-2020
 
-* new dark theme
+* new dark theme, with variable width font, colours are based on dark themes of source code editors 
 * bookmarks - source format is just text/gemini
 * better vertical spacing - e.g. headings always have space between them and surrounding paragraphs
 * user definable themes - create your own and drop it in the GmiConverters/themes folder
+* help files now use text/gemini format and have their own table of contents
+* minor style improvements for plain theme
 
 ## 0.8.4, 10-Jun-2020
 
