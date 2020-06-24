@@ -46,7 +46,7 @@ if (error? try [
 
     in-path: to-rebol-file join folder {test1.gmi}
     out-path: to-rebol-file join folder {test1.htm}
-    uri: "gemini://gemini.circumlunar.space/users/foo?.gz"
+    uri: "gopher://gemini.circumlunar.space/0/users/foo/foo?.gz"
     theme: %Themes/Plain
     
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
@@ -63,6 +63,7 @@ uri-object:   decode-url uri
 ;---and textured "fabric" style background
 site-id: get-site-id uri-object
 uri-md5: lowercase copy/part at (mold checksum/method (to-binary site-id) 'md5) 3 32
+page-scheme: (to-word uri-object/scheme)
 
 lines: read/lines in-path
 
@@ -164,7 +165,7 @@ foreach line lines [
                 if not find [bullet link] last-element [ insert-missing-preceding-line]
                 display: trim take-from line 3
                  last-element: 'bullet
-                 rejoin ["<div class=bullet>&bull;&nbsp;" (markup-escape display) "</div>"]
+                 rejoin [{<div class="bullet } page-scheme {">&bull;&nbsp;} (markup-escape display) "</div>"]
             ]
 
             ;---handle quotes
@@ -172,7 +173,7 @@ foreach line lines [
                 if last-element <> 'quote [ insert-missing-preceding-line]
                 display: trim take-from line 2
                  last-element: 'quote
-                 rejoin ["<div class=blockquote>" (markup-escape display) "</div>"]
+                 rejoin [{<div class=blockquote } page-scheme {">} (markup-escape display) "</div>"]
             ]
 
 
@@ -200,7 +201,10 @@ foreach line lines [
                 
                link: build-link uri-object link-part
 
-                either (take-left link 9) = "gemini://" [
+                either (
+                            ((take-left link 9) = "gemini://") or 
+                            ((take-left link 9) = "gopher://") 
+                        ) [
                     class: "gemini"
                     link-gliph: "&rArr;"        ;---fat arrow like =>
                     link-class: "gemini-link"
@@ -300,13 +304,23 @@ foreach line lines [
                                 
                             ;use an http/html proxy for these binary files which will open
                             ;in users standard browser. In future we might handle them directly.
-                            link: rejoin [
-                                "https://portal.mozz.us/gemini"
-                                "/"
-                                final-link-object/host
-                                final-link-object/path
-                                "?raw=1"
-                            ]                        
+                            either ((take-left link 9) = "gopher://") [
+                                link: rejoin [
+                                    "https://gopher.tildeverse.org/"
+                                    final-link-object/host
+                                    final-link-object/path                                
+                                ] 
+                            ] [
+                                link: rejoin [
+                                    "https://portal.mozz.us/gemini"
+                                    "/"
+                                    final-link-object/host
+                                    final-link-object/path
+                                    "?raw=1"
+                                ]
+                            ]  
+
+
 
                     ] [
                         display-html: markup-escape display-part
@@ -321,7 +335,7 @@ foreach line lines [
                 ]
                 
                rejoin [
-                    {<div class="} link-class {">}
+                    {<div class="} link-class " "  page-scheme {">}
                 {<span class="link-gliph">} link-gliph {</span>} 
                     {&nbsp;<a } 
                         { href="} link {"}
@@ -337,7 +351,7 @@ foreach line lines [
             if true [                
                 
                 
-               either (trim line) = "" [
+               either (trim copy line) = "" [
                        last-element: 'empty
                        display-html: "<div>&nbsp;</div>"
                 ] [
@@ -348,7 +362,7 @@ foreach line lines [
                     
                     if first-text-line = "" [first-text-line: join (take-left line 60) "..."]
 
-                    display-html:  rejoin ["<div>" markup-escape line "</div>"]
+                    display-html:  rejoin [{<div class="} page-scheme {">} markup-escape line "</div>"]
                 ]
                 
                
@@ -410,6 +424,7 @@ theme-css: read/string to-file rejoin [theme ".css"]
 
 
 ;populate the theme
+replace/all theme-html "{{scheme}}" page-scheme
 replace/all theme-html "{{title}}" page-title
 replace/all theme-html "{{theme-css}}" theme-css
 replace/all theme-html "{{table-of-contents}}" table-of-contents-string

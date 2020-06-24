@@ -154,7 +154,7 @@ namespace GemiNaut
                 File.Delete(htmlFile);
 
                 //use insecure flag as gemget does not check certs correctly in current version
-                var command = string.Format("\"{0}\" -i -o \"{1}\" \"{2}\"", gemGet, gmiFile, fullQuery);
+                var command = string.Format("\"{0}\" -o \"{1}\" \"{2}\"", gemGet, gmiFile, fullQuery);
 
                 var result = proc.ExecuteCommand(command, true, true);
 
@@ -262,6 +262,87 @@ namespace GemiNaut
                     e.Cancel = true;
 
                 }
+
+            }
+
+            else if (e.Uri.Scheme == "gopher")
+            {
+                var proc = new ExecuteProcess();
+
+                //use local or dev binary for gemget
+                var gopherClient = LocalOrDevFile(appDir, "GoGopher", "..\\..\\..\\GoGopher", "main.exe");
+
+                string hash;
+
+                using (MD5 md5Hash = MD5.Create())
+                {
+                    hash = GetMd5Hash(md5Hash, fullQuery);
+                }
+
+                //uses .txt as extension so content loaded as text/plain not interpreted by the browser
+                //if user requests a view-source.
+                var gopherFile = sessionPath + "\\" + hash + ".txt";
+                var gmiFile = sessionPath + "\\" + hash + ".gmi";
+                var htmlFile = sessionPath + "\\" + hash + ".htm";
+
+                //delete txt file as GemGet seems to sometimes overwrite not create afresh
+                File.Delete(gopherFile);
+
+                //delete any existing html file to encourage webbrowser to reload it
+                File.Delete(gmiFile);
+
+                //save to the file
+                var command = string.Format("\"{0}\" \"{1}\" \"{2}\"", gopherClient, fullQuery, gopherFile);
+
+
+                var result = proc.ExecuteCommand(command, true, true);
+
+                var exitCode = result.Item1;
+                var stdOut = result.Item2;
+
+                if (exitCode != 0)
+                {
+                    ToastNotify(result.Item3, ToastMessageStyles.Error);
+                    ToggleContainerControlsForBrowser(true);    //reenable browser
+                    e.Cancel = true;
+                    return;
+
+                }
+
+
+                if (File.Exists(gopherFile))
+                {
+                    string parseFile;
+
+                    if (stdOut.Contains("DIR") || stdOut.Contains("QRY") ) {
+                        //convert gophermap to text/gemini
+
+                        //ToastNotify("Converting gophermap to " + gmiFile);
+                        GophertoGmi(gopherFile, gmiFile);
+                        parseFile = gmiFile;
+
+                    } else if (stdOut.Contains("TXT"))
+                    {
+                        parseFile = gopherFile;
+
+                    } else
+                    {
+                        //treat as text, but notify the type
+                        ToastNotify("Loading a " + result.Item2.ToString());
+
+                        parseFile = gopherFile;
+
+                    }
+
+                    var settings = new Settings();
+                    var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+
+                    var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
+
+                    ShowUrl(fullQuery, parseFile, htmlFile, userThemeBase, e);
+
+                }
+                
 
             }
 
@@ -451,6 +532,36 @@ namespace GemiNaut
 
             var result = execProcess.ExecuteCommand(command);
             
+
+        }
+
+        //convert GMI to HTML for display and save to outpath
+        public void GophertoGmi(string gopherPath, string outPath)
+        {
+            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+
+            //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
+            //otherwise we use the development ones which are version controlled
+            var rebolPath = LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
+            var scriptPath = LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "GophermapToGmi.r3");
+
+
+            //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
+            //working with command line parameters, so we need to escape quotes
+            //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
+            //also hypens are also problematic, so we base64 encode the whole thing
+            var command = String.Format("\"{0}\" -cs \"{1}\" \\\"{2}\\\" \\\"{3}\\\"  ",
+                rebolPath,
+                scriptPath,
+                Base64Encode(gopherPath),
+                Base64Encode(outPath)
+
+                );
+
+            var execProcess = new ExecuteProcess();
+
+            var result = execProcess.ExecuteCommand(command);
+
 
         }
         public enum ToastMessageStyles

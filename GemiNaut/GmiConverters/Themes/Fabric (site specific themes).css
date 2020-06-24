@@ -15,6 +15,11 @@ a.gemini {
 	color: navy;
 }
 
+div.gopher {
+	white-space: pre;	
+	font-family:Consolas;
+}
+
 h1 {
 	font-size: 1.3em;
 	margin-top: 0em;

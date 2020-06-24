@@ -19,6 +19,13 @@ a.gemini {
 	color: navy;
 }
 
+
+div.gopher {
+	white-space: pre;	
+	font-family:Consolas;
+	font-size:0.85em;
+}
+
 div {
 	line-height:1.27em;
 	

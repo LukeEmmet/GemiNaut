@@ -30,6 +30,7 @@ do load %utils.r3
 get-site-id: func [uri-object] [
 
     site-id: uri-object/host
+    page-scheme:  (to-word uri-object/scheme)
 
     path-parts:   parse/all uri-object/path "/"
 
@@ -37,8 +38,17 @@ get-site-id: func [uri-object] [
     keep-parts: copy []
     continue: true
     count: 1
+    
     if (not none? find uri-object/path "/~") or (not none? find uri-object/path "/users/") [
        foreach path-part path-parts [
+            
+
+            ;special treatment of the first component of gopher paths - ensure site home is accessied as type 1
+            ;e.g. /1/foo/bar not /n/foo/bar even if n is the current page selector
+            if (count = 2) and (page-scheme = 'gopher) [
+                if path-part <> "1" [path-part: "1"]
+            ]
+            
             if path-part = "users" [
                 if not none? (pick path-parts count + 1) [
                     append keep-parts  path-part 
@@ -58,9 +68,13 @@ get-site-id: func [uri-object] [
             count: count + 1
         ]
         
-        site-id: join uri-object/host ( block-join keep-parts "/")
+        use-path: ( block-join keep-parts "/")
+        
+        site-id: join uri-object/host  use-path
     ]
 
+
+    
     site-id
 
 ]
