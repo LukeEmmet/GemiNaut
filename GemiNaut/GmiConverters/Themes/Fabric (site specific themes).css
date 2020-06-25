@@ -16,8 +16,9 @@ a.gemini {
 }
 
 div.gopher {
-	white-space: pre;	
 	font-family:Consolas;
+	line-height:1.1em;
+	padding-top:0.05em
 }
 
 h1 {

@@ -64,8 +64,9 @@ foreach line lines [
     ;print ""
     selector:   take-left line 1
     rest: take-from line 2
-    fields: parse/all rest tab 
+    
     ;split on tabs
+    fields: split rest #"^-"        ;--better than parse which also loses quotes
     
     path: copy fields/2
     replace/all path " " "%20"      ;v simplistic escaping spaces only

@@ -83,9 +83,11 @@ table-of-contents-string: copy ""
 heading-count: 0
 
 make-toc-entry: funct [heading-text heading-level id] [
+         use-text: (markup-escape copy heading-text) 
+         replace/all use-text "&nbsp;" " "   ;--bit of a hack to undo the work of markup escape on gopher...        e.g. TOC for  gopher://gemini.circumlunar.space/0/docs/faq.txt
          rejoin  [
             {<div class="toc} heading-level {"><a class=toc title="Item on this page" href="#} id {">} 
-            (markup-escape heading-text) 
+            use-text
             {</a></div>} 
             newline
         ]
