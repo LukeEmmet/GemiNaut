@@ -28,6 +28,7 @@ REBOL [
 
 do load %utils.r3
 do load %link-builder.r3
+do load %gopher-utils.r3
 
 
 arg-block:  system/options/args
@@ -64,14 +65,14 @@ foreach line lines [
        
        if (parse trimmed-line [ "[" copy label thru "]" thru whitespace to known-scheme copy url to end]) [
            rejoin [
-                "=> " url " " line
+                "=> " url " " trimmed-line
             ]
        ]
        
 
-       if (parse trimmed-line [known-scheme copy url to end]) [
+       if (parse trimmed-line [known-scheme copy url to end])  and (1 = length? (parse/all trimmed-line " ") )[
             rejoin [
-                "=> " trimmed-line " " line
+                "=> " trimmed-line " " trimmed-line
             ]       
        ]
 
@@ -81,8 +82,8 @@ foreach line lines [
        ;if (first-word = "##") [line]
        ;if (first-word = "##") [line]
        
-       
-       join " " line    ;effectively escapes the content from further processing
+       ;otherwise...
+       gopher-escape line    ;effectively escapes the content from further processing, is removed by GmiToHTML->utils.r3
        
     ]
 

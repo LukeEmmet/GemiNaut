@@ -27,6 +27,7 @@ REBOL [
 ;===================================================
 
 do load %utils.r3
+do load %gopher-utils.r3
 do load %link-builder.r3
 
 
@@ -74,7 +75,9 @@ foreach line lines [
     ;probe fields
     result: any [
         ;--use == to be case sensitive test
-       if (selector == "i") [fields/1]
+       if (selector == "i") [
+            gopher-escape fields/1       ;effectively escapes the result from further processing, removed by GmiToHTML
+        ]      
         if (selector == "h") [
             rejoin [
                 "=> " (extract-url fields/2) 
@@ -97,7 +100,7 @@ foreach line lines [
         ]
     ]
 
-    append out result
+    append out result 
 
 ]
 out-string: copy ""

@@ -28,6 +28,7 @@ REBOL [
 
 do load %utils.r3
 do load %link-builder.r3
+do load %gopher-utils.r3
 
 
 arg-block:  system/options/args
@@ -52,7 +53,7 @@ if (error? try [
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\9fdfcb2ef4244d6821091d62e3a0e06a.gmi}
    
-   ; in-path: to-rebol-file {C:/Users/lukee/AppData/Local/Temp/geminaut_t1qyj52a.43x/b25e5c0c2d5f3f2e271f16a7c17429e7.txt}
+    in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_g1erlqb5.ivb\fa05d16b14d60da41efc204acf7e20ac.txt}
      
 ]
 
@@ -93,12 +94,21 @@ make-toc-entry: funct [heading-text heading-level id] [
         ]
 ]
 
+is-empty-div: funct [line] [
+    either ( parse line ["<div" thru ">" copy content to  "</div>" copy rest to end]) [
+       (content = "&nbsp;") and (rest = "</div>")
+    ] [
+        false
+    ]
+]
+
+
 insert-missing-preceding-line: funct [] [
     
     if  0 < length? out [
         ;ensure certain items are preceded by a blank line
         ;apart from first line
-        if ("<div>&nbsp;</div>" <> last out) [
+        if (not is-empty-div last out) [
             append out  "<div>&nbsp;</div>" 
         ]
     ]
@@ -352,6 +362,9 @@ foreach line lines [
             ;--default - not a spaced item
             if true [                
                 
+                if page-scheme = 'gopher [
+                    line: gopher-unescape line
+                ]
                 
                either (trim copy line) = "" [
                        last-element: 'empty
