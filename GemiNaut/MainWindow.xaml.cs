@@ -28,6 +28,13 @@ namespace GemiNaut
         private Dictionary<string, string> _urlsByHash;
         private Notifier _notifier;
 
+
+
+        public enum GopherParseTypes
+        {
+            Map, Text
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -318,14 +325,16 @@ namespace GemiNaut
                         //convert gophermap to text/gemini
 
                         //ToastNotify("Converting gophermap to " + gmiFile);
-                        GophertoGmi(gopherFile, gmiFile);
+                        GophertoGmi(gopherFile, gmiFile, GopherParseTypes.Map);
                         parseFile = gmiFile;
 
                     } else if (stdOut.Contains("TXT"))
                     {
-                        parseFile = gopherFile;
+                        GophertoGmi(gopherFile, gmiFile, GopherParseTypes.Text);
+                        parseFile = gmiFile;
 
-                    } else
+                    }
+                    else
                     {
                         //treat as text, but notify the type
                         ToastNotify("Loading a " + result.Item2.ToString());
@@ -536,14 +545,16 @@ namespace GemiNaut
         }
 
         //convert GMI to HTML for display and save to outpath
-        public void GophertoGmi(string gopherPath, string outPath)
+        public void GophertoGmi(string gopherPath, string outPath, GopherParseTypes parseType)
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
             //otherwise we use the development ones which are version controlled
+            var parseScript = (parseType == GopherParseTypes.Map) ? "GophermapToGmi.r3" : "GophertextToGmi.r3";
+
             var rebolPath = LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "GophermapToGmi.r3");
+            var scriptPath = LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", parseScript);
 
 
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
