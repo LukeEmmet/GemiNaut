@@ -51,6 +51,9 @@ lines: read/lines in-path
 
 out: copy []
 
+;--dont render links to CSO or telnet resources
+unsupported-selectors: "8+T2"
+
 extract-url: funct [gopher-field] [
     
     any [
@@ -86,17 +89,29 @@ foreach line lines [
             ]
         ]
        
+       if (none? find unsupported-selectors selector) [
        
-        rejoin [
-            "=> gopher://" 
-            fields/3
-            (either (fields/4 = "70") [""] [join ":" fields/4])
-            "/" 
-            selector
-            path
+            rejoin [
+                "=> gopher://" 
+                fields/3
+                (either (fields/4 = "70") [""] [join ":" fields/4])
+                "/" 
+                selector
+                path
 
+                " "
+                fields/1 
+            ]
+        ]
+        
+        ;unknown selector 
+          rejoin [
+            "* [Unsupported gopher selector " selector ": "
+             fields/1
             " "
-            fields/1 
+            fields/3
+            "]"
+        
         ]
     ]
 

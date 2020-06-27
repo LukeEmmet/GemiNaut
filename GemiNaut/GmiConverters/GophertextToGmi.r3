@@ -77,13 +77,14 @@ foreach line lines [
        ]
 
 
-       ;could markdown headers through like this
+       ;could markdown headers through like this, but gopher does not have this convention really
+       ;so currently disabled, as it could spuriously pick up other lines
        ;if (first-word = "#") [line]
        ;if (first-word = "##") [line]
-       ;if (first-word = "##") [line]
+       ;if (first-word = "###") [line]
        
        ;otherwise...
-       gopher-escape line    ;effectively escapes the content from further processing, is removed by GmiToHTML->utils.r3
+       gopher-escape line    ;effectively escapes the content from further processing, is removed by GmiToHTML
        
     ]
 
