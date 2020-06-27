@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GemiNaut"
         mc:Ignorable="d"
-        Title="Bookmarks" Height="461" Width="650">
+        Title="Bookmarks" Height="700" Width="1000">
     <Grid VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
