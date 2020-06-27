@@ -69,14 +69,23 @@ namespace GemiNaut
             TickSelectedThemeMenu();
         }
 
+        private bool TextIsUri(string text)
+        {
+            Uri outUri;
+            return (Uri.TryCreate(text, UriKind.Absolute, out outUri));
+        }
+
         private void txtUrl_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
 
-                if (!String.IsNullOrEmpty(txtUrl.Text))
+                if (TextIsUri(txtUrl.Text))
                 {
                     BrowserControl.Navigate(txtUrl.Text);
 
+                } else
+                {
+                    ToastNotify("Not a valid URI: " + txtUrl.Text, ToastMessageStyles.Error);
                 }
         }
 
@@ -120,9 +129,17 @@ namespace GemiNaut
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
             string geminiUri;
 
+
             geminiUri = e.Uri.OriginalString;
 
             var fullQuery = e.Uri.OriginalString;
+
+            //sanity check we have a valid URL syntax at least
+            if (e.Uri.Scheme == null)
+            {
+                ToastNotify("Invalid URL: " + e.Uri.OriginalString, ToastMessageStyles.Error);
+                e.Cancel = true;
+            }
 
             //ToastNotify(string.Format("{0}\n\n{1}\n\n{2}", e.Uri.ToString(), fullQuery, e.Uri.OriginalString));
 
@@ -251,7 +268,7 @@ namespace GemiNaut
 
                     if (regexRequiresInput.IsMatch(result.Item3))
                     {
-                        NavigateWithUserInput(e);
+                        NavigateGeminiWithInput(e);
                     }
                     else if (regexNotFound.IsMatch(result.Item3))
                     {
@@ -274,6 +291,22 @@ namespace GemiNaut
 
             else if (e.Uri.Scheme == "gopher")
             {
+
+                //check if it is a query selector without a parameter
+                if (!e.Uri.OriginalString.Contains("%09") && e.Uri.PathAndQuery.StartsWith("/7/") )
+                {
+                    NavigateGopherWithInput(e);
+                   
+                    ToggleContainerControlsForBrowser(true);
+
+                    //no further navigation right now
+                    e.Cancel = true;
+
+                    return;
+
+                }
+
+
                 var proc = new ExecuteProcess();
 
                 //use local or dev binary for gemget
@@ -453,7 +486,7 @@ namespace GemiNaut
 
 
         //navigate to a url but get some user input first
-        private void NavigateWithUserInput(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        private void NavigateGeminiWithInput(System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
 
             //position input box approx in middle of main window
@@ -479,6 +512,44 @@ namespace GemiNaut
                 //ToastNotify(b.ToString());
 
                 BrowserControl.Navigate(b.ToString());
+            }
+            else
+            {
+                //dont do anything further with navigating the browser
+                e.Cancel = true;
+            }
+        }
+
+        //navigate to a url but get some user input first
+        private void NavigateGopherWithInput(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+
+            //position input box approx in middle of main window
+
+            var windowCentre = WindowCentre(Application.Current.MainWindow);
+            var inputPrompt = "Input request from Gopher server\n\n" +
+                "  " + e.Uri.Host + e.Uri.LocalPath.ToString() + "\n\n" +
+                "Please provide your input:";
+
+            string input = Interaction.InputBox(inputPrompt, "Server input request", "", windowCentre.Item1, windowCentre.Item2);
+
+            if (input != "")
+            {
+                //encode the query
+                var b = new UriBuilder();
+                b.Scheme = e.Uri.Scheme;
+                b.Host = e.Uri.Host;
+                if (e.Uri.Port != -1) { b.Port = e.Uri.Port; }
+                b.Path = e.Uri.LocalPath;
+
+
+                //!%22%C2%A3$%25%5E&*()_+1234567890-=%7B%7D:@~%3C%3E?[];'#,./
+
+                //use an escaped tab then the content
+                var query = b.ToString() + "%09" + System.Uri.EscapeDataString(input);      //escape the query result;
+                //ToastNotify(query);
+
+                BrowserControl.Navigate(query);
             }
             else
             {
@@ -653,9 +724,13 @@ namespace GemiNaut
 
         private void GoToPage_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (!String.IsNullOrEmpty(txtUrl.Text))
+            if (TextIsUri(txtUrl.Text))
             {
                 BrowserControl.Navigate(txtUrl.Text);
+            }
+            else
+            {
+                ToastNotify("Not a valid URI: " + txtUrl.Text, ToastMessageStyles.Error);
             }
         }
 
@@ -864,7 +939,7 @@ namespace GemiNaut
             }
 
             //a new one
-            settings.Bookmarks += "\r\n" + "=> " + url + "\t" + doc.title;
+            settings.Bookmarks += "\r\n" + "=> " + url + "  " + doc.title;
             settings.Save();
             RefreshBookmarkMenu();
             ToastNotify("Bookmark added: " + (doc.title + " " + txtUrl.Text).Trim(), ToastMessageStyles.Success);
