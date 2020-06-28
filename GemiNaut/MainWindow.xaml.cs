@@ -358,12 +358,12 @@ namespace GemiNaut
                         //convert gophermap to text/gemini
 
                         //ToastNotify("Converting gophermap to " + gmiFile);
-                        GophertoGmi(gopherFile, gmiFile, GopherParseTypes.Map);
+                        GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Map);
                         parseFile = gmiFile;
 
                     } else if (stdOut.Contains("TXT"))
                     {
-                        GophertoGmi(gopherFile, gmiFile, GopherParseTypes.Text);
+                        GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Text);
                         parseFile = gmiFile;
 
                     }
@@ -616,7 +616,7 @@ namespace GemiNaut
         }
 
         //convert GMI to HTML for display and save to outpath
-        public void GophertoGmi(string gopherPath, string outPath, GopherParseTypes parseType)
+        public void GophertoGmi(string gopherPath, string outPath, string uri, GopherParseTypes parseType)
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
 
@@ -632,11 +632,12 @@ namespace GemiNaut
             //working with command line parameters, so we need to escape quotes
             //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
             //also hypens are also problematic, so we base64 encode the whole thing
-            var command = String.Format("\"{0}\" -cs \"{1}\" \\\"{2}\\\" \\\"{3}\\\"  ",
+            var command = String.Format("\"{0}\" -cs \"{1}\" \\\"{2}\\\" \\\"{3}\\\" \\\"{4}\\\"  ",
                 rebolPath,
                 scriptPath,
                 Base64Encode(gopherPath),
-                Base64Encode(outPath)
+                Base64Encode(outPath),
+                Base64Encode(uri)
 
                 );
 

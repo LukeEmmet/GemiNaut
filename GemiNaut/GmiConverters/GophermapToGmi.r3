@@ -36,7 +36,8 @@ arg-block:  system/options/args
 if (error? try [
     in-path:  to-rebol-file (to-string debase/base arg-block/1 64)
     out-path:  to-rebol-file (to-string debase/base arg-block/2 64)
-
+    uri:  to-rebol-file (to-string debase/base arg-block/3 64)
+    
     ]) [
     
     folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}

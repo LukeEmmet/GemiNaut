@@ -36,6 +36,7 @@ arg-block:  system/options/args
 if (error? try [
     in-path:  to-rebol-file (to-string debase/base arg-block/1 64)
     out-path:  to-rebol-file (to-string debase/base arg-block/2 64)
+    uri:  to-rebol-file (to-string debase/base arg-block/3 64)
 
     ]) [
     
@@ -43,14 +44,18 @@ if (error? try [
 
     in-path: to-rebol-file join folder {gophertext.txt}
     out-path: to-rebol-file join folder {gophertext.gmi}
+    uri: "foo.md"
      
 ]
 
 
+extension: last parse/all uri "."
 lines: read/lines in-path
 
 out: copy []
 
+;dont try to auto link in these text files (detected by URL file extension) as it will likely be wrong
+exclude-extensions: ["htm" "html" "md" "gmi" "gemini"]
 
 foreach line lines [
         
@@ -62,73 +67,78 @@ foreach line lines [
     known-scheme: ["gopher://" | "gemini://" | "http://" | "https://" ]
     digit: charset [#"0" - #"9"]
     
-    result: any [
-       
-       ;lines of form [label] url, common form used by phloggers
-       if (parse trimmed-line [ "[" copy label thru "]" thru whitespace to known-scheme copy url to end]) [
-           rejoin [
-                "=> " url " " trimmed-line
-            ]
-       ]
-
-    ;lines of form 1: url or 1. url
-       if (parse trimmed-line [ some digit ["." | ":"  ]  thru whitespace to known-scheme copy url to end]) [
-            rejoin [
-                "=> " url " " trimmed-line
-            ]
-       ]
-       
-       ;pseudo bullets e.g. underneath gopher://gopher.floodgap.com/1/feeds/wikinews
-       if (parse trimmed-line [  ["-"  | "*" ]  thru whitespace to known-scheme copy url to end]) [
-            rejoin [
-                "=> " url " " url
-            ]
-       ]
-
-
-    ;lines of foo URL: url, e.g. underneath gopher://gopher.floodgap.com/1/feeds/wikinews
-       if (parse trimmed-line [ thru " URL:"  thru whitespace to known-scheme copy url to end]) [
-           rejoin [
-                "=> " url " " trimmed-line
-            ]
-       ]
-       
-           ;lines of Original Article: url, e.g. underneath gopher://gopherpedia.com
-       if (parse trimmed-line [ "Original Article:"  thru whitespace to known-scheme copy url to end]) [
-           probe rejoin [
-                "=> " url " " trimmed-line
-            ]
-       ]
-       
-      ;lines of form: url, quite common
-       if (parse trimmed-line [known-scheme copy url to end])  and (1 = length? (parse/all trimmed-line " ") )[
-            rejoin [
-                "=> " trimmed-line " " trimmed-line
-            ]       
-       ]
-       
-      ;lines of the form "<url>", e.g. gopher://gopher.floodgap.com/0/feeds/tidbits/2008/Aug/25/5 and similar
-      if (parse trimmed-line ["<" to known-scheme copy url to ">" to end])  and (1 = length? (parse/all trimmed-line " ") )[
-           either (trimmed-line = rejoin ["<" url ">" ]) [
+    either none? find exclude-extensions extension [
+    
+        result: any [
+           
+           ;lines of form [label] url, common form used by phloggers
+           if (parse trimmed-line [ "[" copy label thru "]" thru whitespace to known-scheme copy url to end]) [
                rejoin [
+                    "=> " url " " trimmed-line
+                ]
+           ]
+
+        ;lines of form 1: url or 1. url
+           if (parse trimmed-line [ some digit ["." | ":"  ]  thru whitespace to known-scheme copy url to end]) [
+                rejoin [
+                    "=> " url " " trimmed-line
+                ]
+           ]
+           
+           ;pseudo bullets e.g. underneath gopher://gopher.floodgap.com/1/feeds/wikinews
+           if (parse trimmed-line [  ["-"  | "*" ]  thru whitespace to known-scheme copy url to end]) [
+                rejoin [
                     "=> " url " " url
+                ]
+           ]
+
+
+        ;lines of foo URL: url, e.g. underneath gopher://gopher.floodgap.com/1/feeds/wikinews
+           if (parse trimmed-line [ thru " URL:"  thru whitespace to known-scheme copy url to end]) [
+               rejoin [
+                    "=> " url " " trimmed-line
+                ]
+           ]
+           
+               ;lines of Original Article: url, e.g. underneath gopher://gopherpedia.com
+           if (parse trimmed-line [ "Original Article:"  thru whitespace to known-scheme copy url to end]) [
+               probe rejoin [
+                    "=> " url " " trimmed-line
+                ]
+           ]
+           
+          ;lines of form: url, quite common
+           if (parse trimmed-line [known-scheme copy url to end])  and (1 = length? (parse/all trimmed-line " ") )[
+                rejoin [
+                    "=> " trimmed-line " " trimmed-line
                 ]       
-            ] [
-                gopher-escape line
-            ]
-       ]
+           ]
+           
+          ;lines of the form "<url>", e.g. gopher://gopher.floodgap.com/0/feeds/tidbits/2008/Aug/25/5 and similar
+          if (parse trimmed-line ["<" to known-scheme copy url to ">" to end])  and (1 = length? (parse/all trimmed-line " ") )[
+               either (trimmed-line = rejoin ["<" url ">" ]) [
+                   rejoin [
+                        "=> " url " " url
+                    ]       
+                ] [
+                    gopher-escape line
+                ]
+           ]
 
 
 
-       ;could markdown headers through like this, but gopher does not have this convention really
-       ;so currently disabled, as it could spuriously pick up other lines
-       ;if (first-word = "#") [line]
-       ;if (first-word = "##") [line]
-       ;if (first-word = "###") [line]
-       
-       ;otherwise...
-       gopher-escape line    ;effectively escapes the content from further processing, is removed by GmiToHTML
-       
+           ;could markdown headers through like this, but gopher does not have this convention really
+           ;so currently disabled, as it could spuriously pick up other lines
+           ;if (first-word = "#") [line]
+           ;if (first-word = "##") [line]
+           ;if (first-word = "###") [line]
+           
+           ;otherwise...
+           gopher-escape line    ;effectively escapes the content from further processing, is removed by GmiToHTML
+           
+        ]
+    ] [
+           result: gopher-escape line    ;effectively escapes the content from further processing, is removed by GmiToHTML
     ]
 
     append out result
