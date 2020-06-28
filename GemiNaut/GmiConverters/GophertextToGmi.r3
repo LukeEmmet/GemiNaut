@@ -60,21 +60,64 @@ foreach line lines [
     
     whitespace: [" " | "^-"]
     known-scheme: ["gopher://" | "gemini://" | "http://" | "https://" ]
+    digit: charset [#"0" - #"9"]
     
     result: any [
        
+       ;lines of form [label] url, common form used by phloggers
        if (parse trimmed-line [ "[" copy label thru "]" thru whitespace to known-scheme copy url to end]) [
            rejoin [
                 "=> " url " " trimmed-line
             ]
        ]
-       
 
+    ;lines of form 1: url or 1. url
+       if (parse trimmed-line [ some digit ["." | ":"  ]  thru whitespace to known-scheme copy url to end]) [
+            rejoin [
+                "=> " url " " trimmed-line
+            ]
+       ]
+       
+       ;pseudo bullets e.g. underneath gopher://gopher.floodgap.com/1/feeds/wikinews
+       if (parse trimmed-line [  ["-"  | "*" ]  thru whitespace to known-scheme copy url to end]) [
+            rejoin [
+                "=> " url " " url
+            ]
+       ]
+
+
+    ;lines of foo URL: url, e.g. underneath gopher://gopher.floodgap.com/1/feeds/wikinews
+       if (parse trimmed-line [ thru " URL:"  thru whitespace to known-scheme copy url to end]) [
+           rejoin [
+                "=> " url " " trimmed-line
+            ]
+       ]
+       
+           ;lines of Original Article: url, e.g. underneath gopher://gopherpedia.com
+       if (parse trimmed-line [ "Original Article:"  thru whitespace to known-scheme copy url to end]) [
+           probe rejoin [
+                "=> " url " " trimmed-line
+            ]
+       ]
+       
+      ;lines of form: url, quite common
        if (parse trimmed-line [known-scheme copy url to end])  and (1 = length? (parse/all trimmed-line " ") )[
             rejoin [
                 "=> " trimmed-line " " trimmed-line
             ]       
        ]
+       
+      ;lines of the form "<url>", e.g. gopher://gopher.floodgap.com/0/feeds/tidbits/2008/Aug/25/5 and similar
+      if (parse trimmed-line ["<" to known-scheme copy url to ">" to end])  and (1 = length? (parse/all trimmed-line " ") )[
+           either (trimmed-line = rejoin ["<" url ">" ]) [
+               rejoin [
+                    "=> " url " " url
+                ]       
+            ] [
+                gopher-escape line
+            ]
+       ]
+
 
 
        ;could markdown headers through like this, but gopher does not have this convention really
