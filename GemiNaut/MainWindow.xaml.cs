@@ -19,6 +19,9 @@ using System.Web;
 using GemiNaut.Properties;
 using mshtml;
 using System.Net;
+using GemiNaut.Response;
+
+
 
 namespace GemiNaut
 {
@@ -178,16 +181,21 @@ namespace GemiNaut
                 File.Delete(htmlFile);
 
                 //use insecure flag as gemget does not check certs correctly in current version
-                var command = string.Format("\"{0}\" -o \"{1}\" \"{2}\"", gemGet, gmiFile, fullQuery);
+                var command = string.Format("\"{0}\" -h -o \"{1}\" \"{2}\"", gemGet, gmiFile, fullQuery);
 
                 var result = proc.ExecuteCommand(command, true, true);
 
+                var geminiResponse = new GemiNaut.Response.GeminiResponse(fullQuery);
+
+                geminiResponse.ParseGemGet(result.Item2);
+
+                //ToastNotify(geminiResponse.Status + " " + geminiResponse.Meta);
+
                 if (File.Exists(gmiFile))
                 {
-                    var regexDetectRedirect = new Regex(@"\*\*\* Redirected to (.*) \*\*\*");
-                    if (regexDetectRedirect.IsMatch(result.Item2))
+                    if (geminiResponse.Redirected)
                     {
-                        var redirectUri = regexDetectRedirect.Match(result.Item2).Groups[1].Value;
+                        var redirectUri = geminiResponse.FinalUrl;
 
                         if (redirectUri.Substring(0, 9) != "gemini://")
                         {
@@ -255,37 +263,32 @@ namespace GemiNaut
                     ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, e);
 
                 }
+                else if (geminiResponse.Status == 10 || geminiResponse.Status == 11)
+                {
+
+                    //needs input
+
+                    ToggleContainerControlsForBrowser(true);
+
+                    NavigateGeminiWithInput(e, geminiResponse.Meta);
+                    
+
+                } else if (geminiResponse.Status == 50 || geminiResponse.Status == 51) {
+
+                    ToastNotify("Page not found (status 51)\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
+                }
                 else
                 {
-                    //try to parse the gemget error. This can let us know whether:
-                    // - page needs a query parameter,
-                    // - page not found
-                    //(these messages are obviously specific to gemget)
-                    var regexRequiresInput = new Regex(@"\*\*\*.*You should make the request manually with a URL query. \*\*\*");
-                    var regexNotFound = new Regex(@"\*\*\*.*returned status 51, skipping. \*\*\*");
-
-                    ToggleContainerControlsForBrowser(true);
-
-                    if (regexRequiresInput.IsMatch(result.Item3))
-                    {
-                        NavigateGeminiWithInput(e);
-                    }
-                    else if (regexNotFound.IsMatch(result.Item3))
-                    {
-                        ToastNotify("Page not found (status 51)\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
-                    }
-                    else
-                    {
-                        //some othe error - show to the user for info
-                        ToastNotify(String.Format("Invalid request or server not found: \n\n{0} \n(gemget exit code: {1})", result.Item3, result.Item1), ToastMessageStyles.Error);
-                    }
-
-                    ToggleContainerControlsForBrowser(true);
-
-                    //no further navigation right now
-                    e.Cancel = true;
-
+                    //some othe error - show to the user for info
+                    ToastNotify(String.Format("Invalid request or server not found: \n\n{0} \n(gemget exit code: {1})", result.Item3, result.Item1), ToastMessageStyles.Error);
                 }
+
+                ToggleContainerControlsForBrowser(true);
+
+                //no further navigation right now
+                e.Cancel = true;
+
+
 
             }
 
@@ -293,10 +296,10 @@ namespace GemiNaut
             {
 
                 //check if it is a query selector without a parameter
-                if (!e.Uri.OriginalString.Contains("%09") && e.Uri.PathAndQuery.StartsWith("/7/") )
+                if (!e.Uri.OriginalString.Contains("%09") && e.Uri.PathAndQuery.StartsWith("/7/"))
                 {
                     NavigateGopherWithInput(e);
-                   
+
                     ToggleContainerControlsForBrowser(true);
 
                     //no further navigation right now
@@ -354,7 +357,7 @@ namespace GemiNaut
                 {
                     string parseFile;
 
-                    if (stdOut.Contains("DIR") || stdOut.Contains("QRY") ) {
+                    if (stdOut.Contains("DIR") || stdOut.Contains("QRY")) {
                         //convert gophermap to text/gemini
 
                         //ToastNotify("Converting gophermap to " + gmiFile);
@@ -376,15 +379,27 @@ namespace GemiNaut
 
                     }
 
-                    var settings = new Settings();
-                    var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+                    if (!File.Exists(gmiFile))
+                    {
+                        ToastNotify("Did not create expected GMI file for " + fullQuery + " in " + gmiFile, ToastMessageStyles.Error);
+                        ToggleContainerControlsForBrowser(true);
+                        e.Cancel = true;
 
-                    var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
-                    ShowUrl(fullQuery, parseFile, htmlFile, userThemeBase, e);
+                    }
+                    else
+                    {
+                        var settings = new Settings();
+                        var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+
+                        var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
+
+                        ShowUrl(fullQuery, parseFile, htmlFile, userThemeBase, e);
+
+                    }
 
                 }
-                
+
 
             }
 
@@ -455,11 +470,12 @@ namespace GemiNaut
             }
 
             //create the html file
-            GmiToHtml(gmiFile, htmlFile, sourceUrl, themePath);
+            var result = GmiToHtml(gmiFile, htmlFile, sourceUrl, themePath);
 
             if (!File.Exists(htmlFile))
             {
-                ToastNotify("GMI converter could not create display content for " + sourceUrl, ToastMessageStyles.Error);
+                ToastNotify("GMIToHTML did not create content for " + sourceUrl + "\n\n" + "File: " + gmiFile, ToastMessageStyles.Error);
+
                 ToggleContainerControlsForBrowser(true);
                 e.Cancel = true;
             }
@@ -486,7 +502,7 @@ namespace GemiNaut
 
 
         //navigate to a url but get some user input first
-        private void NavigateGeminiWithInput(System.Windows.Navigation.NavigatingCancelEventArgs e)
+        private void NavigateGeminiWithInput(System.Windows.Navigation.NavigatingCancelEventArgs e, string message)
         {
 
             //position input box approx in middle of main window
@@ -494,7 +510,7 @@ namespace GemiNaut
             var windowCentre = WindowCentre(Application.Current.MainWindow);
             var inputPrompt = "Input request from Gemini server\n\n" +
                 "  " + e.Uri.Host + e.Uri.LocalPath.ToString() + "\n\n" +
-                "Please provide your input:";
+                message;
 
             string input = Interaction.InputBox(inputPrompt, "Server input request", "", windowCentre.Item1, windowCentre.Item2);
 
@@ -584,7 +600,7 @@ namespace GemiNaut
         }
 
         //convert GMI to HTML for display and save to outpath
-        public void GmiToHtml (string gmiPath, string outPath, string uri, string theme)
+        public Tuple<int, string, string> GmiToHtml (string gmiPath, string outPath, string uri, string theme)
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
 
@@ -597,8 +613,8 @@ namespace GemiNaut
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
             //working with command line parameters, so we need to escape quotes
             //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
-            //also hypens are also problematic, so we base64 encode the whole thing
-            var command = String.Format("\"{0}\" -cs \"{1}\" \\\"{2}\\\" \\\"{3}\\\" \\\"{4}\\\" \\\"{5}\\\" ", 
+            //also hypens are also problematic, so we base64 each param and unpack in the script
+            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" ",
                 rebolPath, 
                 scriptPath,
                 Base64Encode(gmiPath),
@@ -611,28 +627,27 @@ namespace GemiNaut
             var execProcess = new ExecuteProcess();
 
             var result = execProcess.ExecuteCommand(command);
-            
 
+            return (result);
         }
 
-        //convert GMI to HTML for display and save to outpath
+        //convert GopherText to GMI and save to outpath
         public void GophertoGmi(string gopherPath, string outPath, string uri, GopherParseTypes parseType)
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
 
-            //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
-            //otherwise we use the development ones which are version controlled
             var parseScript = (parseType == GopherParseTypes.Map) ? "GophermapToGmi.r3" : "GophertextToGmi.r3";
 
+            //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
+            //otherwise we use the development ones which are version controlled
             var rebolPath = LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
             var scriptPath = LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", parseScript);
-
-
+            
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
             //working with command line parameters, so we need to escape quotes
             //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
-            //also hypens are also problematic, so we base64 encode the whole thing
-            var command = String.Format("\"{0}\" -cs \"{1}\" \\\"{2}\\\" \\\"{3}\\\" \\\"{4}\\\"  ",
+            //also hypens are also problematic, so we base64 each parameter and unpack it in the script
+            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" ",
                 rebolPath,
                 scriptPath,
                 Base64Encode(gopherPath),
@@ -645,6 +660,7 @@ namespace GemiNaut
 
             var result = execProcess.ExecuteCommand(command);
 
+            Debug.Print(command);
 
         }
         public enum ToastMessageStyles
@@ -857,7 +873,7 @@ namespace GemiNaut
             }
             catch (Exception e)
             {
-                //ignore
+                ToastNotify(e.Message, ToastMessageStyles.Error);
             }
         }
 

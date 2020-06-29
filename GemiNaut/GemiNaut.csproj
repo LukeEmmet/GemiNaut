@@ -71,6 +71,7 @@
     <Compile Include="Bookmarks.xaml.cs">
       <DependentUpon>Bookmarks.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GeminiResponse.cs" />
     <Compile Include="ObservableObject.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="SimpleLogger.cs" />
