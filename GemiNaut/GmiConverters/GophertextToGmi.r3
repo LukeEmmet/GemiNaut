@@ -33,24 +33,28 @@ do load %gopher-utils.r3
 
 arg-block:  system/options/args
 
-if (error? try [
+either not none? arg-block [
     in-path:  to-rebol-file (to-string debase/base arg-block/1 64)
     out-path:  to-rebol-file (to-string debase/base arg-block/2 64)
-    uri:  to-rebol-file (to-string debase/base arg-block/3 64)
+    
+    uri:  to-string debase/base arg-block/3 64
 
-    ]) [
+] [
     
     folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}
 
     in-path: to-rebol-file join folder {gophertext.txt}
     out-path: to-rebol-file join folder {gophertext.gmi}
-    uri: "foo.md"
+    uri: "foomd"
+    
+;    in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_fkih3dqz.gj1\0e2734cc9c572d7221c9d09a6f711063.txt}
      
 ]
 
 
+
 extension: last parse/all uri "."
-lines: read/lines in-path
+lines: read/lines  in-path
 
 out: copy []
 
@@ -71,7 +75,7 @@ foreach line lines [
     
         result: any [
            
-           ;lines of form [label] url, common form used by phloggers
+           ;lines of form [label] url, common form used by phloggers, also matches [3] url forms
            if (parse trimmed-line [ "[" copy label thru "]" thru whitespace to known-scheme copy url to end]) [
                rejoin [
                     "=> " url " " trimmed-line
@@ -79,9 +83,11 @@ foreach line lines [
            ]
 
         ;lines of form 1: url or 1. url
-           if (parse trimmed-line [ some digit ["." | ":"  ]  thru whitespace to known-scheme copy url to end]) [
-                rejoin [
-                    "=> " url " " trimmed-line
+           if (parse trimmed-line [  thru some digit ["." | ":"  ]  thru whitespace to known-scheme copy url to end]) [
+                
+                parse trimmed-line [to digit copy label to ["." | ":"] to end ]
+                 rejoin [
+                    "=> " url " [" label "] " url       ;normalise in square brackets, e.g. 3. url -> [3] url
                 ]
            ]
            
@@ -102,7 +108,7 @@ foreach line lines [
            
                ;lines of Original Article: url, e.g. underneath gopher://gopherpedia.com
            if (parse trimmed-line [ "Original Article:"  thru whitespace to known-scheme copy url to end]) [
-               probe rejoin [
+                rejoin [
                     "=> " url " " trimmed-line
                 ]
            ]
@@ -151,4 +157,5 @@ foreach line out [
 ]
 
 ;save to final location
-write out-path  out-string
+write  out-path  out-string
+
