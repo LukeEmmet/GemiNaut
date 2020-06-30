@@ -33,7 +33,7 @@ do load %gopher-utils.r3
 
 arg-block:  system/options/args
 
-if (error? try [
+either not none? arg-block [
     in-path:  to-rebol-file (to-string debase/base arg-block/1 64)
     out-path:  to-rebol-file (to-string debase/base arg-block/2 64)
     uri:   (to-string debase/base arg-block/3 64)
@@ -41,8 +41,8 @@ if (error? try [
 
         ;uri: "gemini://gemini.circumlunar.space/"
 
-    ]) [
-    
+  ] [
+
     folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}
 
     in-path: to-rebol-file join folder {test1.gmi}
@@ -53,18 +53,20 @@ if (error? try [
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\9fdfcb2ef4244d6821091d62e3a0e06a.gmi}
    
-    in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_g1erlqb5.ivb\fa05d16b14d60da41efc204acf7e20ac.txt}
+   ; in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_g1erlqb5.ivb\fa05d16b14d60da41efc204acf7e20ac.txt}
      
 ]
 
 
-uri-object:   decode-url uri
+uri-object:   decode-url  uri
+page-scheme: (to-word uri-object/scheme)
 
 ;---determine an theming identity hash for this site based on its url, to be used for identikon
 ;---and textured "fabric" style background
 site-id: get-site-id uri-object
-uri-md5: lowercase copy/part at (mold checksum/method (to-binary site-id) 'md5) 3 32
-page-scheme: (to-word uri-object/scheme)
+theme-id: get-theme-id uri-object
+
+uri-md5: lowercase copy/part at (mold checksum/method (to-binary theme-id) 'md5) 3 32
 
 lines: read/lines in-path
 

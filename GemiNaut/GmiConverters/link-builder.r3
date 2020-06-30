@@ -27,6 +27,8 @@ REBOL [
 
 do load %utils.r3
 
+
+
 get-site-id: func [uri-object] [
 
     site-id: uri-object/host
@@ -77,6 +79,22 @@ get-site-id: func [uri-object] [
     
     site-id
 
+]
+
+get-theme-id: funct [uri-object] [
+    ;for the purposes of themeing, the theme id is same as site id except
+    ;/~user is treated as same as /users/user, for consistency
+    ;in case links are made to both uris
+    page-scheme: (to-word uri-object/scheme)
+
+    site-id: copy get-site-id uri-object
+    replace/all site-id  "/~" "/users/"     
+    
+    if page-scheme = 'gopher [
+        replace site-id "/1/" "/"       ;dont use leading item type to drive the theme id - now the user gets same theme in gemini and gopher on the same server
+    ]
+    
+    :site-id
 ]
 
 build-link: func [ uri-object link-part] [

@@ -43,7 +43,8 @@ either not none? arg-block [
 
     in-path: to-rebol-file join folder {gophermap.txt}
     out-path: to-rebol-file join folder {gophermap.gmi}
-     
+     uri: "gopher://foo/"
+     in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_zyqy1s2x.xru\9f00ad7ca312df9bbb27c8b5f7fa3188.txt}
 ]
 
 
@@ -56,14 +57,9 @@ unsupported-selectors: "8+T2"
 binary-selectors: "4569gI;d"
 supported-link-selectors: "017"     ;text, gophermap and query only
 
-extract-url: funct [gopher-field] [
-    
-    any [
-        if ("/URL:" = take-left gopher-field 5) [take-from gopher-field 6]
-        if ("URL:" = take-left gopher-field 4) [take-from gopher-field 5]
-        gopher-field
-    ]
-]
+
+
+append out join "# " gopher-uri-to-title uri false  ;get a nice title without trimming any trailing extension since this is a map
 
 foreach line lines [
     

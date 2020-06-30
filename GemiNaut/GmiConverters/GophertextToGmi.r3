@@ -45,21 +45,23 @@ either not none? arg-block [
 
     in-path: to-rebol-file join folder {gophertext.txt}
     out-path: to-rebol-file join folder {gophertext.gmi}
-    uri: "foomd"
+    uri: "gopher://test/foomd/hello-wrld"
     
 ;    in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_fkih3dqz.gj1\0e2734cc9c572d7221c9d09a6f711063.txt}
      
 ]
 
 
-
 extension: last parse/all uri "."
+
 lines: read/lines  in-path
 
 out: copy []
 
 ;dont try to auto link in these text files (detected by URL file extension) as it will likely be wrong
 exclude-extensions: ["htm" "html" "md" "gmi" "gemini"]
+
+append out join "# " gopher-uri-to-title uri true  ;get a nice title  trimming off a trailing extension if necessary
 
 foreach line lines [
         
@@ -73,17 +75,33 @@ foreach line lines [
     
     either none? find exclude-extensions extension [
     
+        ;---probably these could be simplified further...
         result: any [
            
            ;lines of form [label] url, common form used by phloggers, also matches [3] url forms
            if (parse trimmed-line [ "[" copy label thru "]" thru whitespace to known-scheme copy url to end]) [
-               rejoin [
-                    "=> " url " " trimmed-line
+                either  (1 = length? (parse/all url " ")) [
+                    rejoin [
+                        "=> " url " " trimmed-line
+                    ] 
+                ] [
+                    gopher-escape line
+                ]
+           ]
+
+           ;lines of form [label]url, common form used by phloggers, also matches [3]url forms
+           if (parse trimmed-line [ "[" copy label to "]"  thru "]"  to known-scheme copy url to end]) [
+                either  (1 = length? (parse/all url " ")) [
+                    rejoin [
+                        "=> " url " [" label "] " url
+                    ]
+                ] [
+                    gopher-escape line                
                 ]
            ]
 
         ;lines of form 1: url or 1. url
-           if (parse trimmed-line [  thru some digit ["." | ":"  ]  thru whitespace to known-scheme copy url to end]) [
+           if (parse trimmed-line [  digit ["." | ":"  ]  thru whitespace to known-scheme copy url to end]) [
                 
                 parse trimmed-line [to digit copy label to ["." | ":"] to end ]
                  rejoin [
@@ -91,6 +109,23 @@ foreach line lines [
                 ]
            ]
            
+        ;lines of form nn: url or 1nn. url
+           if (parse trimmed-line [   digit  digit ["." | ":"  ]  thru whitespace to known-scheme copy url to end]) [
+                
+                parse trimmed-line [to digit copy label to ["." | ":"] to end ]
+                 rejoin [
+                    "=> " url " [" label "] " url       ;normalise in square brackets, e.g. 3. url -> [3] url
+                ]
+           ]           
+
+           if (parse trimmed-line [ digit  digit  digit ["." | ":"  ]  thru whitespace to known-scheme copy url to end]) [
+                
+                parse trimmed-line [to digit copy label to ["." | ":"] to end ]
+                 rejoin [
+                    "=> " url " [" label "] " url       ;normalise in square brackets, e.g. 3. url -> [3] url
+                ]
+           ]           
+
            ;pseudo bullets e.g. underneath gopher://gopher.floodgap.com/1/feeds/wikinews
            if (parse trimmed-line [  ["-"  | "*" ]  thru whitespace to known-scheme copy url to end]) [
                 rejoin [

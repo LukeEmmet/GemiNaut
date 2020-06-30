@@ -25,4 +25,87 @@ gopher-unescape: funct [input] [
         :data
 ]
 
+extract-url: funct [gopher-field] [
+    
+    ;both seen in the wild, second and third forms are more common though
+    any [
+        if ("/URL:" = take-left gopher-field 5) [take-from gopher-field 6]
+        if ("URL:" = take-left gopher-field 4) [take-from gopher-field 5]
+        gopher-field
+    ]
+]
 
+title-case: funct [text] [
+    new-title: join (uppercase take-left text 1) (take-from text 2)
+
+]
+
+
+gopher-uri-to-title: funct [uri trim-extension] [
+    ;a method to try to work out the nicest looking
+    ;title based on the URI only. Use the last segment if not very short, without extension, as the basis
+    ;otherwise use the domain
+        
+    internal-selector:  ["0" | "1" | "7" | "3"] 
+    
+    
+    either ( parse uri [thru "gopher://" copy domain to "/" thru "/"  internal-selector copy path to end]) [
+    
+        replace/all  path "%09" "/"  ;so search queries pick up the query
+        replace/all  path "%3F" "/"  ;so search queries pick up the query
+        replace/all  path "?" "/"  ;so search queries pick up the query
+        replace/all  path "~" "users/"  ;normalise user name in path to just pick out the name
+        
+        if ("/" = take-left path 1) [path: take-from path 2]
+        
+        either 1 < length? path [
+            last-segment: last (parse/all path "/")
+            
+            new-title: copy last-segment
+            
+            ;remove txt extensions only - others may be informative
+            if trim-extension and (1 <  length? parse/all new-title ".") [
+                if "txt" = last parse/all new-title "." [
+                    new-title: block-join  (head remove-last parse new-title ".") "."
+                ]
+            ]
+        
+            ;if title is of length 4 or less, use the whole path
+            either 5 > length? new-title [            
+                new-title: reform parse/all path ":/_-."    
+            ]  [
+                new-title: reform parse/all new-title " -_:"
+            ]
+            
+            ;--if title still v short (short path, no file name) just use the domain
+            if 3 > length? new-title [new-title: domain]
+        ] [
+            new-title: domain
+        ]
+    ] [
+        ;top level domain only
+        if not parse uri [thru "gopher://" copy domain to "/" to end] [
+            parse uri [thru "gopher://" copy domain to end]
+        ]
+        new-title: domain
+    ]
+    
+    
+    replace/all new-title "%20" " "
+    title-case new-title
+    
+]
+
+tests: [
+    "gopher://circumlunar.space/1/~solderpunk/phlog"
+    "gopher://circumlunar.space/"
+    "gopher://gopher.floodgap.com/7/v2/vs%09test"
+    "gopher://tilde.team/1/"
+    "gopher://tilde.team"
+    "gopher://aussies.space/1/~brendantcc/"
+    "gopher://typed-hole.org/0/~julienxx/Log/lobste.rs.txt"
+    "gopher://sdf.org/1/users/julienxx/Lobste.rs"
+    ]
+
+;uncomment to test
+;foreach test tests [ print gopher-uri-to-title probe test true]
