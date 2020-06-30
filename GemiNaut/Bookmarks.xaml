@@ -15,8 +15,9 @@
 
         <TextBlock TextWrapping="Wrap" 
                    Padding="8" 
-                   Text="Edit your bookmark list in text/gemini format. Link entries are done as link lines beginning =&gt; " 
+                   Text="Edit your bookmark list in text/gemini format. Link entries are done as link lines beginning =&gt; Sections can be indicated with a line starting with of two or more hyphens or underscores " 
                    Grid.Row="0"></TextBlock>
+
 
         <TextBox Name="txtBookmarks"
                  Text="txtBookmarks"  

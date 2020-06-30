@@ -1030,15 +1030,25 @@ namespace GemiNaut
                 var bmMenu = new MenuItem();
 
                 var linkParts = ParseGeminiLink(line);
-                if (linkParts[0] != null)
+                if (TextIsUri(linkParts[0]))
                 {
                     bmMenu.CommandParameter = linkParts[0];
                     bmMenu.Header = linkParts[1];
+                    bmMenu.ToolTip = linkParts[0];
+
                     bmMenu.Click += mnuMenuBookmarksGo_Click;
 
                     mnuBookMarks.Items.Add(bmMenu);
 
-                } else
+                }
+                else if (line.Substring(0, 2) == "--")
+                {
+                    mnuBookMarks.Items.Add(new Separator());
+                }
+                else if (line.Substring(0, 2) == "__")
+                {
+                    mnuBookMarks.Items.Add(new Separator());
+                }
                 {
                     //anything else in the bookmarks file ignored for now
                 }

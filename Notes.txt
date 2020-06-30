@@ -48,6 +48,22 @@
 
 # Done
 
+* themeing - a user should now generally get the same theme on gopher as in gemini for the same domain
+* gopher page titles: only trim off extension for pages, not maps
+* common themeing for /~foo and /users/foo on the same domain
+* better feedback messages if content was not successfully converted
+* support search in gopher
+* check uri is valid before navigating to it
+* dont render content from gopher using gemini markup apart form links
+* autolink urls occupying a whole gopher text lines, with minor variants
+* gopher text wrapping - softwrap beyond 85 chars, otherwise fixed width
+* integrate gopher client based on go-gopher
+* update to use gemget 0.1.2
+* show server text in input prompt
+* tooltips in bookmarks list
+* separators between sections of bookmarks list with "--" or "__"
+* automatic title creation from url for gopher pages
+* support gopher:// protocol as well as gemini:// 
 * help pages now use text/gemini and have table of contents
 * about:// protocol with help files now dogfooded using local GMI files
 * tweaks and minor improvements to plain theme to get hanging indents on links and bullets
