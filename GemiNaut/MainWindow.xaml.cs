@@ -181,13 +181,14 @@ namespace GemiNaut
                 File.Delete(htmlFile);
 
                 //use insecure flag as gemget does not check certs correctly in current version
-                var command = string.Format("\"{0}\" -h -o \"{1}\" \"{2}\"", gemGet, gmiFile, fullQuery);
+                var command = string.Format("\"{0}\" --header -o \"{1}\" \"{2}\"", gemGet, gmiFile, fullQuery);
 
                 var result = proc.ExecuteCommand(command, true, true);
 
                 var geminiResponse = new GemiNaut.Response.GeminiResponse(fullQuery);
 
-                geminiResponse.ParseGemGet(result.Item2);
+                geminiResponse.ParseGemGet(result.Item2);   //parse stdout   
+                geminiResponse.ParseGemGet(result.Item3);   //parse stderr
 
                 //ToastNotify(geminiResponse.Status + " " + geminiResponse.Meta);
 

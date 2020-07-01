@@ -38,44 +38,40 @@ namespace GemiNaut.Response
 
                 if (line != "")
                 {
-                    if (s.Substring(0, 3) == "***")
+
+                    if (line.Substring(0, 8) == "Header: ")
                     {
-                        //marker of gemget response, trim off containing *** on each end and white space
-                        line = s.Substring(3, line.Length - 6).Trim();
+                        line = line.Substring(8);
 
-                        if (line.Substring(0, 8) == "Header: ")
+                        string[] headerSplit = line.Split(new Char[] { ' ', '\t' }, 2);
+
+                        Status = Convert.ToInt32(headerSplit[0]);
+                        Meta = headerSplit[1].Trim();
+
+                        if (Status == 30 || Status == 31)
                         {
-                            line = line.Substring(8);
-
-                            string[] headerSplit = line.Split(new Char[] { ' ', '\t' }, 2);
-
-                            Status = Convert.ToInt32(headerSplit[0]);
-                            Meta = headerSplit[1].Trim();
-
-                            if (Status == 30 || Status == 31)
-                            {
-                                //is redirected.
-                                FinalUrl = Meta;
-                                Redirected = true;
-                            }
-
-                        } else if (line.Substring(0, 7) == "Error: ") 
-                        {
-                            Errors.Add(line.Substring(7));
-                        } else if (line.Substring(0, 6) == "Info: ") 
-                        {
-                            Info.Add(line.Substring(6));
-                        } else
-                        {
-                            Info.Add(line);
+                            //is redirected.
+                            FinalUrl = Meta;
+                            Redirected = true;
                         }
 
                     }
-                    Info.Add(s.Trim());
+                    else if (line.Substring(0, 7) == "Error: ")
+                    {
+                        Errors.Add(line.Substring(7));
+                    }
+                    else if (line.Substring(0, 6) == "Info: ")
+                    {
+                        Info.Add(line.Substring(6));
+                    }
+                    else
+                    {
+                        Info.Add(line);
+                    }
                 }
+
+
             }
-
-
         }
     }
 }
