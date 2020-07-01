@@ -54,7 +54,7 @@ gopher-uri-to-title: funct [uri trim-extension] [
         replace/all  path "%09" "/"  ;so search queries pick up the query
         replace/all  path "%3F" "/"  ;so search queries pick up the query
         replace/all  path "?" "/"  ;so search queries pick up the query
-        replace/all  path "~" "users/"  ;normalise user name in path to just pick out the name
+        replace/all  path "/~" "/"  ;normalise user name in path to just pick out the name
         
         if ("/" = take-left path 1) [path: take-from path 2]
         
@@ -72,7 +72,19 @@ gopher-uri-to-title: funct [uri trim-extension] [
         
             ;if title is of length 4 or less, use the whole path
             either 5 > length? new-title [            
-                new-title: reform parse/all path ":/_-."    
+                new-title: path
+                
+                ;remove txt extensions only - others may be informative
+                if trim-extension and (1 <  length? parse/all new-title ".") [
+                    if "txt" = last parse/all new-title "." [
+                        new-title: block-join  (head remove-last parse new-title ".") "."
+                    ]
+                ]
+                
+                new-title: reform parse/all new-title ":/_-."    
+                
+
+
             ]  [
                 new-title: reform parse/all new-title " -_:"
             ]

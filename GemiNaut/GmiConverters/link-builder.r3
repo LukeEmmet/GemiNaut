@@ -83,12 +83,13 @@ get-site-id: func [uri-object] [
 
 get-theme-id: funct [uri-object] [
     ;for the purposes of themeing, the theme id is same as site id except
-    ;/~user is treated as same as /users/user, for consistency
+    ;/~foo is treated as same as /users/foo, for consistency
     ;in case links are made to both uris
     page-scheme: (to-word uri-object/scheme)
 
     site-id: copy get-site-id uri-object
     replace/all site-id  "/~" "/users/"     
+    replace/all site-id  "/users/users/" "/users/"      ;in case for some reason path was of the form /users/~foo
     
     if page-scheme = 'gopher [
         replace site-id "/1/" "/"       ;dont use leading item type to drive the theme id - now the user gets same theme in gemini and gopher on the same server
