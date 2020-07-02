@@ -48,6 +48,7 @@
 
 # Done
 
+* plain text content no longer rendered as text/gemini, but as plain text.
 * themeing - a user should now generally get the same theme on gopher as in gemini for the same domain
 * gopher page titles: only trim off extension for pages, not maps
 * common themeing for /~foo and /users/foo on the same domain

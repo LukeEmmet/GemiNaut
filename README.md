@@ -1,6 +1,6 @@
 # GemiNaut
 
-A user friendly client to browse Gemini from Windows.
+A user friendly client to browse Gemini (and Gopher) from Windows.
 
 Gemini is a radically simple protocol and text format for browsing on the Internet.
 For more information see <a href="https://gemini.circumlunar.space/">https://gemini.circumlunar.space/</a>
@@ -17,9 +17,10 @@ You can download a pre-built application for Windows from the <a href="https://w
 * Support bullet, heading and quote line styles
 * Flexible theming engine
 * Site based themes
-* Visually distinguish gemini from other links
+* Visually distinguish internal (gopher, gemini) vs external links (http, https etc)
 * Table of contents (Fabric theme)
 * Icon hints to common non textual content (images, audio, video, docs) 
+* Support both Gemini and Gopher protocol
 * View source
 
 # License 
