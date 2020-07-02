@@ -171,17 +171,19 @@ namespace GemiNaut
 
                 //uses .txt as extension so content loaded as text/plain not interpreted by the browser
                 //if user requests a view-source.
-                var gmiFile = sessionPath + "\\" + hash + ".txt";
+                var rawFile = sessionPath + "\\" + hash + ".txt";
+                var gmiFile = sessionPath + "\\" + hash + ".gmi";
                 var htmlFile = sessionPath + "\\" + hash + ".htm";
 
                 //delete txt file as GemGet seems to sometimes overwrite not create afresh
+                File.Delete(rawFile);
                 File.Delete(gmiFile);
 
                 //delete any existing html file to encourage webbrowser to reload it
                 File.Delete(htmlFile);
 
                 //use insecure flag as gemget does not check certs correctly in current version
-                var command = string.Format("\"{0}\" --header -o \"{1}\" \"{2}\"", gemGet, gmiFile, fullQuery);
+                var command = string.Format("\"{0}\" --header -o \"{1}\" \"{2}\"", gemGet, rawFile, fullQuery);
 
                 var result = proc.ExecuteCommand(command, true, true);
 
@@ -192,8 +194,27 @@ namespace GemiNaut
 
                 //ToastNotify(geminiResponse.Status + " " + geminiResponse.Meta);
 
-                if (File.Exists(gmiFile))
+                if (File.Exists(rawFile))
                 {
+
+                    if (geminiResponse.Meta.Contains("text/gemini"))
+                    {
+                        File.Copy(rawFile, gmiFile);
+
+                    } else
+                    {
+                        //convert plain text to a gemini version (wraps it in a preformatted section)
+                        var textToGmiResult = TextToGmi(rawFile, gmiFile);
+
+                        if (textToGmiResult.Item1 != 0)
+                        {
+                            ToastNotify("Could not render text as GMI: " + fullQuery, ToastMessageStyles.Error);
+                            ToggleContainerControlsForBrowser(true);
+                            e.Cancel = true;
+                            return;
+                        }
+
+                    }
                     if (geminiResponse.Redirected)
                     {
                         var redirectUri = geminiResponse.FinalUrl;
@@ -598,6 +619,37 @@ namespace GemiNaut
             return Directory.Exists(Path.Combine(startFolder, localFolder))
                 ? startFolder + localFolder
                 : Path.Combine(startFolder, devFolder);
+        }
+
+
+        //convert text to GMI for raw text
+        public Tuple<int, string, string> TextToGmi(string rawPath, string outPath)
+        {
+            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+
+            //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
+            //otherwise we use the development ones which are version controlled
+            var rebolPath = LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
+            var scriptPath = LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "TextAsIs.r3");
+
+
+            //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
+            //working with command line parameters, so we need to escape quotes
+            //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
+            //also hypens are also problematic, so we base64 each param and unpack in the script
+            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\"  ",
+                rebolPath,
+                scriptPath,
+                Base64Encode(rawPath),
+                Base64Encode(outPath)
+
+                );
+
+            var execProcess = new ExecuteProcess();
+
+            var result = execProcess.ExecuteCommand(command);
+
+            return (result);
         }
 
         //convert GMI to HTML for display and save to outpath

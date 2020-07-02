@@ -36,7 +36,7 @@ extract-url: funct [gopher-field] [
 ]
 
 title-case: funct [text] [
-    new-title: join (uppercase take-left text 1) (take-from text 2)
+   join (uppercase take-left text 1) (take-from text 2)
 
 ]
 
@@ -70,8 +70,8 @@ gopher-uri-to-title: funct [uri trim-extension] [
                 ]
             ]
         
-            ;if title is of length 4 or less, use the whole path
-            either 5 > length? new-title [            
+            ;if title is of length 3 or less, use the whole path
+            either 4 > length? new-title [            
                 new-title: path
                 
                 ;remove txt extensions only - others may be informative
@@ -83,8 +83,6 @@ gopher-uri-to-title: funct [uri trim-extension] [
                 
                 new-title: reform parse/all new-title ":/_-."    
                 
-
-
             ]  [
                 new-title: reform parse/all new-title " -_:"
             ]
