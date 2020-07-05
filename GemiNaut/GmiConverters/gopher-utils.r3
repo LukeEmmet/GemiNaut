@@ -70,8 +70,8 @@ gopher-uri-to-title: funct [uri trim-extension] [
                 ]
             ]
         
-            ;if title is of length 3 or less, use the whole path
-            either 4 > length? new-title [            
+            ;if title is of length 4 or less, use the whole path
+            either 5 > length? new-title [            
                 new-title: path
                 
                 ;remove txt extensions only - others may be informative
