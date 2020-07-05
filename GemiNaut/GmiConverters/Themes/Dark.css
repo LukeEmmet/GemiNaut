@@ -95,6 +95,10 @@ pre.inline {
 	font-family:Consolas;
 	font-size:0.9em;
 	line-height:1em;
+	overflow-x: auto;
+	overflow-y:hidden;
+	padding-bottom:1.3em;	/*to allow space for scroll bar to appear if necessary*/
+	padding-top:1.3em;	/*same as for bottom for visual balance*/
 }
 
 div.gemini-link {
