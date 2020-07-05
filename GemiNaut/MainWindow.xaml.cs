@@ -20,6 +20,7 @@ using GemiNaut.Properties;
 using mshtml;
 using System.Net;
 using GemiNaut.Response;
+using Jdenticon;
 
 
 
@@ -61,6 +62,7 @@ namespace GemiNaut
 
             _urlsByHash = new Dictionary<string, string>();
 
+            CopyAssets();
 
             RefreshBookmarkMenu();
 
@@ -72,6 +74,24 @@ namespace GemiNaut
             TickSelectedThemeMenu();
         }
 
+        private void CopyAssets()
+        {
+            var sessionPath = Session.Instance.SessionPath;
+            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+
+            var assetsTarget = Path.Combine(sessionPath, "Assets");
+
+            if (!Directory.Exists(assetsTarget)) { Directory.CreateDirectory(assetsTarget); }
+
+            var assetsFolder = LocalOrDevFolder(appDir, @"Themes\Assets", @"..\..\GmiConverters\Themes\Assets");
+
+            foreach (var file in Directory.GetFiles(assetsFolder))
+            {
+                File.Copy(file, Path.Combine(assetsTarget, Path.GetFileName(file)));
+            }
+
+
+        }
         private bool TextIsUri(string text)
         {
             Uri outUri;
@@ -90,6 +110,67 @@ namespace GemiNaut
                 {
                     ToastNotify("Not a valid URI: " + txtUrl.Text, ToastMessageStyles.Error);
                 }
+        }
+
+
+        static string GetSiteId(Uri uri)
+        {
+
+            var siteId = uri.Authority;
+
+            var pageScheme = uri.Scheme;
+
+            char[] array = new char[2];
+            array[0] = '/';
+            var pathParts = uri.LocalPath.Split(array);
+
+            var keepParts = new List<string>();
+
+            var count = 0;
+
+            //try to guess the user path, if any by looking for "/users/foo" or "/~foo"
+            if ((uri.LocalPath.Contains("/~")) || (uri.LocalPath.Contains("/users/")))
+            {
+                foreach (var pathPartOriginal in pathParts)
+                {
+
+                    var pathPart = pathPartOriginal;
+
+                    //special treatment of the first component of gopher paths - ensure site home is accessied as type 1
+                    //e.g. /1/foo/bar not /n/foo/bar even if n is the current page selector
+                    if (count == 1 && pageScheme == "gopher")
+                    {
+                        if (pathPart != "1") { pathPart = "1"; }
+                    }
+
+                    if (pathPart == "users")
+                    {
+                        if ("" != pathParts[count + 1].ToString())
+                        {
+                            keepParts.Add(pathPart);
+                            keepParts.Add(pathParts[count + 1].ToString());
+                        }
+                        break;
+                    }
+
+                    if (0 < pathPart.Length && pathPart.Substring(0, 1) == "~")
+                    {
+                        keepParts.Add(pathPart);
+                        break;
+                    }
+
+                    keepParts.Add(pathPart);
+
+                    count++;
+                }
+
+                var usePath = string.Join("/", keepParts.ToArray());
+
+                siteId = uri.Authority + usePath;
+            }
+
+            return (siteId);
+
         }
 
 
@@ -127,6 +208,68 @@ namespace GemiNaut
             DockLower.IsEnabled = toState;
             GridMain.IsEnabled = toState;
         }
+
+        private void CreateIdenticon(string identifier)
+        {
+
+            //these are fine tuned. Fabric should be not too light, as there is quite a bit of white space in the design
+
+             //identicon
+            var identiconId = identifier;
+            var identiconStyle = new IdenticonStyle
+            {
+                ColorLightness = Range.Create(0.22f, 0.75f),
+                GrayscaleLightness = Range.Create(0.52f, 0.7f),
+                GrayscaleSaturation = 0.10f,
+                ColorSaturation = 0.75f,
+                Padding = 0f
+            };
+
+            var identicon = Identicon.FromValue(identiconId, size: 80);
+            identicon.Style = identiconStyle;
+
+            if (!File.Exists(FabricImagePath(identiconId)))
+            {
+                identicon.SaveAsPng(FabricImagePath(identiconId));
+
+            }
+
+
+            //fabric
+            var fabricId = ReverseString(identifier);
+            var fabricStyle = new IdenticonStyle
+            {
+                ColorLightness = Range.Create(0.33f, 0.48f),
+                GrayscaleLightness = Range.Create(0.30f, 0.45f),
+                ColorSaturation = 0.7f,
+                GrayscaleSaturation = 0.7f,
+                Padding = 0f
+            };
+
+            var fabricIcon = Identicon.FromValue(fabricId, size: 13);
+            fabricIcon.Style = fabricStyle;
+
+            if (!File.Exists(FabricImagePath(fabricId))) {
+                fabricIcon.SaveAsPng(FabricImagePath(fabricId));
+
+            }
+
+
+        }
+
+        public static string ReverseString(string s)
+        {
+            char[] arr = s.ToCharArray();
+            Array.Reverse(arr);
+            return new string(arr);
+        }
+
+        private string FabricImagePath(string identifier)
+        {
+            var sessionPath = Session.Instance.SessionPath;
+            return (Path.Combine(sessionPath, identifier + ".png"));
+        }
+
         private void BrowserControl_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
@@ -151,10 +294,16 @@ namespace GemiNaut
 
             ToggleContainerControlsForBrowser(false);
 
+            var id = MD5Hash(GetSiteId(e.Uri));
+
+            CreateIdenticon(id); 
+
+
             if (e.Uri.Scheme == "gemini")
             {
 
-                //these are the only ones we "navigate" to. We do this by downloading the GMI content
+
+               //these are the only ones we "navigate" to. We do this by downloading the GMI content
                 //converting to HTML and then actually navigating to that.
 
                 var proc = new ExecuteProcess();
@@ -282,7 +431,7 @@ namespace GemiNaut
 
                     var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
-                    ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, e);
+                    ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, id, e);
 
                 }
                 else if (geminiResponse.Status == 10 || geminiResponse.Status == 11)
@@ -416,7 +565,7 @@ namespace GemiNaut
 
                         var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
-                        ShowUrl(fullQuery, parseFile, htmlFile, userThemeBase, e);
+                        ShowUrl(fullQuery, parseFile, htmlFile, userThemeBase, id, e);
 
                     }
 
@@ -462,7 +611,7 @@ namespace GemiNaut
                 if (File.Exists(helpFile))
                 {
                     File.Copy(helpFile, hashFile, true);
-                    ShowUrl(fullQuery, hashFile, htmlCreateFile, templateBaseName, e);
+                    ShowUrl(fullQuery, hashFile, htmlCreateFile, templateBaseName, id, e);
                 }
                 else
                 {
@@ -481,7 +630,18 @@ namespace GemiNaut
             }
         }
 
-        private void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        private string MD5Hash(string input)
+        {
+            string hash;
+            //regenerate the hashes using the redirected target url
+            using (MD5 md5 = MD5.Create())
+            {
+                hash = GetMd5Hash(md5, input);
+            }
+
+            return (hash);
+        }
+        private void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, string fabricId, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
 
             string hash;
@@ -492,7 +652,7 @@ namespace GemiNaut
             }
 
             //create the html file
-            var result = GmiToHtml(gmiFile, htmlFile, sourceUrl, themePath);
+            var result = GmiToHtml(gmiFile, htmlFile, sourceUrl, fabricId, themePath);
 
             if (!File.Exists(htmlFile))
             {
@@ -653,7 +813,7 @@ namespace GemiNaut
         }
 
         //convert GMI to HTML for display and save to outpath
-        public Tuple<int, string, string> GmiToHtml (string gmiPath, string outPath, string uri, string theme)
+        public Tuple<int, string, string> GmiToHtml (string gmiPath, string outPath, string uri, string themeId, string theme)
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
 
@@ -662,18 +822,22 @@ namespace GemiNaut
             var rebolPath = LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
             var scriptPath = LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "GmiToHtml.r3");
 
+            var identiconUri = new System.Uri(FabricImagePath(themeId));
+            var fabricUri = new System.Uri(FabricImagePath(ReverseString(themeId)));
 
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
             //working with command line parameters, so we need to escape quotes
             //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
             //also hypens are also problematic, so we base64 each param and unpack in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" ",
+            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\" ",
                 rebolPath, 
                 scriptPath,
                 Base64Encode(gmiPath),
                 Base64Encode(outPath),
                 Base64Encode(uri),
-                Base64Encode(theme)
+                Base64Encode(theme),
+                Base64Encode(identiconUri.AbsoluteUri),
+                Base64Encode(fabricUri.AbsoluteUri)
 
                 );
 
@@ -980,7 +1144,9 @@ namespace GemiNaut
 
         private void BrowserControl_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            ShowTitle(BrowserControl.Document);
+            var doc = (HTMLDocument)BrowserControl.Document;
+
+            ShowTitle(doc);
 
             //we need to turn on/off other elements so focus doesnt move elsewhere
             //in that case the keyboard events go elsewhere and you have to click 

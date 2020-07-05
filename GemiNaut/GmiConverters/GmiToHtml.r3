@@ -38,6 +38,8 @@ either not none? arg-block [
     out-path:  to-rebol-file (to-string debase/base arg-block/2 64)
     uri:   (to-string debase/base arg-block/3 64)
     theme:  to-rebol-file (to-string debase/base arg-block/4 64)
+    identicon-image: (to-string debase/base arg-block/5 64)
+    fabric-image: (to-string debase/base arg-block/6 64)
 
         ;uri: "gemini://gemini.circumlunar.space/"
 
@@ -48,6 +50,8 @@ either not none? arg-block [
     in-path: to-rebol-file join folder {test1.gmi}
     out-path: to-rebol-file join folder {test1.htm}
     uri: "gopher://gemini.circumlunar.space/0/users/foo/foo?.gz"
+   identicon-image: "https://fqz04mg9a6.execute-api.eu-west-1.amazonaws.com/Prod/api/identicon/identicon.png"
+    fabric-image: "https://fqz04mg9a6.execute-api.eu-west-1.amazonaws.com/Prod/api/identicon/fabric.png"
     theme: %Themes/Plain
     
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
@@ -448,6 +452,8 @@ replace/all theme-html "{{table-of-contents}}" table-of-contents-string
 replace/all theme-html "{{site-id}}" site-id
 replace/all theme-html "{{site-id-md5}}" uri-md5
 replace/all theme-html "{{site-id-md5-reversed}}" (reverse copy uri-md5)
+replace/all theme-html "{{identicon-image}}" identicon-image
+replace/all theme-html "{{fabric-image}}" fabric-image
 replace/all theme-html "{{content}}" out-string
 
 ;save to final location
