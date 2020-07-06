@@ -18,9 +18,10 @@ You can download a pre-built application for Windows from the <a href="https://w
 * Flexible theming engine
 * Site based themes
 * Visually distinguish internal (gopher, gemini) vs external links (http, https etc)
-* Table of contents (Fabric theme)
+* Table of contents (Fabric and Dark themes)
 * Icon hints to common non textual content (images, audio, video, docs) 
 * Support both Gemini and Gopher protocol
+* Autolinking of urls in Gopher text pages
 * View source
 
 # License 
@@ -38,6 +39,27 @@ Dark theme:
 ![Screenshot](GemiNaut/Docs/images/dark_theme.png)
 
 # History
+
+## 0.8.6, 6-Jul-2020
+
+GemiNaut 💓 Gopher
+
+* GemiNaut is now a gopher client as well as gemini
+* preformatted areas now have their own scroll bar and don't overflow the side of the content
+* update Fabric theme so it uses internally generated fabric and identicon (previous Fabric theme still available as "classic")
+* automatic linking of plain urls in gopher text files
+* automatic generation of page titles for gopher pages based on url
+* update to use latest gemget 0.1.3
+* theming engine will use same theme for the same user on gemini and gopher
+* gopher text is monospaced but will softwrap for longer lines > 85 chars
+* only display text/gemini as gemini content, otherwise use plain text preformatted rendering
+* make bookmarks window wider
+* show tooltips or urls for bookmark entries
+* better feedback messages if content cannot be displayed
+* check url entered into address bar is valid syntax before trying to navigate to it
+* support spacers in bookmarks list with lines of hyphens or underscores longer than two characters
+* minor improvements to themes
+* use a smaller border around placemarker icon when there is no TOC
 
 ## 0.8.5, 19-Jun-2020
 

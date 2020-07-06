@@ -17,6 +17,8 @@
 
 * quotation marks are being removed from bullets (maybe headings, links too)
 
+
+
 # Nice to have
 
 * File-Print menu
@@ -46,8 +48,12 @@
 * use EdgeHtml for rendering engine
 * page specifc deep linking e.g. foo.gmi#foo links to the foo heading in that doc
 
+
+
 # Done
 
+* maybe reinstate get-theme-id for theme normalisation - reimplement in c#
+* preformatted text areas now have their own scroll added when overflowed
 * plain text content no longer rendered as text/gemini, but as plain text.
 * themeing - a user should now generally get the same theme on gopher as in gemini for the same domain
 * gopher page titles: only trim off extension for pages, not maps

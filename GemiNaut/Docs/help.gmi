@@ -1,17 +1,23 @@
 # Help for GemiNaut
 
-GemiNaut is a user friendly GUI client for the Gemini protocol and content format by Luke Emmet. It aims to provide a comfortable and user friendly experience of Gemini on MS Windows.
+GemiNaut is a user friendly GUI client for the Gemini and Gopher protocols by Luke Emmet. It aims to provide a comfortable and user friendly experience of Gemini on MS Windows.
 
-In many ways it behaves just like a normal web browser, except it is for viewing gemini:// pages.
+In many ways it behaves just like a normal web browser, except it is for viewing gemini:// or gopher:// pages.
 
 * Send feedback to luke [at] marmaladefoo [dot] com
 
+GemiNaut has its own Gemini site:
+
+=> gemini://gemini.marmaladefoo.com/geminaut GemiNaut home page
+
 ### What is Gemini?
 
-Gemini is a protocol and text format designed to radically simplify the experience of writing and sharing hypertext content on the Internet:
+Gemini is a protocol and text format designed to radically simplify the experience of writing and sharing hypertext content on the Internet. 
 
 => gemini://gemini.circumlunar.space Gemini Project home
 => https://gemini.circumlunar.space Gemini Project home (www)
+
+Gopher is a simpler text and link based format that is one of the inspirations behind Gemini.
 
 ### Key Features of GemiNaut
 
@@ -19,11 +25,12 @@ Gemini is a protocol and text format designed to radically simplify the experien
 * Keyboard shortcuts wheelmouse scroll and zoom
 * Smooth content wrap and flow
 * Preformatted text, quotation, bullet and heading styling
-* Fast history navigation remembering page 
+* Fast history navigation remembering page scroll offset
 * Content theming engine - view the same content in different visual modes
 * Automatic site based themes - help to distinguish one site from another
-* Easily distinguish links outside of Gemini (e.g. to HTTP web servers) from the link style
+* Easily distinguish external links (e.g. to HTTP web servers) from the link style
 * View source
+* Auto-linking URLs in Gopher text files
 * Page based table of contents
 * Bookmarks
 
@@ -48,6 +55,7 @@ Gemini/GMI content from servers will be shown wrapped to your current window.
 GemiNaut has a number of rendering themes to present the content. This allows themes to be readily developed. These include:
 
 * Fabric (default) - a site-specific theme that shows each Gemini site with a slightly different visual theme - described below. It also shows a table of contents for those pages that have a heading structure.
+* Fabric (classic) - a previous Fabric theme that uses Gravatar for its identicons.
 * Dark - a variable font theme whose colours are inspired by dark themes of code editors.
 * Plain - a simple plain text theme, black text on a white background.
 * Terminal - a monospaced terminal theme - white text on a black background.
@@ -66,7 +74,7 @@ You can use one of the generic themes (e.g. Dark, Plain, Terminal) to view all c
 The Fabric theme provides a solution to this problem by automatically creating a unique theme for each Gemini site. Each site will be distinguished by:
 
 * Page background - a "fabric" unique to the current site, as if the page is laid out on a different fabric background, like a tablecloth.
-* Page marker - a unique pseudo-icon for each site in the top right hand corner. You can click the page marker to go to the "home" of each site.
+* Page marker - a unique placemarker icon for each site in the top right hand corner. You can click the page marker to go to the "home" of each site.
 
 Sites are identified as follows:
 
@@ -91,4 +99,16 @@ You can view the source of any GMI page via the "View->Source" menu.
 GemiNaut has a simple bookmarks system. You can add the current page to your bookmarks, via the bookmarks menu.
 
 You can also edit your bookmarks using a simple text window. The bookmarks are stored using Gemini's text format, so each link starts "=> ". Other line types can be included in the bookmarks text, but only the links are shown in the bookmarks menu.
+
+Create a break between sections of bookmarks with a line of hyphens or underscores (two or more).
+
+## Acknowledgements
+
+GemiNaut makes use of a number of third party libraries and utilities:
+
+=> https://github.com/rebol/rebol Rebol 
+=> https://github.com/makeworld-the-better-one/gemget gemget - gemini client in Go
+=> https://github.com/prologic/go-gopher go-gopher - gopher library in Go
+=> https://github.com/rafallopatka/ToastNotifications/issues ToastNotifications
+=> https://github.com/dmester/jdenticon-net/ Jdenticon-net - .NET library to generate identicons
 
