@@ -6,7 +6,6 @@ REBOL [
 
 ;===================================================
 ;    GemiNaut, a friendly browser for Gemini space on Windows
-;    (and for related plucked instruments).
 ;
 ;    Copyright (C) 2020, Luke Emmet 
 ;
@@ -40,6 +39,8 @@ either not none? arg-block [
     theme:  to-rebol-file (to-string debase/base arg-block/4 64)
     identicon-image: (to-string debase/base arg-block/5 64)
     fabric-image: (to-string debase/base arg-block/6 64)
+    site-id:   (to-string debase/base arg-block/7 64)
+
 
         ;uri: "gemini://gemini.circumlunar.space/"
 
@@ -53,6 +54,7 @@ either not none? arg-block [
    identicon-image: "https://fqz04mg9a6.execute-api.eu-west-1.amazonaws.com/Prod/api/identicon/identicon.png"
     fabric-image: "https://fqz04mg9a6.execute-api.eu-west-1.amazonaws.com/Prod/api/identicon/fabric.png"
     theme: %Themes/Plain
+    site-id: "domain/foo"
     
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\9fdfcb2ef4244d6821091d62e3a0e06a.gmi}
@@ -65,12 +67,7 @@ either not none? arg-block [
 uri-object:   decode-url  uri
 page-scheme: (to-word uri-object/scheme)
 
-;---determine an theming identity hash for this site based on its url, to be used for identikon
-;---and textured "fabric" style background
-site-id: get-site-id uri-object
-theme-id: get-theme-id uri-object
-
-uri-md5: lowercase copy/part at (mold checksum/method (to-binary theme-id) 'md5) 3 32
+uri-md5: lowercase copy/part at (mold checksum/method (to-binary site-id) 'md5) 3 32        ;deprecated but classic fabric theme needs it
 
 lines: read/lines in-path
 
@@ -427,7 +424,7 @@ if (page-title <> uri)  and (page-title <> "") [
 
 ;---heuristic of only showing TOC if more than one
 ;--quite often a simple page has a single heading at the top
-if  (1 < length? table-of-contents ) [
+either (1 < length? table-of-contents ) [
     table-of-contents-string: rejoin [
         {<div id=toc-container>} newline
         newline
@@ -436,6 +433,11 @@ if  (1 < length? table-of-contents ) [
         {</div>} newline
         newline
     ]
+    
+    navigation-container-class: "navigation-container-toc"
+] [
+    navigation-container-class: "navigation-container-no-toc"
+
 ]
     
 ;--save the content to a HTML file
@@ -449,6 +451,7 @@ replace/all theme-html "{{scheme}}" page-scheme
 replace/all theme-html "{{title}}" page-title
 replace/all theme-html "{{theme-css}}" theme-css
 replace/all theme-html "{{table-of-contents}}" table-of-contents-string
+replace/all theme-html "{{navigation-container-class}}" navigation-container-class
 replace/all theme-html "{{site-id}}" site-id
 replace/all theme-html "{{site-id-md5}}" uri-md5
 replace/all theme-html "{{site-id-md5-reversed}}" (reverse copy uri-md5)

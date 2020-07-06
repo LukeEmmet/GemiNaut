@@ -97,4 +97,5 @@ pre.inline {
 	overflow-y:hidden;
 	padding-bottom:1.3em;	/*to allow space for scroll bar to appear if necessary*/
 	padding-top:1.3em;	/*same as for bottom for visual balance*/
+	min-width:70%;
 }

@@ -113,6 +113,35 @@ namespace GemiNaut
         }
 
 
+        static string ReplaceFirst(string text, string search, string replace)
+        {
+            int pos = text.IndexOf(search);
+            if (pos < 0)
+            {
+                return text;
+            }
+            return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+        }
+
+        static string GetThemeId(Uri uri)
+        {
+            // for the purposes of themeing, the theme id is same as site id except
+            // ~foo is treated as same as /users/foo, for consistency
+            // in case links are made to both uris
+
+            var siteId = GetSiteId(uri);
+
+            siteId = siteId.Replace("/~", "/users/");
+            siteId = siteId.Replace("/users/users/", "/users/"); //in case for some reason path was of the form / users / ~foo
+
+            if (uri.Scheme == "gopher")
+            {
+                siteId = ReplaceFirst(siteId, "/1/", "/");    // dont use leading item type to drive the theme id -now the user gets same theme in gemini and gopher on the same serve
+            }
+
+            return (siteId);
+        }
+
         static string GetSiteId(Uri uri)
         {
 
@@ -294,7 +323,10 @@ namespace GemiNaut
 
             ToggleContainerControlsForBrowser(false);
 
-            var id = MD5Hash(GetSiteId(e.Uri));
+            var siteId = GetSiteId(e.Uri);
+            var themeId = GetThemeId(e.Uri);            
+
+            var id = MD5Hash(themeId);
 
             CreateIdenticon(id); 
 
@@ -431,7 +463,7 @@ namespace GemiNaut
 
                     var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
-                    ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, id, e);
+                    ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, id, siteId, e);
 
                 }
                 else if (geminiResponse.Status == 10 || geminiResponse.Status == 11)
@@ -565,7 +597,7 @@ namespace GemiNaut
 
                         var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
-                        ShowUrl(fullQuery, parseFile, htmlFile, userThemeBase, id, e);
+                        ShowUrl(fullQuery, parseFile, htmlFile, userThemeBase, id, siteId, e);
 
                     }
 
@@ -611,7 +643,7 @@ namespace GemiNaut
                 if (File.Exists(helpFile))
                 {
                     File.Copy(helpFile, hashFile, true);
-                    ShowUrl(fullQuery, hashFile, htmlCreateFile, templateBaseName, id, e);
+                    ShowUrl(fullQuery, hashFile, htmlCreateFile, templateBaseName, id, siteId, e);
                 }
                 else
                 {
@@ -641,7 +673,7 @@ namespace GemiNaut
 
             return (hash);
         }
-        private void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, string fabricId, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        private void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, string fabricId, string siteId, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
 
             string hash;
@@ -652,7 +684,7 @@ namespace GemiNaut
             }
 
             //create the html file
-            var result = GmiToHtml(gmiFile, htmlFile, sourceUrl, fabricId, themePath);
+            var result = GmiToHtml(gmiFile, htmlFile, sourceUrl, fabricId, themePath, siteId);
 
             if (!File.Exists(htmlFile))
             {
@@ -813,7 +845,7 @@ namespace GemiNaut
         }
 
         //convert GMI to HTML for display and save to outpath
-        public Tuple<int, string, string> GmiToHtml (string gmiPath, string outPath, string uri, string themeId, string theme)
+        public Tuple<int, string, string> GmiToHtml (string gmiPath, string outPath, string uri, string themeId, string theme, string siteId)
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
 
@@ -829,7 +861,7 @@ namespace GemiNaut
             //working with command line parameters, so we need to escape quotes
             //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
             //also hypens are also problematic, so we base64 each param and unpack in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\" ",
+            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\" \"{8}\" ",
                 rebolPath, 
                 scriptPath,
                 Base64Encode(gmiPath),
@@ -837,7 +869,8 @@ namespace GemiNaut
                 Base64Encode(uri),
                 Base64Encode(theme),
                 Base64Encode(identiconUri.AbsoluteUri),
-                Base64Encode(fabricUri.AbsoluteUri)
+                Base64Encode(fabricUri.AbsoluteUri),
+                Base64Encode(siteId)
 
                 );
 

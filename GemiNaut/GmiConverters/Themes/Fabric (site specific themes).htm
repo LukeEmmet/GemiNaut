@@ -9,22 +9,23 @@
         -->
         <!--<meta http-equiv="X-UA-Compatible" content="IE=10">-->
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        
         <style>
         
             {{theme-css}}
             
         </style>
-        
+
         <!--
-        could use linear graident in this legacy mode perhaps if necessary
-        
+        could use linear graident in this legacy mode perhaps if necessary        
         filter: progid:DXImageTransform.Microsoft.gradient (startColorstr=#550000FF, endColorstr=#5ffffff);
         -->
         <style>
                 
             body {
-                background-image: url("https://www.gravatar.com/avatar/{{site-id-md5-reversed}}.jpg?d=identicon&size=13");
+                background-image: url('{{fabric-image}}');
                 background-repeat: repeat;
+                background-size:12px;
                 margin:2em;
             } 
                     
@@ -40,14 +41,15 @@
         
             <div class="content-container">
             
-                <div id=navigation-container >
+                <div id="{{navigation-container-class}}" >
                 
                         <div class=placeholder-mask-container>
                             <div class="identicon-container" >
                                 <!--we dont have rounded borders (due to mshtml hosting webbrowser), but we can use an image mask to get close-->
                                 <a href="{{scheme}}://{{site-id}}" title="Go to: {{site-id}}">
-                                        <img class="cropped" src="https://www.gravatar.com/avatar/{{site-id-md5}}.jpg?d=identicon&size=80">
-                                        <img class="cropped mask" src="Assets/Transparent_circle.svg_500px.png"   >
+                                        <img class="cropped" src="{{identicon-image}}">
+                                        <!--mask originally from https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Transparent_circle.svg-->
+                                        <img class="cropped mask" width=50px src="Assets/Transparent_circle.svg_500px.png"   >
                                 </a>
                             </div>
                         </div>

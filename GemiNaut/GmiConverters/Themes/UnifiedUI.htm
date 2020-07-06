@@ -80,13 +80,9 @@
                     <div class=identikon style="float:right;height:100px;width:100px;background:white;margin:10px">
                     
                         <a href="{{scheme}}://{{site-id}}" title="Go to: {{site-id}}">
-                        <!-- 
-                        can also try for fun the other gravatar designs or robohash
-                        src="https://robohash.org/{{site-id-md5}}.png?set=set3&size=100x100" 
-                        src="https://www.gravatar.com/avatar/{{site-id-md5}}.jpg?d=robohash&size=90"
-                        --><img 
+                        <img 
                             style="border:0;"
-                           src="https://www.gravatar.com/avatar/{{site-id-md5}}.jpg?d=identicon&size=90"
+                           src="{{identicon-image}}"
                         >
                         </a>
                     </div>
@@ -103,7 +99,6 @@
                     
                     <td valign=top>Search
                                                 <br>&nbsp;&nbsp;<a class="navig" title="Gemini Universal Search engine" href="gemini://gus.guru/search">Gus</a>
-                                               <br>&nbsp;&nbsp;<a class="navig"  title="Houston search engine" href="gemini://houston.coder.town/search">Houston</a>
                     </td>
                     <td valign=top>What's new
                                                 <br>&nbsp;&nbsp;<a class="navig"  title="CAPCOM Geminispace aggregator of Atom feeds" href="gemini://gemini.circumlunar.space/capcom/">Capcom</a>

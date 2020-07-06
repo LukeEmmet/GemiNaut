@@ -110,7 +110,7 @@ pre.inline {
 	overflow-y:hidden;
 	padding-bottom:1.3em;	/*to allow space for scroll bar to appear if necessary*/
 	padding-top:1.3em;	/*same as for bottom for visual balance*/
-
+	min-width:70%;
 	
 }
 
@@ -168,7 +168,7 @@ a.toc:hover {
 	background:#efefef;
 }
 
-#navigation-container {
+#navigation-container-toc {
 	float:right;
 	min-width:100px;
 	max-width:190px;
@@ -176,6 +176,13 @@ a.toc:hover {
 	margin-bottom:1em;
 }
 
+#navigation-container-no-toc {
+	float:right;
+	min-width:83px;
+	max-width:83px;
+	margin-left:1em;
+	margin-bottom:1em;
+}
 
 div.identicon-container {   
 	position: relative;   

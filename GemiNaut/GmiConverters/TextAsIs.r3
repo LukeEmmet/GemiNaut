@@ -6,7 +6,6 @@ REBOL [
 
 ;===================================================
 ;    GemiNaut, a friendly browser for Gemini space on Windows
-;    (and for related plucked instruments).
 ;
 ;    Copyright (C) 2020, Luke Emmet 
 ;
