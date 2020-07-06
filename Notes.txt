@@ -9,13 +9,12 @@
 
 # Deploy notes
 
-* create zip from bin/release, plus include Gemget, Rebol and GmiConverters folders copied into as well.
+* create zip from bin/release, plus include Gemget, gopher client, Rebol and GmiConverters folders copied into as well.
 * include docs
 
 
 # To do
 
-* quotation marks are being removed from bullets (maybe headings, links too)
 
 
 
@@ -124,7 +123,7 @@
 * prettify links, headings and bullets
 
 
-# Free in virture of using web browser
+# Free in virture of using mshtml HTML library
 
 * go back and forward remembers scroll offset
 * rich CSS styling and visual design
