@@ -49,7 +49,7 @@ GemiNaut 💓 Gopher
 * update Fabric theme so it uses internally generated fabric and identicon (previous Fabric theme still available as "classic")
 * automatic linking of plain urls in gopher text files
 * automatic generation of page titles for gopher pages based on url
-* update to use latest gemget 0.1.3
+* update to use latest gemget 1.3.0
 * theming engine will use same theme for the same user on gemini and gopher
 * gopher text is monospaced but will softwrap for longer lines > 85 chars
 * only display text/gemini as gemini content, otherwise use plain text preformatted rendering
