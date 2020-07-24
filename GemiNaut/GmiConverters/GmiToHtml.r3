@@ -269,10 +269,26 @@ foreach line lines [
                         
                         show-extension: copy ""
                         
+                        tooltip:  rejoin [
+                                        { opens link to expected } 
+                                        (uppercase copy link-extension)
+                                        { file in system web browser:}
+                                        { } (last parse/all link   "/")
+                                    ]
+                                    
                         any [
                         
                             ;images -> losange flower
-                            if find image-extensions last url-split [decorator-glyph: "&#128160;"  ]
+                            if find image-extensions last url-split [
+                                decorator-glyph: "&#128160;"  
+                                tooltip:  rejoin [
+                                                decorator-glyph
+                                                {link to } 
+                                                (uppercase copy link-extension)
+                                                { image:}
+                                                { } (last parse/all link   "/")
+                                            ]
+                            ]
 
                             ;audio-> headphones
                             if find audio-extensions last url-split [ decorator-glyph: "&#127911;"  ]
@@ -292,13 +308,6 @@ foreach line lines [
                         ]
 
                         
-                        tooltip:  rejoin [
-                                        decorator-glyph
-                                        { opens link to expected } 
-                                        (uppercase copy link-extension)
-                                        { file in system web browser:}
-                                        { } (last parse/all link   "/")
-                                    ]
                                     
                         ;--decorate links to binary files with the glyph and tooltip, and optionally the extension if not shown 
                         ;--their expected file type and a tooltip to explain these are opened in system browser
@@ -326,13 +335,26 @@ foreach line lines [
                                     final-link-object/path                                
                                 ] 
                             ] [
-                                link: rejoin [
-                                    "https://portal.mozz.us/gemini"
-                                    "/"
-                                    final-link-object/host
-                                    final-link-object/path
-                                    "?raw=1"
-                                ]
+                                
+                                either (find image-extensions last url-split) [
+                                    link: rejoin [
+                                       "gemini://"
+                                        final-link-object/host
+                                        final-link-object/path
+                                    
+                                    ]
+                                ]  [                            
+                                        ;--use a proxy
+                                        link: rejoin [
+                                            "https://portal.mozz.us/gemini"
+                                            "/"
+                                            final-link-object/host
+                                            final-link-object/path
+                                            "?raw=1"
+                                        ]
+                                    ]
+                                
+
                             ]  
 
 

@@ -12,7 +12,10 @@ namespace GemiNaut.Response
         public string Meta;
         public List<string> Info;
         public List<string> Errors;
+        public List<string> Notes;
         public bool Redirected;
+        public bool AbandonedSize;
+        public bool AbandonedTimeout;
         public string FinalUrl;
         public string RequestedUrl;
 
@@ -22,6 +25,9 @@ namespace GemiNaut.Response
             Meta = "";
             Info = new List<string>();
             Errors = new List<string>();
+            Notes = new List<string>();
+            AbandonedSize = false;
+            AbandonedTimeout = false;
             Redirected = false;
             FinalUrl = url;
             RequestedUrl = url;
@@ -35,6 +41,8 @@ namespace GemiNaut.Response
             foreach (string s in split)
             {
                 var line = s.Trim();
+
+                string message;
 
                 if (line != "")
                 {
@@ -62,11 +70,23 @@ namespace GemiNaut.Response
                     }
                     else if (line.Substring(0, 6) == "Info: ")
                     {
-                        Info.Add(line.Substring(6));
+                        message = line.Substring(6);
+
+                        if (message.Contains("File is larger than max size limit"))
+                        {
+                            AbandonedSize = true;
+                        } else if (message.Contains("Download timed out"))
+                        {
+                            AbandonedTimeout = true;
+                        } else
+                        {
+                            Info.Add(message);
+                        }
+
                     }
                     else
                     {
-                        Info.Add(line);
+                        Notes.Add(line);
                     }
                 }
 

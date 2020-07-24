@@ -21,8 +21,7 @@ using mshtml;
 using System.Net;
 using GemiNaut.Response;
 using Jdenticon;
-
-
+using System.Web.UI.HtmlControls;
 
 namespace GemiNaut
 {
@@ -305,6 +304,13 @@ namespace GemiNaut
             string geminiUri;
 
 
+            ////doc might be null - you need to check when using!
+            //var doc = (HTMLDocument)BrowserControl.Document;
+            ////this is how we could detect a click on a link to an image...
+            //if (doc?.activeElement != null) {ToastNotify(doc.activeElement.outerHTML); }
+
+
+
             geminiUri = e.Uri.OriginalString;
 
             var fullQuery = e.Uri.OriginalString;
@@ -316,7 +322,6 @@ namespace GemiNaut
                 e.Cancel = true;
             }
 
-            //ToastNotify(string.Format("{0}\n\n{1}\n\n{2}", e.Uri.ToString(), fullQuery, e.Uri.OriginalString));
 
             //use the current session folder
             var sessionPath = Session.Instance.SessionPath;
@@ -364,7 +369,7 @@ namespace GemiNaut
                 File.Delete(htmlFile);
 
                 //use insecure flag as gemget does not check certs correctly in current version
-                var command = string.Format("\"{0}\" --header -o \"{1}\" \"{2}\"", gemGet, rawFile, fullQuery);
+                var command = string.Format("\"{0}\" --header -m \"1MB\" -t 5 -o \"{1}\" \"{2}\"", gemGet, rawFile, fullQuery);
 
                 var result = proc.ExecuteCommand(command, true, true);
 
@@ -375,6 +380,17 @@ namespace GemiNaut
 
                 //ToastNotify(geminiResponse.Status + " " + geminiResponse.Meta);
 
+
+                if (geminiResponse.AbandonedTimeout || geminiResponse.AbandonedSize)
+                {
+                    ToastNotify("Retrieval of the content was abandoned as it exceeds the max size or the time taken to download was too long:\n\n" + fullQuery,
+                        ToastMessageStyles.Warning);
+                    e.Cancel = true;
+                    ToggleContainerControlsForBrowser(true);
+                    return;
+                }
+
+
                 if (File.Exists(rawFile))
                 {
 
@@ -382,6 +398,17 @@ namespace GemiNaut
                     {
                         File.Copy(rawFile, gmiFile);
 
+                    } else if (geminiResponse.Meta.Contains("image/"))
+                    {
+                        //its an image - rename the raw file and just show it
+                        var ext = Path.GetExtension(fullQuery);
+
+                        var imgFile = rawFile + "." + ext;
+                        File.Copy(rawFile, imgFile, true); //rename overwriting
+
+                        ShowImage(fullQuery, imgFile, e);
+                        return;
+                        
                     } else
                     {
                         //convert plain text to a gemini version (wraps it in a preformatted section)
@@ -396,6 +423,9 @@ namespace GemiNaut
                         }
 
                     }
+
+ 
+
                     if (geminiResponse.Redirected)
                     {
                         var redirectUri = geminiResponse.FinalUrl;
@@ -483,7 +513,13 @@ namespace GemiNaut
                 else
                 {
                     //some othe error - show to the user for info
-                    ToastNotify(String.Format("Invalid request or server not found: \n\n{0} \n(gemget exit code: {1})", result.Item3, result.Item1), ToastMessageStyles.Error);
+                    ToastNotify(String.Format(
+                        "Cannot retrieve the content (exit code {0}): \n\n{1} \n\n{2}", 
+                        result.Item1,
+                        String.Join("\n\n", geminiResponse.Info),
+                        String.Join("\n\n", geminiResponse.Errors)
+                        ), 
+                        ToastMessageStyles.Error);
                 }
 
                 ToggleContainerControlsForBrowser(true);
@@ -672,6 +708,26 @@ namespace GemiNaut
             }
 
             return (hash);
+        }
+
+        private void ShowImage(string sourceUrl, string imgFile, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            string hash;
+
+            using (MD5 md5Hash = MD5.Create())
+            {
+                hash = GetMd5Hash(md5Hash, sourceUrl);
+            }
+
+            _urlsByHash[hash] = sourceUrl;
+
+            //no further navigation right now
+            e.Cancel = true;
+
+            //instead tell the browser to load the content
+            BrowserControl.Navigate(@"file:///" + imgFile);
+
+
         }
         private void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, string fabricId, string siteId, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
@@ -1180,6 +1236,9 @@ namespace GemiNaut
             var doc = (HTMLDocument)BrowserControl.Document;
 
             ShowTitle(doc);
+
+
+          
 
             //we need to turn on/off other elements so focus doesnt move elsewhere
             //in that case the keyboard events go elsewhere and you have to click 
