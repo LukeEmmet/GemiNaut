@@ -2,7 +2,7 @@
 ============================
 
 	Author: Luke Emmet
-	Title: ideas for GemiNaut
+	Title: ideas for GemiNaut and history of changes
 	Date: 20-May-2020
 
 ============================
@@ -15,11 +15,39 @@
 
 # To do
 
+conversation with kevinsan:
 
+ - F5 for reload (as well as Ctrl-R which is natural)
+ - bookmarks bar
+ - ctrl-click for popup, otherwise inline?
 
+kevinsan> I hadn't thought of that, yes it works fine. 
+<lukee> Next version will probably be able to show images within the client, rather than launching an external webbrowser
+<lukee> I just need to finish a bit of logic and UI so you can specify a max timeout and response size before the connection is abandoned
+<lukee> since in Gemini we never know how big the response is
+<kevinsan> that will be useful. are you planning an image viewer pop-up, or will you replace the view?
+<lukee> first iteration it will replace the view
+<lukee> but I would like to do an image popup like a lightbox, which I think will feel more fluid and integrated
+<kevinsan> yes, i think there are different image-viewing use-cases. like, when i'm viewing a diagram that accompanies some text, I need to also see the text.
+<lukee> yes
+<kevinsan> but viewing a photo, that's all I want to look at.
+<lukee> how would you like to control that decision?
+<kevinsan> If I was writing my own client, I'd use a ctrl-click for popup.
+<lukee> another option I've considered is some kind of button or menu on the link.
+<lukee> maybe like a [+] - if you clicked that it would show inline, otherwise the rest of the link would do a replace
+<lukee> or another option - you click (or otherwise activate) on the link and a menu appears with "popup" and "show inline" or something like that?
+<kevinsan> both of those would work, though I wonder if it would add clutter? menu sounds cumbersome
+<kevinsan> a hover popup on the link could show usage (e.g. "Click to view, Ctrl-click for popup")
+<lukee> well all of this can be explored. My inclination is to keep the tooltip/hover popup for information about the link. But yes there is some fruitful options here
+<lukee> is->are
+
+open in new window (my idea not requested, but related)
+
+register gemini:// handler (with consent, not automatic)
 
 # Nice to have
 
+* save binary files with file/save dialog or offer to always save to user/downloads
 * File-Print menu
 * Ctrl-R refreshes
 * find text on current page (works, but wire up to menu)
@@ -37,13 +65,9 @@
 * register with windows to handle gemini:// protocol
 * startup with passed url on commandline
 * open link in new window
-* show same theme for /~foo as users/foo
-* accomodate non-standard ports when link building (currently ignored)
-* get windows client to download gravatars or make its own
 * footnotes style for inline links
 * navigate to parent folder
 * launchers.xml for alternative renderers, choosable by user
-* .net based identikons
 * use EdgeHtml for rendering engine
 * page specifc deep linking e.g. foo.gmi#foo links to the foo heading in that doc
 
@@ -51,7 +75,21 @@
 
 # Done
 
-* maybe reinstate get-theme-id for theme normalisation - reimplement in c#
+0.8.7
+
+* hanging indents for bullets and links in terminal theme
+* keyboard shortcuts for bookmarks (e.g. Alt+B) and other menus
+* accomodate non-standard ports when link building (currently ignored)
+* build links correctly when a port is given within the URL
+* server size and timeout for slow or too large content
+* simple image display within GemiNaut
+
+0.8.6
+
+* .net based identikons
+* show same theme for /~foo as users/foo
+* use latest gemget 0.1.4
+* reinstate get-theme-id for theme normalisation - reimplement in c#
 * preformatted text areas now have their own scroll added when overflowed
 * plain text content no longer rendered as text/gemini, but as plain text.
 * themeing - a user should now generally get the same theme on gopher as in gemini for the same domain
@@ -64,6 +102,9 @@
 * autolink urls occupying a whole gopher text lines, with minor variants
 * gopher text wrapping - softwrap beyond 85 chars, otherwise fixed width
 * integrate gopher client based on go-gopher
+
+0.8.5
+
 * update to use gemget 0.1.2
 * show server text in input prompt
 * tooltips in bookmarks list
@@ -85,7 +126,18 @@
 * url escaping (percent encoding) fixed for input params (esp when contain + / and <space>)
 * only show TOC if more than one entry
 * show site id in window title
+
+0.8.3
+
 * page specific table of contents
+
+0.8.2 
+
+* fix keyboard focus problem so you dont have to click into browser on each page
+* display view->source GMI as utf-8
+
+0.8.1 first release
+
 * added simple userguide
 * infer the document title from the first heading or para text line and show in window caption
 * workaround for GemGet bug which overwrites into the output file, rather than replacing the whole file

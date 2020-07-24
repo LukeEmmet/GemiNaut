@@ -58,6 +58,28 @@ pre div {
 	margin: 0 0 0 0;
 }
 
+
+div.bullet {
+  padding-left: 1.2em ;
+  text-indent: -0.9em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
+
+div.gemini-link {
+  padding-left: 1.2em ;
+  text-indent: -1.6em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
+
+div.other-link {
+  padding-left: 1.2em ;
+  text-indent: -1.9em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
+
 pre.inline {
 	font-family:Consolas, Courier;
 	border-width:1px;

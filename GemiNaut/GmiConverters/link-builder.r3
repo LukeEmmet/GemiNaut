@@ -32,8 +32,7 @@ build-link: func [ uri-object link-part] [
                 
         ;--need better scheme to build url, need to incorporate slashes ok
         ;--wrt uri
-                
-                
+                                
         uri-folder-parts: parse/all  uri-object/path "/"
         if (last uri-object/path) <> #"/" [
             remove-last uri-folder-parts      ;trim off last entry to get to containing folder
@@ -68,6 +67,7 @@ build-link: func [ uri-object link-part] [
                         (to-word uri-object/scheme)
                         "://"
                         uri-object/host
+                       (either none? uri-object/port-id [""] [join ":" uri-object/port-id ])
                         link-part
                     ]
                 ]
@@ -78,6 +78,7 @@ build-link: func [ uri-object link-part] [
                         "://"
                         uri-object/host
                        
+                       (either none? uri-object/port-id [""] [join ":" uri-object/port-id ])
                         new-path
                         link-part
                     ]

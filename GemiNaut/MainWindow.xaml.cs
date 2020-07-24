@@ -20,7 +20,6 @@ using GemiNaut.Properties;
 using mshtml;
 using System.Net;
 using GemiNaut.Response;
-using Jdenticon;
 using System.Web.UI.HtmlControls;
 
 namespace GemiNaut
@@ -112,116 +111,34 @@ namespace GemiNaut
         }
 
 
-        static string ReplaceFirst(string text, string search, string replace)
-        {
-            int pos = text.IndexOf(search);
-            if (pos < 0)
-            {
-                return text;
-            }
-            return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
-        }
 
-        static string GetThemeId(Uri uri)
-        {
-            // for the purposes of themeing, the theme id is same as site id except
-            // ~foo is treated as same as /users/foo, for consistency
-            // in case links are made to both uris
-
-            var siteId = GetSiteId(uri);
-
-            siteId = siteId.Replace("/~", "/users/");
-            siteId = siteId.Replace("/users/users/", "/users/"); //in case for some reason path was of the form / users / ~foo
-
-            if (uri.Scheme == "gopher")
-            {
-                siteId = ReplaceFirst(siteId, "/1/", "/");    // dont use leading item type to drive the theme id -now the user gets same theme in gemini and gopher on the same serve
-            }
-
-            return (siteId);
-        }
-
-        static string GetSiteId(Uri uri)
-        {
-
-            var siteId = uri.Authority;
-
-            var pageScheme = uri.Scheme;
-
-            char[] array = new char[2];
-            array[0] = '/';
-            var pathParts = uri.LocalPath.Split(array);
-
-            var keepParts = new List<string>();
-
-            var count = 0;
-
-            //try to guess the user path, if any by looking for "/users/foo" or "/~foo"
-            if ((uri.LocalPath.Contains("/~")) || (uri.LocalPath.Contains("/users/")))
-            {
-                foreach (var pathPartOriginal in pathParts)
-                {
-
-                    var pathPart = pathPartOriginal;
-
-                    //special treatment of the first component of gopher paths - ensure site home is accessied as type 1
-                    //e.g. /1/foo/bar not /n/foo/bar even if n is the current page selector
-                    if (count == 1 && pageScheme == "gopher")
-                    {
-                        if (pathPart != "1") { pathPart = "1"; }
-                    }
-
-                    if (pathPart == "users")
-                    {
-                        if ("" != pathParts[count + 1].ToString())
-                        {
-                            keepParts.Add(pathPart);
-                            keepParts.Add(pathParts[count + 1].ToString());
-                        }
-                        break;
-                    }
-
-                    if (0 < pathPart.Length && pathPart.Substring(0, 1) == "~")
-                    {
-                        keepParts.Add(pathPart);
-                        break;
-                    }
-
-                    keepParts.Add(pathPart);
-
-                    count++;
-                }
-
-                var usePath = string.Join("/", keepParts.ToArray());
-
-                siteId = uri.Authority + usePath;
-            }
-
-            return (siteId);
-
-        }
 
 
         public static string GetMd5Hash(MD5 md5Hash, string input)
         {
 
-            // Convert the input string to a byte array and compute the hash.
-            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-
+            string hash;
             // Create a new Stringbuilder to collect the bytes
             // and create a string.
             StringBuilder sBuilder = new StringBuilder();
-
-            // Loop through each byte of the hashed data
-            // and format each one as a hexadecimal string.
-            for (int i = 0; i < data.Length; i++)
+            //regenerate the hashes using the redirected target url
+            using (MD5 md5 = MD5.Create())
             {
-                sBuilder.Append(data[i].ToString("x2"));
-            }
+                // Convert the input string to a byte array and compute the hash.
+                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
 
+
+                // Loop through each byte of the hashed data
+                // and format each one as a hexadecimal string.
+                for (int i = 0; i < data.Length; i++)
+                {
+                    sBuilder.Append(data[i].ToString("x2"));
+                }
+            }
             // Return the hexadecimal string.
             return sBuilder.ToString();
         }
+
 
         private void ToggleContainerControlsForBrowser(bool toState)
         {
@@ -237,71 +154,15 @@ namespace GemiNaut
             GridMain.IsEnabled = toState;
         }
 
-        private void CreateIdenticon(string identifier)
-        {
-
-            //these are fine tuned. Fabric should be not too light, as there is quite a bit of white space in the design
-
-             //identicon
-            var identiconId = identifier;
-            var identiconStyle = new IdenticonStyle
-            {
-                ColorLightness = Range.Create(0.22f, 0.75f),
-                GrayscaleLightness = Range.Create(0.52f, 0.7f),
-                GrayscaleSaturation = 0.10f,
-                ColorSaturation = 0.75f,
-                Padding = 0f
-            };
-
-            var identicon = Identicon.FromValue(identiconId, size: 80);
-            identicon.Style = identiconStyle;
-
-            if (!File.Exists(FabricImagePath(identiconId)))
-            {
-                identicon.SaveAsPng(FabricImagePath(identiconId));
-
-            }
 
 
-            //fabric
-            var fabricId = ReverseString(identifier);
-            var fabricStyle = new IdenticonStyle
-            {
-                ColorLightness = Range.Create(0.33f, 0.48f),
-                GrayscaleLightness = Range.Create(0.30f, 0.45f),
-                ColorSaturation = 0.7f,
-                GrayscaleSaturation = 0.7f,
-                Padding = 0f
-            };
-
-            var fabricIcon = Identicon.FromValue(fabricId, size: 13);
-            fabricIcon.Style = fabricStyle;
-
-            if (!File.Exists(FabricImagePath(fabricId))) {
-                fabricIcon.SaveAsPng(FabricImagePath(fabricId));
-
-            }
 
 
-        }
 
-        public static string ReverseString(string s)
-        {
-            char[] arr = s.ToCharArray();
-            Array.Reverse(arr);
-            return new string(arr);
-        }
-
-        private string FabricImagePath(string identifier)
-        {
-            var sessionPath = Session.Instance.SessionPath;
-            return (Path.Combine(sessionPath, identifier + ".png"));
-        }
 
         private void BrowserControl_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
-            string geminiUri;
 
 
             ////doc might be null - you need to check when using!
@@ -310,8 +171,10 @@ namespace GemiNaut
             //if (doc?.activeElement != null) {ToastNotify(doc.activeElement.outerHTML); }
 
 
+            //use the current session folder
+            var sessionPath = Session.Instance.SessionPath;
 
-            geminiUri = e.Uri.OriginalString;
+            var siteIdentity = new SiteIdentity(e.Uri, Session.Instance);
 
             var fullQuery = e.Uri.OriginalString;
 
@@ -323,323 +186,23 @@ namespace GemiNaut
             }
 
 
-            //use the current session folder
-            var sessionPath = Session.Instance.SessionPath;
 
             ToggleContainerControlsForBrowser(false);
 
-            var siteId = GetSiteId(e.Uri);
-            var themeId = GetThemeId(e.Uri);            
-
-            var id = MD5Hash(themeId);
-
-            CreateIdenticon(id); 
 
 
+
+
+            //these are the only ones we "navigate" to. We do this by downloading the GMI content
+            //converting to HTML and then actually navigating to that.
             if (e.Uri.Scheme == "gemini")
             {
-
-
-               //these are the only ones we "navigate" to. We do this by downloading the GMI content
-                //converting to HTML and then actually navigating to that.
-
-                var proc = new ExecuteProcess();
-
-                //use local or dev binary for gemget
-                var gemGet = LocalOrDevFile(appDir, "Gemget", "..\\..\\..\\Gemget", "gemget-windows-386.exe");
-
-                string hash;
-
-                using (MD5 md5Hash = MD5.Create())
-                {
-                    hash = GetMd5Hash(md5Hash, fullQuery);
-                }
-
-                //uses .txt as extension so content loaded as text/plain not interpreted by the browser
-                //if user requests a view-source.
-                var rawFile = sessionPath + "\\" + hash + ".txt";
-                var gmiFile = sessionPath + "\\" + hash + ".gmi";
-                var htmlFile = sessionPath + "\\" + hash + ".htm";
-
-                //delete txt file as GemGet seems to sometimes overwrite not create afresh
-                File.Delete(rawFile);
-                File.Delete(gmiFile);
-
-                //delete any existing html file to encourage webbrowser to reload it
-                File.Delete(htmlFile);
-
-                //use insecure flag as gemget does not check certs correctly in current version
-                var command = string.Format("\"{0}\" --header -m \"1MB\" -t 5 -o \"{1}\" \"{2}\"", gemGet, rawFile, fullQuery);
-
-                var result = proc.ExecuteCommand(command, true, true);
-
-                var geminiResponse = new GemiNaut.Response.GeminiResponse(fullQuery);
-
-                geminiResponse.ParseGemGet(result.Item2);   //parse stdout   
-                geminiResponse.ParseGemGet(result.Item3);   //parse stderr
-
-                //ToastNotify(geminiResponse.Status + " " + geminiResponse.Meta);
-
-
-                if (geminiResponse.AbandonedTimeout || geminiResponse.AbandonedSize)
-                {
-                    ToastNotify("Retrieval of the content was abandoned as it exceeds the max size or the time taken to download was too long:\n\n" + fullQuery,
-                        ToastMessageStyles.Warning);
-                    e.Cancel = true;
-                    ToggleContainerControlsForBrowser(true);
-                    return;
-                }
-
-
-                if (File.Exists(rawFile))
-                {
-
-                    if (geminiResponse.Meta.Contains("text/gemini"))
-                    {
-                        File.Copy(rawFile, gmiFile);
-
-                    } else if (geminiResponse.Meta.Contains("image/"))
-                    {
-                        //its an image - rename the raw file and just show it
-                        var ext = Path.GetExtension(fullQuery);
-
-                        var imgFile = rawFile + "." + ext;
-                        File.Copy(rawFile, imgFile, true); //rename overwriting
-
-                        ShowImage(fullQuery, imgFile, e);
-                        return;
-                        
-                    } else
-                    {
-                        //convert plain text to a gemini version (wraps it in a preformatted section)
-                        var textToGmiResult = TextToGmi(rawFile, gmiFile);
-
-                        if (textToGmiResult.Item1 != 0)
-                        {
-                            ToastNotify("Could not render text as GMI: " + fullQuery, ToastMessageStyles.Error);
-                            ToggleContainerControlsForBrowser(true);
-                            e.Cancel = true;
-                            return;
-                        }
-
-                    }
-
- 
-
-                    if (geminiResponse.Redirected)
-                    {
-                        var redirectUri = geminiResponse.FinalUrl;
-
-                        if (redirectUri.Substring(0, 9) != "gemini://")
-                        {
-                            //need to unpack
-                            var redirectUriObj = new Uri(redirectUri);
-                            if (redirectUriObj.Scheme != "gemini")
-                            {
-                                //is external
-                                LaunchExternalUri(redirectUri);
-                                e.Cancel = true;
-                                ToggleContainerControlsForBrowser(true);
-                            }
-                            else
-                            {
-                                //is a relative url, not yet implemented
-                                ToastNotify("Redirect to relative URL not yet implemented: " + redirectUri, ToastMessageStyles.Warning);
-                                ToggleContainerControlsForBrowser(true);
-                                e.Cancel = true;
-                            }
-                        }
-                        else
-                        {
-                            //redirected to a full gemini url
-                            geminiUri = redirectUri;
-                        }
-
-                        //regenerate the hashes using the redirected target url
-                        using (MD5 md5Hash = MD5.Create())
-                        {
-                            hash = GetMd5Hash(md5Hash, geminiUri);
-                        }
-
-                        var gmiFileNew = sessionPath + "\\" + hash + ".txt";
-                        var htmlFileNew = sessionPath + "\\" + hash + ".htm";
-
-                        //move the source file
-                        try
-                        {
-                            if (File.Exists(gmiFileNew))
-                            {
-                                File.Delete(gmiFileNew);
-                            }
-                            File.Move(gmiFile, gmiFileNew);
-                        }
-                        catch (Exception err)
-                        {
-                            ToastNotify(err.ToString(), ToastMessageStyles.Error);
-                        }
-
-                        //update locations of gmi and html file
-                        gmiFile = gmiFileNew;
-                        htmlFile = htmlFileNew;
-
-                    }
-                    else
-                    {
-                        geminiUri = fullQuery;
-                    }
-
-                    var settings = new Settings();
-                    var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
-
-                    var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
-
-                    ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, id, siteId, e);
-
-                }
-                else if (geminiResponse.Status == 10 || geminiResponse.Status == 11)
-                {
-
-                    //needs input
-
-                    ToggleContainerControlsForBrowser(true);
-
-                    NavigateGeminiWithInput(e, geminiResponse.Meta);
-                    
-
-                } else if (geminiResponse.Status == 50 || geminiResponse.Status == 51) {
-
-                    ToastNotify("Page not found (status 51)\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
-                }
-                else
-                {
-                    //some othe error - show to the user for info
-                    ToastNotify(String.Format(
-                        "Cannot retrieve the content (exit code {0}): \n\n{1} \n\n{2}", 
-                        result.Item1,
-                        String.Join("\n\n", geminiResponse.Info),
-                        String.Join("\n\n", geminiResponse.Errors)
-                        ), 
-                        ToastMessageStyles.Error);
-                }
-
-                ToggleContainerControlsForBrowser(true);
-
-                //no further navigation right now
-                e.Cancel = true;
-
-
-
+                NavigateGeminiScheme(fullQuery, e, appDir, sessionPath, siteIdentity);
             }
 
             else if (e.Uri.Scheme == "gopher")
             {
-
-                //check if it is a query selector without a parameter
-                if (!e.Uri.OriginalString.Contains("%09") && e.Uri.PathAndQuery.StartsWith("/7/"))
-                {
-                    NavigateGopherWithInput(e);
-
-                    ToggleContainerControlsForBrowser(true);
-
-                    //no further navigation right now
-                    e.Cancel = true;
-
-                    return;
-
-                }
-
-
-                var proc = new ExecuteProcess();
-
-                //use local or dev binary for gemget
-                var gopherClient = LocalOrDevFile(appDir, "GoGopher", "..\\..\\..\\GoGopher", "main.exe");
-
-                string hash;
-
-                using (MD5 md5Hash = MD5.Create())
-                {
-                    hash = GetMd5Hash(md5Hash, fullQuery);
-                }
-
-                //uses .txt as extension so content loaded as text/plain not interpreted by the browser
-                //if user requests a view-source.
-                var gopherFile = sessionPath + "\\" + hash + ".txt";
-                var gmiFile = sessionPath + "\\" + hash + ".gmi";
-                var htmlFile = sessionPath + "\\" + hash + ".htm";
-
-                //delete txt file as GemGet seems to sometimes overwrite not create afresh
-                File.Delete(gopherFile);
-
-                //delete any existing html file to encourage webbrowser to reload it
-                File.Delete(gmiFile);
-
-                //save to the file
-                var command = string.Format("\"{0}\" \"{1}\" \"{2}\"", gopherClient, fullQuery, gopherFile);
-
-
-                var result = proc.ExecuteCommand(command, true, true);
-
-                var exitCode = result.Item1;
-                var stdOut = result.Item2;
-
-                if (exitCode != 0)
-                {
-                    ToastNotify(result.Item3, ToastMessageStyles.Error);
-                    ToggleContainerControlsForBrowser(true);    //reenable browser
-                    e.Cancel = true;
-                    return;
-
-                }
-
-
-                if (File.Exists(gopherFile))
-                {
-                    string parseFile;
-
-                    if (stdOut.Contains("DIR") || stdOut.Contains("QRY")) {
-                        //convert gophermap to text/gemini
-
-                        //ToastNotify("Converting gophermap to " + gmiFile);
-                        GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Map);
-                        parseFile = gmiFile;
-
-                    } else if (stdOut.Contains("TXT"))
-                    {
-                        GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Text);
-                        parseFile = gmiFile;
-
-                    }
-                    else
-                    {
-                        //treat as text, but notify the type
-                        ToastNotify("Loading a " + result.Item2.ToString());
-
-                        parseFile = gopherFile;
-
-                    }
-
-                    if (!File.Exists(gmiFile))
-                    {
-                        ToastNotify("Did not create expected GMI file for " + fullQuery + " in " + gmiFile, ToastMessageStyles.Error);
-                        ToggleContainerControlsForBrowser(true);
-                        e.Cancel = true;
-
-
-                    }
-                    else
-                    {
-                        var settings = new Settings();
-                        var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
-
-                        var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
-
-                        ShowUrl(fullQuery, parseFile, htmlFile, userThemeBase, id, siteId, e);
-
-                    }
-
-                }
-
-
+                NavigateGopherScheme(fullQuery, e, appDir, sessionPath, siteIdentity);
             }
 
             else if (e.Uri.Scheme == "file")
@@ -649,43 +212,7 @@ namespace GemiNaut
             }
             else if (e.Uri.Scheme == "about")
             {
-                //just load the help file
-                //no further action
-                ToggleContainerControlsForBrowser(true);
-
-                var sourceFileName = e.Uri.PathAndQuery.Substring(1);      //trim off leading /
-
-                //this expects uri has a "geminaut" domain so gmitohtml converter can proceed for now
-                //I think it requires a domain for parsing...
-                fullQuery = e.Uri.OriginalString;
-
-                string hash;
-                using (MD5 md5Hash = MD5.Create())
-                {
-                    hash = GetMd5Hash(md5Hash, fullQuery);
-                }
-
-                var hashFile = Path.Combine(sessionPath, hash + ".txt");
-                var htmlCreateFile = Path.Combine(sessionPath, hash + ".htm");
-
-                var helpFolder = LocalOrDevFolder(appDir, @"Docs", @"..\..\Docs");
-                var helpFile = Path.Combine(helpFolder, sourceFileName);
-
-                //use a specific theme so about pages look different to user theme
-                var templateBaseName = Path.Combine(helpFolder, "help-theme");
-
-
-
-                if (File.Exists(helpFile))
-                {
-                    File.Copy(helpFile, hashFile, true);
-                    ShowUrl(fullQuery, hashFile, htmlCreateFile, templateBaseName, id, siteId, e);
-                }
-                else
-                {
-                    ToastNotify("No content was found for: " + fullQuery, ToastMessageStyles.Warning);
-                    e.Cancel = true;
-                }
+                NavigateAboutScheme(e, appDir, sessionPath, siteIdentity);
 
             }
             else
@@ -698,17 +225,360 @@ namespace GemiNaut
             }
         }
 
-        private string MD5Hash(string input)
+
+
+        private void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, string appDir, string sessionPath, SiteIdentity siteIdentity)
         {
+            string geminiUri;
+            geminiUri = e.Uri.OriginalString;
+
+
+            var proc = new ExecuteProcess();
+
+            //use local or dev binary for gemget
+            var gemGet = LocalOrDevFile(appDir, "Gemget", "..\\..\\..\\Gemget", "gemget-windows-386.exe");
+
             string hash;
-            //regenerate the hashes using the redirected target url
-            using (MD5 md5 = MD5.Create())
+
+            using (MD5 md5Hash = MD5.Create())
             {
-                hash = GetMd5Hash(md5, input);
+                hash = GetMd5Hash(md5Hash, fullQuery);
             }
 
-            return (hash);
+            //uses .txt as extension so content loaded as text/plain not interpreted by the browser
+            //if user requests a view-source.
+            var rawFile = sessionPath + "\\" + hash + ".txt";
+            var gmiFile = sessionPath + "\\" + hash + ".gmi";
+            var htmlFile = sessionPath + "\\" + hash + ".htm";
+
+            //delete txt file as GemGet seems to sometimes overwrite not create afresh
+            File.Delete(rawFile);
+            File.Delete(gmiFile);
+
+            //delete any existing html file to encourage webbrowser to reload it
+            File.Delete(htmlFile);
+
+            //use insecure flag as gemget does not check certs correctly in current version
+            var command = string.Format("\"{0}\" --header -m \"1MB\" -t 5 -o \"{1}\" \"{2}\"", gemGet, rawFile, fullQuery);
+
+            var result = proc.ExecuteCommand(command, true, true);
+
+            var geminiResponse = new GemiNaut.Response.GeminiResponse(fullQuery);
+
+            geminiResponse.ParseGemGet(result.Item2);   //parse stdout   
+            geminiResponse.ParseGemGet(result.Item3);   //parse stderr
+
+            //ToastNotify(geminiResponse.Status + " " + geminiResponse.Meta);
+
+
+            if (geminiResponse.AbandonedTimeout || geminiResponse.AbandonedSize)
+            {
+                ToastNotify("Retrieval of the content was abandoned as it exceeds the max size or the time taken to download was too long:\n\n" + fullQuery,
+                    ToastMessageStyles.Warning);
+                e.Cancel = true;
+                ToggleContainerControlsForBrowser(true);
+                return;
+            }
+
+
+            if (File.Exists(rawFile))
+            {
+
+                if (geminiResponse.Meta.Contains("text/gemini"))
+                {
+                    File.Copy(rawFile, gmiFile);
+
+                }
+                else if (geminiResponse.Meta.Contains("image/"))
+                {
+                    //its an image - rename the raw file and just show it
+                    var ext = Path.GetExtension(fullQuery);
+
+                    var imgFile = rawFile + "." + ext;
+                    File.Copy(rawFile, imgFile, true); //rename overwriting
+
+                    ShowImage(fullQuery, imgFile, e);
+                    return;
+
+                }
+                else
+                {
+                    //convert plain text to a gemini version (wraps it in a preformatted section)
+                    var textToGmiResult = TextToGmi(rawFile, gmiFile);
+
+                    if (textToGmiResult.Item1 != 0)
+                    {
+                        ToastNotify("Could not render text as GMI: " + fullQuery, ToastMessageStyles.Error);
+                        ToggleContainerControlsForBrowser(true);
+                        e.Cancel = true;
+                        return;
+                    }
+
+                }
+
+
+
+                if (geminiResponse.Redirected)
+                {
+                    var redirectUri = geminiResponse.FinalUrl;
+
+                    if (redirectUri.Substring(0, 9) != "gemini://")
+                    {
+                        //need to unpack
+                        var redirectUriObj = new Uri(redirectUri);
+                        if (redirectUriObj.Scheme != "gemini")
+                        {
+                            //is external
+                            LaunchExternalUri(redirectUri);
+                            e.Cancel = true;
+                            ToggleContainerControlsForBrowser(true);
+                        }
+                        else
+                        {
+                            //is a relative url, not yet implemented
+                            ToastNotify("Redirect to relative URL not yet implemented: " + redirectUri, ToastMessageStyles.Warning);
+                            ToggleContainerControlsForBrowser(true);
+                            e.Cancel = true;
+                        }
+                    }
+                    else
+                    {
+                        //redirected to a full gemini url
+                        geminiUri = redirectUri;
+                    }
+
+                    //regenerate the hashes using the redirected target url
+                    using (MD5 md5Hash = MD5.Create())
+                    {
+                        hash = GetMd5Hash(md5Hash, geminiUri);
+                    }
+
+                    var gmiFileNew = sessionPath + "\\" + hash + ".txt";
+                    var htmlFileNew = sessionPath + "\\" + hash + ".htm";
+
+                    //move the source file
+                    try
+                    {
+                        if (File.Exists(gmiFileNew))
+                        {
+                            File.Delete(gmiFileNew);
+                        }
+                        File.Move(gmiFile, gmiFileNew);
+                    }
+                    catch (Exception err)
+                    {
+                        ToastNotify(err.ToString(), ToastMessageStyles.Error);
+                    }
+
+                    //update locations of gmi and html file
+                    gmiFile = gmiFileNew;
+                    htmlFile = htmlFileNew;
+
+                }
+                else
+                {
+                    geminiUri = fullQuery;
+                }
+
+                var settings = new Settings();
+                var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+
+                var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
+
+                ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, siteIdentity, e);
+
+            }
+            else if (geminiResponse.Status == 10 || geminiResponse.Status == 11)
+            {
+
+                //needs input
+
+                ToggleContainerControlsForBrowser(true);
+
+                NavigateGeminiWithInput(e, geminiResponse.Meta);
+
+
+            }
+            else if (geminiResponse.Status == 50 || geminiResponse.Status == 51)
+            {
+
+                ToastNotify("Page not found (status 51)\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
+            }
+            else
+            {
+                //some othe error - show to the user for info
+                ToastNotify(String.Format(
+                    "Cannot retrieve the content (exit code {0}): \n\n{1} \n\n{2}",
+                    result.Item1,
+                    String.Join("\n\n", geminiResponse.Info),
+                    String.Join("\n\n", geminiResponse.Errors)
+                    ),
+                    ToastMessageStyles.Error);
+            }
+
+            ToggleContainerControlsForBrowser(true);
+
+            //no further navigation right now
+            e.Cancel = true;
+
+
         }
+        private void NavigateGopherScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, string appDir, string sessionPath, SiteIdentity siteIdentity)
+        {
+            //check if it is a query selector without a parameter
+            if (!e.Uri.OriginalString.Contains("%09") && e.Uri.PathAndQuery.StartsWith("/7/"))
+            {
+                NavigateGopherWithInput(e);
+
+                ToggleContainerControlsForBrowser(true);
+
+                //no further navigation right now
+                e.Cancel = true;
+
+                return;
+
+            }
+
+
+            var proc = new ExecuteProcess();
+
+            //use local or dev binary for gemget
+            var gopherClient = LocalOrDevFile(appDir, "GoGopher", "..\\..\\..\\GoGopher", "main.exe");
+
+            string hash;
+
+            using (MD5 md5Hash = MD5.Create())
+            {
+                hash = GetMd5Hash(md5Hash, fullQuery);
+            }
+
+            //uses .txt as extension so content loaded as text/plain not interpreted by the browser
+            //if user requests a view-source.
+            var gopherFile = sessionPath + "\\" + hash + ".txt";
+            var gmiFile = sessionPath + "\\" + hash + ".gmi";
+            var htmlFile = sessionPath + "\\" + hash + ".htm";
+
+            //delete txt file as GemGet seems to sometimes overwrite not create afresh
+            File.Delete(gopherFile);
+
+            //delete any existing html file to encourage webbrowser to reload it
+            File.Delete(gmiFile);
+
+            //save to the file
+            var command = string.Format("\"{0}\" \"{1}\" \"{2}\"", gopherClient, fullQuery, gopherFile);
+
+
+            var result = proc.ExecuteCommand(command, true, true);
+
+            var exitCode = result.Item1;
+            var stdOut = result.Item2;
+
+            if (exitCode != 0)
+            {
+                ToastNotify(result.Item3, ToastMessageStyles.Error);
+                ToggleContainerControlsForBrowser(true);    //reenable browser
+                e.Cancel = true;
+                return;
+
+            }
+
+
+            if (File.Exists(gopherFile))
+            {
+                string parseFile;
+
+                if (stdOut.Contains("DIR") || stdOut.Contains("QRY"))
+                {
+                    //convert gophermap to text/gemini
+
+                    //ToastNotify("Converting gophermap to " + gmiFile);
+                    GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Map);
+                    parseFile = gmiFile;
+
+                }
+                else if (stdOut.Contains("TXT"))
+                {
+                    GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Text);
+                    parseFile = gmiFile;
+
+                }
+                else
+                {
+                    //treat as text, but notify the type
+                    ToastNotify("Loading a " + result.Item2.ToString());
+
+                    parseFile = gopherFile;
+
+                }
+
+                if (!File.Exists(gmiFile))
+                {
+                    ToastNotify("Did not create expected GMI file for " + fullQuery + " in " + gmiFile, ToastMessageStyles.Error);
+                    ToggleContainerControlsForBrowser(true);
+                    e.Cancel = true;
+
+
+                }
+                else
+                {
+                    var settings = new Settings();
+                    var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+
+                    var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
+
+                    ShowUrl(fullQuery, parseFile, htmlFile, userThemeBase, siteIdentity, e);
+
+                }
+
+            }
+
+        }
+
+
+        private void NavigateAboutScheme(System.Windows.Navigation.NavigatingCancelEventArgs e, string appDir, string sessionPath, SiteIdentity siteIdentity)
+        {
+            string fullQuery;
+            //just load the help file
+            //no further action
+            ToggleContainerControlsForBrowser(true);
+
+            var sourceFileName = e.Uri.PathAndQuery.Substring(1);      //trim off leading /
+
+            //this expects uri has a "geminaut" domain so gmitohtml converter can proceed for now
+            //I think it requires a domain for parsing...
+            fullQuery = e.Uri.OriginalString;
+
+            string hash;
+            using (MD5 md5Hash = MD5.Create())
+            {
+                hash = GetMd5Hash(md5Hash, fullQuery);
+            }
+
+            var hashFile = Path.Combine(sessionPath, hash + ".txt");
+            var htmlCreateFile = Path.Combine(sessionPath, hash + ".htm");
+
+            var helpFolder = LocalOrDevFolder(appDir, @"Docs", @"..\..\Docs");
+            var helpFile = Path.Combine(helpFolder, sourceFileName);
+
+            //use a specific theme so about pages look different to user theme
+            var templateBaseName = Path.Combine(helpFolder, "help-theme");
+
+
+
+            if (File.Exists(helpFile))
+            {
+                File.Copy(helpFile, hashFile, true);
+                ShowUrl(fullQuery, hashFile, htmlCreateFile, templateBaseName, siteIdentity, e);
+            }
+            else
+            {
+                ToastNotify("No content was found for: " + fullQuery, ToastMessageStyles.Warning);
+                e.Cancel = true;
+            }
+
+        }
+
+
 
         private void ShowImage(string sourceUrl, string imgFile, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
@@ -729,7 +599,7 @@ namespace GemiNaut
 
 
         }
-        private void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, string fabricId, string siteId, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        private void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, SiteIdentity siteIdentity, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
 
             string hash;
@@ -740,7 +610,7 @@ namespace GemiNaut
             }
 
             //create the html file
-            var result = GmiToHtml(gmiFile, htmlFile, sourceUrl, fabricId, themePath, siteId);
+            var result = GmiToHtml(gmiFile, htmlFile, sourceUrl, siteIdentity, themePath);
 
             if (!File.Exists(htmlFile))
             {
@@ -901,7 +771,7 @@ namespace GemiNaut
         }
 
         //convert GMI to HTML for display and save to outpath
-        public Tuple<int, string, string> GmiToHtml (string gmiPath, string outPath, string uri, string themeId, string theme, string siteId)
+        public Tuple<int, string, string> GmiToHtml (string gmiPath, string outPath, string uri, SiteIdentity siteIdentity, string theme)
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
 
@@ -910,8 +780,8 @@ namespace GemiNaut
             var rebolPath = LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
             var scriptPath = LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "GmiToHtml.r3");
 
-            var identiconUri = new System.Uri(FabricImagePath(themeId));
-            var fabricUri = new System.Uri(FabricImagePath(ReverseString(themeId)));
+            var identiconUri = new System.Uri(siteIdentity.IdenticonImagePath());
+            var fabricUri = new System.Uri(siteIdentity.FabricImagePath());
 
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
             //working with command line parameters, so we need to escape quotes
@@ -926,7 +796,7 @@ namespace GemiNaut
                 Base64Encode(theme),
                 Base64Encode(identiconUri.AbsoluteUri),
                 Base64Encode(fabricUri.AbsoluteUri),
-                Base64Encode(siteId)
+                Base64Encode(siteIdentity.GetSiteId())
 
                 );
 

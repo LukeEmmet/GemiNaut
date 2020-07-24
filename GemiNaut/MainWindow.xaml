@@ -21,30 +21,30 @@
         <!--include Menus control-->
         <DockPanel DockPanel.Dock="Top" Name="DockMenu">
             <Menu>
-                <MenuItem Header="File">
-                    <MenuItem Header="Exit" Click="MenuFileExit_Click" ></MenuItem>
+                <MenuItem Header="_File">
+                    <MenuItem Header="E_xit" Click="MenuFileExit_Click" ></MenuItem>
                 </MenuItem>
-                <MenuItem Header="View">
-                    <MenuItem Header="Source" IsChecked="False" Click="MenuViewSource_Click">
+                <MenuItem Header="_View">
+                    <MenuItem Header="_Source" IsChecked="False" Click="MenuViewSource_Click">
 
                     </MenuItem>
-                    <MenuItem Header="Settings">
-                        <MenuItem Header="Set Home page" Click="MenuViewSettingsHome_Click">
+                    <MenuItem Header="Se_ttings">
+                        <MenuItem Header="Set _Home page" Click="MenuViewSettingsHome_Click">
 
                         </MenuItem>
                     </MenuItem>
-                    <MenuItem Name="mnuTheme" Header="Theme"></MenuItem>
+                    <MenuItem Name="mnuTheme" Header="_Theme"></MenuItem>
                 </MenuItem>
-                <MenuItem Header="Bookmarks">
-                    <MenuItem Name="mnuMenuBookmarksAdd" Header="Add bookmark" Click="mnuMenuBookmarksAdd_Click" ></MenuItem>
-                    <MenuItem Name="mnuMenuBookmarkesEdit" Header="Manage bookmarks" Click="mnuMenuBookmarksEdit_Click" ></MenuItem>
+                <MenuItem Header="_Bookmarks">
+                    <MenuItem Name="mnuMenuBookmarksAdd" Header="_Add bookmark" Click="mnuMenuBookmarksAdd_Click" ></MenuItem>
+                    <MenuItem Name="mnuMenuBookmarkesEdit" Header="_Manage bookmarks" Click="mnuMenuBookmarksEdit_Click" ></MenuItem>
                     <Separator></Separator>
-                    <MenuItem Name="mnuBookMarks" Header="Bookmarks"></MenuItem>
+                    <MenuItem Name="mnuBookMarks" Header="_Bookmarks"></MenuItem>
                 </MenuItem>
-                <MenuItem Header="Help">
-                    <MenuItem Header="Contents" Click="MenuHelpContents_Click" ></MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="_Contents" Click="MenuHelpContents_Click" ></MenuItem>
                     <Separator></Separator>
-                    <MenuItem Header="About" Click="MenuHelpAbout_Click" ></MenuItem>
+                    <MenuItem Header="_About" Click="MenuHelpAbout_Click" ></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>

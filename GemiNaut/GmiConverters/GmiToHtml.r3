@@ -188,7 +188,7 @@ foreach line lines [
                 if last-element <> 'quote [ insert-missing-preceding-line]
                 display: trim take-from line 2
                  last-element: 'quote
-                 rejoin [{<div class=blockquote } page-scheme {">} (markup-escape display) "</div>"]
+                 rejoin [{<div class=blockquote } page-scheme {">} (markup-escape display) "&nbsp;</div>"]
             ]
 
 
@@ -283,7 +283,7 @@ foreach line lines [
                                 decorator-glyph: "&#128160;"  
                                 tooltip:  rejoin [
                                                 decorator-glyph
-                                                {link to } 
+                                                { link to } 
                                                 (uppercase copy link-extension)
                                                 { image:}
                                                 { } (last parse/all link   "/")
