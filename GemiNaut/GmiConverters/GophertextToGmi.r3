@@ -58,7 +58,10 @@ lines: read/lines  in-path
 out: copy []
 
 ;dont try to auto link in these text files (detected by URL file extension) as it will likely be wrong
-exclude-extensions: ["htm" "html" "md" "gmi" "gemini"]
+;there does seem to be some md in gopher - some used  in a gopher/text like way, other classical md with embedded markup
+;cross-served. Maybe split into simple and ambitious rendering - but probably need to sort out the autolinking
+;schemes to be more sensible. Some day...
+exclude-extensions: ["htm" "html"  "gmi" "gemini"]
 
 append out join "# " gopher-uri-to-title uri true  ;get a nice title  trimming off a trailing extension if necessary
 

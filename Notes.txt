@@ -77,6 +77,7 @@ register gemini:// handler (with consent, not automatic)
 
 0.8.7
 
+* when upgrading from previous version, keep previous settings
 * hanging indents for bullets and links in terminal theme
 * keyboard shortcuts for bookmarks (e.g. Alt+B) and other menus
 * accomodate non-standard ports when link building (currently ignored)

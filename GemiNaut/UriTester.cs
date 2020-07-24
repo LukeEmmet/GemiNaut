@@ -1,4 +1,4 @@
-//===================================================
+﻿//===================================================
 //    GemiNaut, a friendly browser for Gemini space on Windows
 
 //    Copyright (C) 2020, Luke Emmet 
@@ -19,26 +19,18 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
-using System.ComponentModel;
+using System;
+
+
 namespace GemiNaut
 {
-    public class ObservableObject :INotifyPropertyChanged
+    static class UriTester
     {
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Raises the PropertyChanged event.
-        /// </summary>
-        /// <param name="propertyName">The name of the property that was changed.</param>
-        protected void RaisePropertyChangedEvent(string propertyName)
+        public static bool TextIsUri(string text)
         {
-            if (PropertyChanged != null)
-            {
-                var e = new PropertyChangedEventArgs(propertyName);
-                PropertyChanged(this, e);
-            }
+            Uri outUri;
+            return (Uri.TryCreate(text, UriKind.Absolute, out outUri));
         }
-
     }
 }

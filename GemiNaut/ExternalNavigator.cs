@@ -1,4 +1,4 @@
-//===================================================
+﻿//===================================================
 //    GemiNaut, a friendly browser for Gemini space on Windows
 
 //    Copyright (C) 2020, Luke Emmet 
@@ -19,25 +19,21 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
-using System.ComponentModel;
 namespace GemiNaut
 {
-    public class ObservableObject :INotifyPropertyChanged
+    public class ExternalNavigator
     {
+        private MainWindow mMainWindow;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Raises the PropertyChanged event.
-        /// </summary>
-        /// <param name="propertyName">The name of the property that was changed.</param>
-        protected void RaisePropertyChangedEvent(string propertyName)
+        public ExternalNavigator(MainWindow Window)
         {
-            if (PropertyChanged != null)
-            {
-                var e = new PropertyChangedEventArgs(propertyName);
-                PropertyChanged(this, e);
-            }
+            mMainWindow = Window;
+        }
+        //launch url in system browser
+        public void LaunchExternalUri(string uri)
+        {
+            System.Diagnostics.Process.Start(uri);
+            mMainWindow.ToastNotify("Launching in system browser: " + uri);
         }
 
     }

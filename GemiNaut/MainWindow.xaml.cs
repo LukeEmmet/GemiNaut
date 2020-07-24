@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using GemiNaut.Serialization.Commandline;
@@ -15,12 +13,8 @@ using GemiNaut.Singletons;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using Microsoft.VisualBasic;
-using System.Web;
 using GemiNaut.Properties;
 using mshtml;
-using System.Net;
-using GemiNaut.Response;
-using System.Web.UI.HtmlControls;
 
 namespace GemiNaut
 {
@@ -29,13 +23,8 @@ namespace GemiNaut
     {
         private Dictionary<string, string> _urlsByHash;
         private Notifier _notifier;
+        private BookmarkManager _bookmarkManager;
 
-
-
-        public enum GopherParseTypes
-        {
-            Map, Text
-        }
 
         public MainWindow()
         {
@@ -59,10 +48,12 @@ namespace GemiNaut
             });
 
             _urlsByHash = new Dictionary<string, string>();
+            _bookmarkManager = new BookmarkManager(this, BrowserControl);
 
-            CopyAssets();
+            AppInit.UpgradeSettings();
+            AppInit.CopyAssets();
 
-            RefreshBookmarkMenu();
+            _bookmarkManager.RefreshBookmarkMenu();
 
             var settings = new Settings();
 
@@ -72,35 +63,14 @@ namespace GemiNaut
             TickSelectedThemeMenu();
         }
 
-        private void CopyAssets()
-        {
-            var sessionPath = Session.Instance.SessionPath;
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
-
-            var assetsTarget = Path.Combine(sessionPath, "Assets");
-
-            if (!Directory.Exists(assetsTarget)) { Directory.CreateDirectory(assetsTarget); }
-
-            var assetsFolder = LocalOrDevFolder(appDir, @"GmiConverters\Themes\Assets", @"..\..\GmiConverters\Themes\Assets");
-
-            foreach (var file in Directory.GetFiles(assetsFolder))
-            {
-                File.Copy(file, Path.Combine(assetsTarget, Path.GetFileName(file)));
-            }
 
 
-        }
-        private bool TextIsUri(string text)
-        {
-            Uri outUri;
-            return (Uri.TryCreate(text, UriKind.Absolute, out outUri));
-        }
 
         private void txtUrl_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
 
-                if (TextIsUri(txtUrl.Text))
+                if (UriTester.TextIsUri(txtUrl.Text))
                 {
                     BrowserControl.Navigate(txtUrl.Text);
 
@@ -112,35 +82,7 @@ namespace GemiNaut
 
 
 
-
-
-        public static string GetMd5Hash(MD5 md5Hash, string input)
-        {
-
-            string hash;
-            // Create a new Stringbuilder to collect the bytes
-            // and create a string.
-            StringBuilder sBuilder = new StringBuilder();
-            //regenerate the hashes using the redirected target url
-            using (MD5 md5 = MD5.Create())
-            {
-                // Convert the input string to a byte array and compute the hash.
-                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-
-
-                // Loop through each byte of the hashed data
-                // and format each one as a hexadecimal string.
-                for (int i = 0; i < data.Length; i++)
-                {
-                    sBuilder.Append(data[i].ToString("x2"));
-                }
-            }
-            // Return the hexadecimal string.
-            return sBuilder.ToString();
-        }
-
-
-        private void ToggleContainerControlsForBrowser(bool toState)
+        public void ToggleContainerControlsForBrowser(bool toState)
         {
 
             //we need to turn off other elements so focus doesnt move elsewhere
@@ -156,13 +98,8 @@ namespace GemiNaut
 
 
 
-
-
-
-
         private void BrowserControl_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
 
 
             ////doc might be null - you need to check when using!
@@ -170,9 +107,6 @@ namespace GemiNaut
             ////this is how we could detect a click on a link to an image...
             //if (doc?.activeElement != null) {ToastNotify(doc.activeElement.outerHTML); }
 
-
-            //use the current session folder
-            var sessionPath = Session.Instance.SessionPath;
 
             var siteIdentity = new SiteIdentity(e.Uri, Session.Instance);
 
@@ -186,408 +120,51 @@ namespace GemiNaut
             }
 
 
-
             ToggleContainerControlsForBrowser(false);
-
-
-
-
 
             //these are the only ones we "navigate" to. We do this by downloading the GMI content
             //converting to HTML and then actually navigating to that.
             if (e.Uri.Scheme == "gemini")
             {
-                NavigateGeminiScheme(fullQuery, e, appDir, sessionPath, siteIdentity);
+                var geminiNavigator = new GeminiNavigator(this, this.BrowserControl);
+                geminiNavigator.NavigateGeminiScheme(fullQuery, e, siteIdentity);
             }
 
             else if (e.Uri.Scheme == "gopher")
             {
-                NavigateGopherScheme(fullQuery, e, appDir, sessionPath, siteIdentity);
+                var gopherNavigator = new GopherNavigator(this, this.BrowserControl);
+                gopherNavigator.NavigateGopherScheme(fullQuery, e, siteIdentity);
             }
 
+            else if (e.Uri.Scheme == "about")
+            {
+                var aboutNavigator = new AboutNavigator(this, this.BrowserControl);
+                aboutNavigator.NavigateAboutScheme(e, siteIdentity);
+
+            }
             else if (e.Uri.Scheme == "file")
             {
                 //just load the converted html file
                 //no further action.
             }
-            else if (e.Uri.Scheme == "about")
-            {
-                NavigateAboutScheme(e, appDir, sessionPath, siteIdentity);
-
-            }
             else
             {
                 //we don't care about any other protocols
                 //so we open those in system web browser to deal with
-                LaunchExternalUri(e.Uri.ToString());
+                var launcher = new ExternalNavigator(this);
+                launcher.LaunchExternalUri(e.Uri.ToString());
                 ToggleContainerControlsForBrowser(true);
                 e.Cancel = true;
             }
         }
 
 
-
-        private void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, string appDir, string sessionPath, SiteIdentity siteIdentity)
-        {
-            string geminiUri;
-            geminiUri = e.Uri.OriginalString;
-
-
-            var proc = new ExecuteProcess();
-
-            //use local or dev binary for gemget
-            var gemGet = LocalOrDevFile(appDir, "Gemget", "..\\..\\..\\Gemget", "gemget-windows-386.exe");
-
-            string hash;
-
-            using (MD5 md5Hash = MD5.Create())
-            {
-                hash = GetMd5Hash(md5Hash, fullQuery);
-            }
-
-            //uses .txt as extension so content loaded as text/plain not interpreted by the browser
-            //if user requests a view-source.
-            var rawFile = sessionPath + "\\" + hash + ".txt";
-            var gmiFile = sessionPath + "\\" + hash + ".gmi";
-            var htmlFile = sessionPath + "\\" + hash + ".htm";
-
-            //delete txt file as GemGet seems to sometimes overwrite not create afresh
-            File.Delete(rawFile);
-            File.Delete(gmiFile);
-
-            //delete any existing html file to encourage webbrowser to reload it
-            File.Delete(htmlFile);
-
-            //use insecure flag as gemget does not check certs correctly in current version
-            var command = string.Format("\"{0}\" --header -m \"1MB\" -t 5 -o \"{1}\" \"{2}\"", gemGet, rawFile, fullQuery);
-
-            var result = proc.ExecuteCommand(command, true, true);
-
-            var geminiResponse = new GemiNaut.Response.GeminiResponse(fullQuery);
-
-            geminiResponse.ParseGemGet(result.Item2);   //parse stdout   
-            geminiResponse.ParseGemGet(result.Item3);   //parse stderr
-
-            //ToastNotify(geminiResponse.Status + " " + geminiResponse.Meta);
-
-
-            if (geminiResponse.AbandonedTimeout || geminiResponse.AbandonedSize)
-            {
-                ToastNotify("Retrieval of the content was abandoned as it exceeds the max size or the time taken to download was too long:\n\n" + fullQuery,
-                    ToastMessageStyles.Warning);
-                e.Cancel = true;
-                ToggleContainerControlsForBrowser(true);
-                return;
-            }
-
-
-            if (File.Exists(rawFile))
-            {
-
-                if (geminiResponse.Meta.Contains("text/gemini"))
-                {
-                    File.Copy(rawFile, gmiFile);
-
-                }
-                else if (geminiResponse.Meta.Contains("image/"))
-                {
-                    //its an image - rename the raw file and just show it
-                    var ext = Path.GetExtension(fullQuery);
-
-                    var imgFile = rawFile + "." + ext;
-                    File.Copy(rawFile, imgFile, true); //rename overwriting
-
-                    ShowImage(fullQuery, imgFile, e);
-                    return;
-
-                }
-                else
-                {
-                    //convert plain text to a gemini version (wraps it in a preformatted section)
-                    var textToGmiResult = TextToGmi(rawFile, gmiFile);
-
-                    if (textToGmiResult.Item1 != 0)
-                    {
-                        ToastNotify("Could not render text as GMI: " + fullQuery, ToastMessageStyles.Error);
-                        ToggleContainerControlsForBrowser(true);
-                        e.Cancel = true;
-                        return;
-                    }
-
-                }
-
-
-
-                if (geminiResponse.Redirected)
-                {
-                    var redirectUri = geminiResponse.FinalUrl;
-
-                    if (redirectUri.Substring(0, 9) != "gemini://")
-                    {
-                        //need to unpack
-                        var redirectUriObj = new Uri(redirectUri);
-                        if (redirectUriObj.Scheme != "gemini")
-                        {
-                            //is external
-                            LaunchExternalUri(redirectUri);
-                            e.Cancel = true;
-                            ToggleContainerControlsForBrowser(true);
-                        }
-                        else
-                        {
-                            //is a relative url, not yet implemented
-                            ToastNotify("Redirect to relative URL not yet implemented: " + redirectUri, ToastMessageStyles.Warning);
-                            ToggleContainerControlsForBrowser(true);
-                            e.Cancel = true;
-                        }
-                    }
-                    else
-                    {
-                        //redirected to a full gemini url
-                        geminiUri = redirectUri;
-                    }
-
-                    //regenerate the hashes using the redirected target url
-                    using (MD5 md5Hash = MD5.Create())
-                    {
-                        hash = GetMd5Hash(md5Hash, geminiUri);
-                    }
-
-                    var gmiFileNew = sessionPath + "\\" + hash + ".txt";
-                    var htmlFileNew = sessionPath + "\\" + hash + ".htm";
-
-                    //move the source file
-                    try
-                    {
-                        if (File.Exists(gmiFileNew))
-                        {
-                            File.Delete(gmiFileNew);
-                        }
-                        File.Move(gmiFile, gmiFileNew);
-                    }
-                    catch (Exception err)
-                    {
-                        ToastNotify(err.ToString(), ToastMessageStyles.Error);
-                    }
-
-                    //update locations of gmi and html file
-                    gmiFile = gmiFileNew;
-                    htmlFile = htmlFileNew;
-
-                }
-                else
-                {
-                    geminiUri = fullQuery;
-                }
-
-                var settings = new Settings();
-                var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
-
-                var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
-
-                ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, siteIdentity, e);
-
-            }
-            else if (geminiResponse.Status == 10 || geminiResponse.Status == 11)
-            {
-
-                //needs input
-
-                ToggleContainerControlsForBrowser(true);
-
-                NavigateGeminiWithInput(e, geminiResponse.Meta);
-
-
-            }
-            else if (geminiResponse.Status == 50 || geminiResponse.Status == 51)
-            {
-
-                ToastNotify("Page not found (status 51)\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
-            }
-            else
-            {
-                //some othe error - show to the user for info
-                ToastNotify(String.Format(
-                    "Cannot retrieve the content (exit code {0}): \n\n{1} \n\n{2}",
-                    result.Item1,
-                    String.Join("\n\n", geminiResponse.Info),
-                    String.Join("\n\n", geminiResponse.Errors)
-                    ),
-                    ToastMessageStyles.Error);
-            }
-
-            ToggleContainerControlsForBrowser(true);
-
-            //no further navigation right now
-            e.Cancel = true;
-
-
-        }
-        private void NavigateGopherScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, string appDir, string sessionPath, SiteIdentity siteIdentity)
-        {
-            //check if it is a query selector without a parameter
-            if (!e.Uri.OriginalString.Contains("%09") && e.Uri.PathAndQuery.StartsWith("/7/"))
-            {
-                NavigateGopherWithInput(e);
-
-                ToggleContainerControlsForBrowser(true);
-
-                //no further navigation right now
-                e.Cancel = true;
-
-                return;
-
-            }
-
-
-            var proc = new ExecuteProcess();
-
-            //use local or dev binary for gemget
-            var gopherClient = LocalOrDevFile(appDir, "GoGopher", "..\\..\\..\\GoGopher", "main.exe");
-
-            string hash;
-
-            using (MD5 md5Hash = MD5.Create())
-            {
-                hash = GetMd5Hash(md5Hash, fullQuery);
-            }
-
-            //uses .txt as extension so content loaded as text/plain not interpreted by the browser
-            //if user requests a view-source.
-            var gopherFile = sessionPath + "\\" + hash + ".txt";
-            var gmiFile = sessionPath + "\\" + hash + ".gmi";
-            var htmlFile = sessionPath + "\\" + hash + ".htm";
-
-            //delete txt file as GemGet seems to sometimes overwrite not create afresh
-            File.Delete(gopherFile);
-
-            //delete any existing html file to encourage webbrowser to reload it
-            File.Delete(gmiFile);
-
-            //save to the file
-            var command = string.Format("\"{0}\" \"{1}\" \"{2}\"", gopherClient, fullQuery, gopherFile);
-
-
-            var result = proc.ExecuteCommand(command, true, true);
-
-            var exitCode = result.Item1;
-            var stdOut = result.Item2;
-
-            if (exitCode != 0)
-            {
-                ToastNotify(result.Item3, ToastMessageStyles.Error);
-                ToggleContainerControlsForBrowser(true);    //reenable browser
-                e.Cancel = true;
-                return;
-
-            }
-
-
-            if (File.Exists(gopherFile))
-            {
-                string parseFile;
-
-                if (stdOut.Contains("DIR") || stdOut.Contains("QRY"))
-                {
-                    //convert gophermap to text/gemini
-
-                    //ToastNotify("Converting gophermap to " + gmiFile);
-                    GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Map);
-                    parseFile = gmiFile;
-
-                }
-                else if (stdOut.Contains("TXT"))
-                {
-                    GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Text);
-                    parseFile = gmiFile;
-
-                }
-                else
-                {
-                    //treat as text, but notify the type
-                    ToastNotify("Loading a " + result.Item2.ToString());
-
-                    parseFile = gopherFile;
-
-                }
-
-                if (!File.Exists(gmiFile))
-                {
-                    ToastNotify("Did not create expected GMI file for " + fullQuery + " in " + gmiFile, ToastMessageStyles.Error);
-                    ToggleContainerControlsForBrowser(true);
-                    e.Cancel = true;
-
-
-                }
-                else
-                {
-                    var settings = new Settings();
-                    var userThemesFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
-
-                    var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
-
-                    ShowUrl(fullQuery, parseFile, htmlFile, userThemeBase, siteIdentity, e);
-
-                }
-
-            }
-
-        }
-
-
-        private void NavigateAboutScheme(System.Windows.Navigation.NavigatingCancelEventArgs e, string appDir, string sessionPath, SiteIdentity siteIdentity)
-        {
-            string fullQuery;
-            //just load the help file
-            //no further action
-            ToggleContainerControlsForBrowser(true);
-
-            var sourceFileName = e.Uri.PathAndQuery.Substring(1);      //trim off leading /
-
-            //this expects uri has a "geminaut" domain so gmitohtml converter can proceed for now
-            //I think it requires a domain for parsing...
-            fullQuery = e.Uri.OriginalString;
-
-            string hash;
-            using (MD5 md5Hash = MD5.Create())
-            {
-                hash = GetMd5Hash(md5Hash, fullQuery);
-            }
-
-            var hashFile = Path.Combine(sessionPath, hash + ".txt");
-            var htmlCreateFile = Path.Combine(sessionPath, hash + ".htm");
-
-            var helpFolder = LocalOrDevFolder(appDir, @"Docs", @"..\..\Docs");
-            var helpFile = Path.Combine(helpFolder, sourceFileName);
-
-            //use a specific theme so about pages look different to user theme
-            var templateBaseName = Path.Combine(helpFolder, "help-theme");
-
-
-
-            if (File.Exists(helpFile))
-            {
-                File.Copy(helpFile, hashFile, true);
-                ShowUrl(fullQuery, hashFile, htmlCreateFile, templateBaseName, siteIdentity, e);
-            }
-            else
-            {
-                ToastNotify("No content was found for: " + fullQuery, ToastMessageStyles.Warning);
-                e.Cancel = true;
-            }
-
-        }
-
-
-
-        private void ShowImage(string sourceUrl, string imgFile, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        public void ShowImage(string sourceUrl, string imgFile, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             string hash;
 
-            using (MD5 md5Hash = MD5.Create())
-            {
-                hash = GetMd5Hash(md5Hash, sourceUrl);
-            }
+            hash = HashService.GetMd5Hash(sourceUrl);
+            
 
             _urlsByHash[hash] = sourceUrl;
 
@@ -599,15 +176,13 @@ namespace GemiNaut
 
 
         }
-        private void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, SiteIdentity siteIdentity, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        public void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, SiteIdentity siteIdentity, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
 
             string hash;
 
-            using (MD5 md5Hash = MD5.Create())
-            {
-                hash = GetMd5Hash(md5Hash, sourceUrl);
-            }
+            hash = HashService.GetMd5Hash(sourceUrl);
+            
 
             //create the html file
             var result = GmiToHtml(gmiFile, htmlFile, sourceUrl, siteIdentity, themePath);
@@ -633,152 +208,18 @@ namespace GemiNaut
 
         }
 
-        //launch url in system browser
-        private void LaunchExternalUri(string uri)
-        {
-                System.Diagnostics.Process.Start(uri);
-                ToastNotify("Launching in system browser: " + uri);
-        }
 
-
-        //navigate to a url but get some user input first
-        private void NavigateGeminiWithInput(System.Windows.Navigation.NavigatingCancelEventArgs e, string message)
-        {
-
-            //position input box approx in middle of main window
-
-            var windowCentre = WindowCentre(Application.Current.MainWindow);
-            var inputPrompt = "Input request from Gemini server\n\n" +
-                "  " + e.Uri.Host + e.Uri.LocalPath.ToString() + "\n\n" +
-                message;
-
-            string input = Interaction.InputBox(inputPrompt, "Server input request", "", windowCentre.Item1, windowCentre.Item2);
-
-            if (input != "")
-            {
-                //encode the query
-                var b = new UriBuilder();
-                b.Scheme = e.Uri.Scheme;
-                b.Host = e.Uri.Host;
-                if (e.Uri.Port != -1) { b.Port = e.Uri.Port; }
-                b.Path = e.Uri.LocalPath;   
-                //!%22%C2%A3$%25%5E&*()_+1234567890-=%7B%7D:@~%3C%3E?[];'#,./
-                b.Query = System.Uri.EscapeDataString(input);      //escape the query result
-
-                //ToastNotify(b.ToString());
-
-                BrowserControl.Navigate(b.ToString());
-            }
-            else
-            {
-                //dont do anything further with navigating the browser
-                e.Cancel = true;
-            }
-        }
-
-        //navigate to a url but get some user input first
-        private void NavigateGopherWithInput(System.Windows.Navigation.NavigatingCancelEventArgs e)
-        {
-
-            //position input box approx in middle of main window
-
-            var windowCentre = WindowCentre(Application.Current.MainWindow);
-            var inputPrompt = "Input request from Gopher server\n\n" +
-                "  " + e.Uri.Host + e.Uri.LocalPath.ToString() + "\n\n" +
-                "Please provide your input:";
-
-            string input = Interaction.InputBox(inputPrompt, "Server input request", "", windowCentre.Item1, windowCentre.Item2);
-
-            if (input != "")
-            {
-                //encode the query
-                var b = new UriBuilder();
-                b.Scheme = e.Uri.Scheme;
-                b.Host = e.Uri.Host;
-                if (e.Uri.Port != -1) { b.Port = e.Uri.Port; }
-                b.Path = e.Uri.LocalPath;
-
-
-                //!%22%C2%A3$%25%5E&*()_+1234567890-=%7B%7D:@~%3C%3E?[];'#,./
-
-                //use an escaped tab then the content
-                var query = b.ToString() + "%09" + System.Uri.EscapeDataString(input);      //escape the query result;
-                //ToastNotify(query);
-
-                BrowserControl.Navigate(query);
-            }
-            else
-            {
-                //dont do anything further with navigating the browser
-                e.Cancel = true;
-            }
-        }
-
-        //get the position of the centre of a window
-        private Tuple<int, int> WindowCentre(Window window)
-        {
-            var inputLeft = (int) (window.Left + (window.Width / 2) - 180);
-            var inputTop = (int) (window.Top + (window.Height / 2) - 20);
-
-            return new Tuple<int, int>(inputLeft, inputTop);
-        }
-
-        //return the expected location of a file in two possible folders, preferring the local one
-        //(only checks for folder existence, not file)
-        public string LocalOrDevFile(string startFolder, string localFolder, string devFolder, string filename)
-        {
-            var useFolder = LocalOrDevFolder(startFolder, localFolder, devFolder);
-            
-            return Path.GetFullPath(Path.Combine(startFolder, useFolder, filename));
-        }
-
-        public string LocalOrDevFolder(string startFolder, string localFolder, string devFolder)
-        {
-            return Directory.Exists(Path.Combine(startFolder, localFolder))
-                ? startFolder + localFolder
-                : Path.Combine(startFolder, devFolder);
-        }
-
-
-        //convert text to GMI for raw text
-        public Tuple<int, string, string> TextToGmi(string rawPath, string outPath)
-        {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
-
-            //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
-            //otherwise we use the development ones which are version controlled
-            var rebolPath = LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "TextAsIs.r3");
-
-
-            //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
-            //working with command line parameters, so we need to escape quotes
-            //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
-            //also hypens are also problematic, so we base64 each param and unpack in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\"  ",
-                rebolPath,
-                scriptPath,
-                Base64Encode(rawPath),
-                Base64Encode(outPath)
-
-                );
-
-            var execProcess = new ExecuteProcess();
-
-            var result = execProcess.ExecuteCommand(command);
-
-            return (result);
-        }
 
         //convert GMI to HTML for display and save to outpath
         public Tuple<int, string, string> GmiToHtml (string gmiPath, string outPath, string uri, SiteIdentity siteIdentity, string theme)
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+            var finder = new ResourceFinder();
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
             //otherwise we use the development ones which are version controlled
-            var rebolPath = LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "GmiToHtml.r3");
+            var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
+            var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "GmiToHtml.r3");
 
             var identiconUri = new System.Uri(siteIdentity.IdenticonImagePath());
             var fabricUri = new System.Uri(siteIdentity.FabricImagePath());
@@ -790,13 +231,13 @@ namespace GemiNaut
             var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\" \"{8}\" ",
                 rebolPath, 
                 scriptPath,
-                Base64Encode(gmiPath),
-                Base64Encode(outPath),
-                Base64Encode(uri),
-                Base64Encode(theme),
-                Base64Encode(identiconUri.AbsoluteUri),
-                Base64Encode(fabricUri.AbsoluteUri),
-                Base64Encode(siteIdentity.GetSiteId())
+                Base64Service.Base64Encode(gmiPath),
+                Base64Service.Base64Encode(outPath),
+                Base64Service.Base64Encode(uri),
+                Base64Service.Base64Encode(theme),
+                Base64Service.Base64Encode(identiconUri.AbsoluteUri),
+                Base64Service.Base64Encode(fabricUri.AbsoluteUri),
+                Base64Service.Base64Encode(siteIdentity.GetSiteId())
 
                 );
 
@@ -807,38 +248,7 @@ namespace GemiNaut
             return (result);
         }
 
-        //convert GopherText to GMI and save to outpath
-        public void GophertoGmi(string gopherPath, string outPath, string uri, GopherParseTypes parseType)
-        {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
 
-            var parseScript = (parseType == GopherParseTypes.Map) ? "GophermapToGmi.r3" : "GophertextToGmi.r3";
-
-            //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
-            //otherwise we use the development ones which are version controlled
-            var rebolPath = LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", parseScript);
-            
-            //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
-            //working with command line parameters, so we need to escape quotes
-            //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
-            //also hypens are also problematic, so we base64 each parameter and unpack it in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" ",
-                rebolPath,
-                scriptPath,
-                Base64Encode(gopherPath),
-                Base64Encode(outPath),
-                Base64Encode(uri)
-
-                );
-
-            var execProcess = new ExecuteProcess();
-
-            var result = execProcess.ExecuteCommand(command);
-
-            Debug.Print(command);
-
-        }
         public enum ToastMessageStyles
         {
             Information, Warning, Error,
@@ -867,16 +277,7 @@ namespace GemiNaut
             ToastNotify(message, ToastMessageStyles.Information);
         }
 
-        /// <summary>
-        /// base 64 function from https://stackoverflow.com/questions/11743160/how-do-i-encode-and-decode-a-base64-string
-        /// </summary>
-        /// <param name="plainText"></param>
-        /// <returns></returns>
-        public static string Base64Encode(string plainText)
-        {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
-            return System.Convert.ToBase64String(plainTextBytes);
-        }
+
         
 
         private void BrowseBack_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -917,7 +318,7 @@ namespace GemiNaut
 
         private void GoToPage_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (TextIsUri(txtUrl.Text))
+            if (UriTester.TextIsUri(txtUrl.Text))
             {
                 BrowserControl.Navigate(txtUrl.Text);
             }
@@ -969,11 +370,8 @@ namespace GemiNaut
             //use the current session folder
             var sessionPath = Session.Instance.SessionPath;
 
-            using (MD5 md5Hash = MD5.Create())
-            {
-
-                hash = GetMd5Hash(md5Hash, txtUrl.Text);
-            }
+            hash = HashService.GetMd5Hash(txtUrl.Text);
+            
 
             //uses .txt as extension so content loaded as text/plain not interpreted by the browser
             var gmiFile = sessionPath + "\\" + hash + ".txt";
@@ -986,7 +384,7 @@ namespace GemiNaut
         private void MenuViewSettingsHome_Click(object sender, RoutedEventArgs e)
         {
             var settings = new Settings();
-            var position = WindowCentre(Application.Current.MainWindow);
+            var position = WindowGeometry.WindowCentre(Application.Current.MainWindow);
             var newHome = Interaction.InputBox("Enter your home URL", "Home URL", settings.HomeUrl, position.Item1, position.Item2);
 
             if (newHome != "")
@@ -1056,7 +454,9 @@ namespace GemiNaut
         private void BuildThemeMenu()
         {
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
-            var themeFolder = LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+            var finder = new ResourceFinder();
+
+            var themeFolder = finder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
 
 
             foreach (var file in Directory.EnumerateFiles(themeFolder, "*.htm")) {
@@ -1108,8 +508,6 @@ namespace GemiNaut
             ShowTitle(doc);
 
 
-          
-
             //we need to turn on/off other elements so focus doesnt move elsewhere
             //in that case the keyboard events go elsewhere and you have to click 
             //into the browser to get it to work again
@@ -1119,37 +517,17 @@ namespace GemiNaut
 
         private void mnuMenuBookmarksAdd_Click(object sender, RoutedEventArgs e)
         {
-            var settings = new Settings();
-
-            var doc = (HTMLDocument)BrowserControl.Document;
-
+            var bmManager = new BookmarkManager(this, BrowserControl);
+            bmManager.AddBookmark(txtUrl.Text, ((HTMLDocument)BrowserControl.Document).title);
             var url = txtUrl.Text;
 
-            foreach (var line in BookmarkLines())
-            {
-                var linkParts = ParseGeminiLink(line);
-                if (linkParts[0] == url)
-                {
-                    //already exists
-                    ToastNotify("That URL is already in the bookmarks, skipping.\n" + url, ToastMessageStyles.Warning);
-                    return;
-                }
-            }
-
-            //a new one
-            settings.Bookmarks += "\r\n" + "=> " + url + "  " + doc.title;
-            settings.Save();
-            RefreshBookmarkMenu();
-            ToastNotify("Bookmark added: " + (doc.title + " " + txtUrl.Text).Trim(), ToastMessageStyles.Success);
         }
 
         private void mnuMenuBookmarksEdit_Click(object sender, RoutedEventArgs e)
         {
             var settings = new Settings();
 
-            Bookmarks winBookmarks = new Bookmarks();
-            winBookmarks.MainWindow(this);
-
+            Bookmarks winBookmarks = new Bookmarks(this, BrowserControl);
 
             //show modally
             winBookmarks.Owner = this;
@@ -1157,7 +535,7 @@ namespace GemiNaut
 
         }
 
-        private void mnuMenuBookmarksGo_Click(object sender, RoutedEventArgs e)
+        public void mnuMenuBookmarksGo_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = (MenuItem)sender;
 
@@ -1165,80 +543,7 @@ namespace GemiNaut
 
         }
 
-        private string[] BookmarkLines()
-        {
-            var settings = new Settings();
-            string[] array = new string[2];
-            array[0] = "\r\n";
-
-            return (settings.Bookmarks.Split(array, StringSplitOptions.RemoveEmptyEntries));
-
-        }
-
-        private string[] ParseGeminiLink(string line)
-        {
-            var linkRegex = new Regex(@"\s*=>\s([^\s]*)(.*)");
-            string[] array = new string[2];
-
-            if (linkRegex.IsMatch(line))
-            {
-                Match match = linkRegex.Match(line);
-                array[0] = match.Groups[1].ToString().Trim();
-                array[1] = match.Groups[2].ToString().Trim();
-
-                //if display text is empty, use url
-                if (array[1] == "") {
-                    array[1] = array[0];
-                }
-
-            } else
-            {
-                //isnt a link, return null,null
-                array[0] = null;
-                array[1] = null;
-            }
-
-            return (array);
-        }
-
-        public void RefreshBookmarkMenu()
-        {
-
-            mnuBookMarks.Items.Clear();
-
-            foreach (var line in BookmarkLines())
-            {
-                var bmMenu = new MenuItem();
-
-                var linkParts = ParseGeminiLink(line);
-                if (TextIsUri(linkParts[0]))
-                {
-                    bmMenu.CommandParameter = linkParts[0];
-                    bmMenu.Header = linkParts[1];
-                    bmMenu.ToolTip = linkParts[0];
-
-                    bmMenu.Click += mnuMenuBookmarksGo_Click;
-
-                    mnuBookMarks.Items.Add(bmMenu);
-
-                }
-                else if (line.Substring(0, 2) == "--")
-                {
-                    mnuBookMarks.Items.Add(new Separator());
-                }
-                else if (line.Substring(0, 2) == "__")
-                {
-                    mnuBookMarks.Items.Add(new Separator());
-                }
-                {
-                    //anything else in the bookmarks file ignored for now
-                }
 
 
-            }
-
-
-
-        }
     }
 }

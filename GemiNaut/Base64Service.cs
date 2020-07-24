@@ -1,4 +1,4 @@
-//===================================================
+﻿//===================================================
 //    GemiNaut, a friendly browser for Gemini space on Windows
 
 //    Copyright (C) 2020, Luke Emmet 
@@ -19,26 +19,24 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
-using System.ComponentModel;
+
+using System;
+using System.Text;
+
 namespace GemiNaut
 {
-    public class ObservableObject :INotifyPropertyChanged
+    static class Base64Service
     {
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
-        /// Raises the PropertyChanged event.
+        /// base 64 function from https://stackoverflow.com/questions/11743160/how-do-i-encode-and-decode-a-base64-string
         /// </summary>
-        /// <param name="propertyName">The name of the property that was changed.</param>
-        protected void RaisePropertyChangedEvent(string propertyName)
+        /// <param name="plainText"></param>
+        /// <returns></returns>
+        public static string Base64Encode(string plainText)
         {
-            if (PropertyChanged != null)
-            {
-                var e = new PropertyChangedEventArgs(propertyName);
-                PropertyChanged(this, e);
-            }
+            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            return Convert.ToBase64String(plainTextBytes);
         }
-
     }
 }

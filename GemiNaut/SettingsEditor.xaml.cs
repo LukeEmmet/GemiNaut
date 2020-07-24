@@ -1,12 +1,6 @@
 ﻿using GemiNaut.Properties;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 
 namespace GemiNaut
@@ -14,20 +8,20 @@ namespace GemiNaut
     /// <summary>
     /// Interaction logic for Bookmarks.xaml
     /// </summary>
-    public partial class Bookmarks : Window
+    public partial class SettingsEditor : Window
     {
         MainWindow _mainWindow;
         WebBrowser _webBrowser;
 
-        public Bookmarks(MainWindow window, WebBrowser browser)
+        public SettingsEditor(MainWindow window, WebBrowser browser)
         {
             InitializeComponent();
 
             var settings = new Settings();
             txtBookmarks.Text = settings.Bookmarks;
-
             _mainWindow = window;
             _webBrowser = browser;
+
         }
 
 

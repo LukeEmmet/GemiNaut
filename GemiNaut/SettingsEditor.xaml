@@ -1,0 +1,57 @@
+﻿<Window x:Class="GemiNaut.SettingsEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GemiNaut"
+        mc:Ignorable="d"
+        Title="Settings" Height="700" Width="1000">
+    <Grid VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock TextWrapping="Wrap" 
+                   Padding="8" 
+                   Text="Edit your bookmark list in text/gemini format. Link entries are done as link lines beginning =&gt; Sections can be indicated with a line starting with of two or more hyphens or underscores " 
+                   Grid.Row="0"></TextBlock>
+
+
+        <TextBox Name="txtBookmarks"
+                 Text="txtBookmarks"  
+                 Grid.Row="1"
+                 
+                 AcceptsReturn="True"
+                 AcceptsTab="True"
+                 
+                 VerticalScrollBarVisibility="Auto" 
+                 HorizontalScrollBarVisibility="Auto" 
+                 FontFamily="Consolas"
+                 FontSize="12"
+                 DockPanel.Dock="Top"
+                 Padding="10"
+                 VerticalAlignment="Stretch"/>
+
+        <DockPanel 
+            DockPanel.Dock="Bottom"  
+            VerticalAlignment="Bottom"
+            Grid.Row="2">
+            
+            <Grid VerticalAlignment="Bottom"  DockPanel.Dock="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Button Name="btnOk" Margin="5" Padding="5" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="0" Content="OK" Click="btnOk_Click" HorizontalAlignment="Right"/>
+                <Button Name="btnCancel" Margin="5" Padding="5" VerticalAlignment="Bottom" Grid.Row="0" Grid.Column="1" Content="Cancel" Click="btnCancel_Click" HorizontalAlignment="Left"/>
+
+            </Grid>
+        </DockPanel>
+
+    </Grid>
+</Window>

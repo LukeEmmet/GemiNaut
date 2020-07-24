@@ -71,14 +71,32 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AboutNavigator.cs" />
+    <Compile Include="AppInit.cs" />
+    <Compile Include="Base64Service.cs" />
+    <Compile Include="BookmarkManager.cs" />
+    <Compile Include="ExternalNavigator.cs" />
+    <Compile Include="GopherNavigator.cs" />
+    <Compile Include="HashService.cs" />
+    <Compile Include="ResourceFinder.cs" />
+    <Compile Include="SettingsEditor.xaml.cs">
+      <DependentUpon>SettingsEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Bookmarks.xaml.cs">
       <DependentUpon>Bookmarks.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GeminiNavigator.cs" />
     <Compile Include="GeminiResponse.cs" />
     <Compile Include="ObservableObject.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="SimpleLogger.cs" />
     <Compile Include="SiteIdentity.cs" />
+    <Compile Include="UriTester.cs" />
+    <Compile Include="WindowGeometry.cs" />
+    <Page Include="SettingsEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Bookmarks.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

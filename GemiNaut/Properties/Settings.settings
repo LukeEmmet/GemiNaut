@@ -9,9 +9,12 @@
       <Value Profile="(Default)">Fabric (site specific themes)</Value>
     </Setting>
     <Setting Name="Bookmarks" Type="System.String" Scope="User">
-      <Value Profile="(Default)">=&gt; gemini://gemini.marmaladefoo.com GemNaut home page
+      <Value Profile="(Default)">=&gt; gemini://gemini.marmaladefoo.com/geminaut GemNaut home page
 =&gt; gemini://gemini.circumlunar.space/ Gemini project home page
 =&gt; gemini://gus.guru/ GUS search engine</Value>
+    </Setting>
+    <Setting Name="UpgradeNeeded" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

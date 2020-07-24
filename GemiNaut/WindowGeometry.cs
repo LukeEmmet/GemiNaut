@@ -1,4 +1,4 @@
-//===================================================
+﻿//===================================================
 //    GemiNaut, a friendly browser for Gemini space on Windows
 
 //    Copyright (C) 2020, Luke Emmet 
@@ -19,26 +19,21 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
-using System.ComponentModel;
+using System;
+using System.Windows;
+
 namespace GemiNaut
 {
-    public class ObservableObject :INotifyPropertyChanged
+    static class WindowGeometry
     {
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Raises the PropertyChanged event.
-        /// </summary>
-        /// <param name="propertyName">The name of the property that was changed.</param>
-        protected void RaisePropertyChangedEvent(string propertyName)
+        //get the position of the centre of a window
+        public static Tuple<int, int> WindowCentre(Window window)
         {
-            if (PropertyChanged != null)
-            {
-                var e = new PropertyChangedEventArgs(propertyName);
-                PropertyChanged(this, e);
-            }
-        }
+            var inputLeft = (int)(window.Left + (window.Width / 2) - 180);
+            var inputTop = (int)(window.Top + (window.Height / 2) - 20);
 
+            return new Tuple<int, int>(inputLeft, inputTop);
+        }
     }
 }
