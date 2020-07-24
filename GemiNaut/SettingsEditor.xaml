@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GemiNaut"
         mc:Ignorable="d"
-        Title="Settings" Height="700" Width="1000">
+        WindowStartupLocation="CenterOwner"
+        Title="Settings" Height="300" Width="700">
     <Grid VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -15,24 +16,90 @@
 
         <TextBlock TextWrapping="Wrap" 
                    Padding="8" 
-                   Text="Edit your bookmark list in text/gemini format. Link entries are done as link lines beginning =&gt; Sections can be indicated with a line starting with of two or more hyphens or underscores " 
+                   Margin="10"
+                   TextAlignment="Center"
+                   Text="Personal settings for GemiNaut" 
                    Grid.Row="0"></TextBlock>
 
+        <Grid VerticalAlignment="Top"  DockPanel.Dock="Bottom" Grid.Row="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <TextBox Name="txtBookmarks"
-                 Text="txtBookmarks"  
-                 Grid.Row="1"
-                 
-                 AcceptsReturn="True"
-                 AcceptsTab="True"
-                 
-                 VerticalScrollBarVisibility="Auto" 
-                 HorizontalScrollBarVisibility="Auto" 
+            <TextBlock TextWrapping="Wrap" 
+                Padding="8" 
+                Text="Home page" 
+                Margin="3"
+                TextAlignment="Right"
+                Grid.Row="0"></TextBlock>
+            <TextBox Name="txtUrl"
+                 Text="txtURL"  
+                 Grid.Row="0"
+                 Grid.Column="1"
+                 Margin="3"
                  FontFamily="Consolas"
                  FontSize="12"
                  DockPanel.Dock="Top"
                  Padding="10"
                  VerticalAlignment="Stretch"/>
+
+            <TextBlock TextWrapping="Wrap" 
+                   Padding="8" 
+                       Margin="3"
+                   Text="Abandon downloads after" 
+                   TextAlignment="Right"
+                       Grid.Column="0"
+                   Grid.Row="1"></TextBlock>
+
+            <Grid VerticalAlignment="Top"  Margin="3" HorizontalAlignment="Left" DockPanel.Dock="Left" 
+                  Grid.Row="1" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition  />
+                    <ColumnDefinition  />
+                    <ColumnDefinition  />
+                    <ColumnDefinition  />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <ComboBox  Grid.Column="0" Margin="0" Padding="8" Width="80" 
+                          Name="MaxDownloadSize" HorizontalAlignment="Left" >
+                    <ComboBoxItem>1 Mb</ComboBoxItem>
+                    <ComboBoxItem>5 Mb</ComboBoxItem>
+                    <ComboBoxItem>10 Mb</ComboBoxItem>
+                    <ComboBoxItem>50 Mb</ComboBoxItem>
+                    <ComboBoxItem>100 Mb</ComboBoxItem>
+                    <ComboBoxItem>200 Mb</ComboBoxItem>
+                    <ComboBoxItem>500 Mb</ComboBoxItem>
+                    <ComboBoxItem>1 Gb</ComboBoxItem>
+                </ComboBox>
+                
+                <TextBlock TextWrapping="Wrap" Padding="8" Grid.Column="1" Text="or after"/>
+                
+                <ComboBox  Grid.Column="2"  Padding="8" Width="80" 
+                          Name="MaxDownloadTime"  HorizontalAlignment="Left" >
+                    <ComboBoxItem>5</ComboBoxItem>
+                    <ComboBoxItem>10</ComboBoxItem>
+                    <ComboBoxItem>20</ComboBoxItem>
+                    <ComboBoxItem>30</ComboBoxItem>
+                    <ComboBoxItem>60</ComboBoxItem>
+                    <ComboBoxItem>300</ComboBoxItem>
+                    <ComboBoxItem>600</ComboBoxItem>
+                    <ComboBoxItem>1800</ComboBoxItem>
+                </ComboBox>
+                <TextBlock TextWrapping="Wrap" Padding="8" Grid.Column="3" Text="seconds"/>
+
+
+            </Grid>
+        </Grid>
+
 
         <DockPanel 
             DockPanel.Dock="Bottom"  

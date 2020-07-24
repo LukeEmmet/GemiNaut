@@ -77,6 +77,9 @@ register gemini:// handler (with consent, not automatic)
 
 0.8.7
 
+* binary files can now be downloaded to chosen location, not open in proxy
+* can specify download max size/time before abaondoning
+* new settings window for download options and home url
 * when upgrading from previous version, keep previous settings
 * hanging indents for bullets and links in terminal theme
 * keyboard shortcuts for bookmarks (e.g. Alt+B) and other menus

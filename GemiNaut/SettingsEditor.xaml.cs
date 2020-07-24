@@ -6,21 +6,21 @@ using System.Windows.Controls;
 namespace GemiNaut
 {
     /// <summary>
-    /// Interaction logic for Bookmarks.xaml
+    /// Interaction logic for SettingsEditor.xaml
     /// </summary>
     public partial class SettingsEditor : Window
     {
-        MainWindow _mainWindow;
-        WebBrowser _webBrowser;
 
-        public SettingsEditor(MainWindow window, WebBrowser browser)
+
+        public SettingsEditor()
         {
             InitializeComponent();
 
             var settings = new Settings();
-            txtBookmarks.Text = settings.Bookmarks;
-            _mainWindow = window;
-            _webBrowser = browser;
+            txtUrl.Text = settings.HomeUrl;
+            MaxDownloadSize.Text = settings.MaxDownloadSize;
+            MaxDownloadTime.Text = settings.MaxDownloadTime.ToString();
+
 
         }
 
@@ -34,11 +34,12 @@ namespace GemiNaut
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
             var settings = new Settings();
-            settings.Bookmarks = txtBookmarks.Text;
+            settings.HomeUrl = txtUrl.Text;
+            settings.MaxDownloadSize = MaxDownloadSize.Text;
+            settings.MaxDownloadTime = int.Parse(MaxDownloadTime.Text);
+
             settings.Save();
 
-            var bmManager = new BookmarkManager(_mainWindow, _webBrowser);
-            bmManager.RefreshBookmarkMenu();
 
             this.Close();
 

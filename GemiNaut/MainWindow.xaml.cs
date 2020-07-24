@@ -381,17 +381,12 @@ namespace GemiNaut
 
         }
 
-        private void MenuViewSettingsHome_Click(object sender, RoutedEventArgs e)
+        private void MenuViewSettings_Click(object sender, RoutedEventArgs e)
         {
-            var settings = new Settings();
-            var position = WindowGeometry.WindowCentre(Application.Current.MainWindow);
-            var newHome = Interaction.InputBox("Enter your home URL", "Home URL", settings.HomeUrl, position.Item1, position.Item2);
+            var settingsEditor = new SettingsEditor();
+            settingsEditor.Owner = this;
+            settingsEditor.ShowDialog(); 
 
-            if (newHome != "")
-            {
-                settings.HomeUrl = newHome;
-                settings.Save();
-            }
 
         }
 

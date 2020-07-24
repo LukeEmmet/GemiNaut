@@ -23,6 +23,7 @@ using GemiNaut.Properties;
 using GemiNaut.Serialization.Commandline;
 using GemiNaut.Singletons;
 using Microsoft.VisualBasic;
+using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Windows;
@@ -76,9 +77,18 @@ namespace GemiNaut
             //delete any existing html file to encourage webbrowser to reload it
             File.Delete(htmlFile);
 
+            var settings = new Settings();
+            
             //use insecure flag as gemget does not check certs correctly in current version
-            var command = string.Format("\"{0}\" --header -m \"1MB\" -t 5 -o \"{1}\" \"{2}\"", gemGet, rawFile, fullQuery);
+            var command = string.Format(
+                "\"{0}\" --header -m \"{1}\" -t {2} -o \"{3}\" \"{4}\"", 
+                gemGet, 
+                settings.MaxDownloadSize, 
+                settings.MaxDownloadTime, 
+                rawFile, 
+                fullQuery);
 
+            
             var result = proc.ExecuteCommand(command, true, true);
 
             var geminiResponse = new GemiNaut.Response.GeminiResponse(fullQuery);
@@ -91,8 +101,13 @@ namespace GemiNaut
 
             if (geminiResponse.AbandonedTimeout || geminiResponse.AbandonedSize)
             {
-                mMainWindow.ToastNotify("Retrieval of the content was abandoned as it exceeds the max size or the time taken to download was too long:\n\n" + fullQuery,
-                    ToastMessageStyles.Warning);
+                var abandonMessage = String.Format(
+                        "Download was abandoned as it exceeded the max size ({0}) or time ({1} s). See GemiNaut settings for details.\n\n{2}",
+                        settings.MaxDownloadSize,
+                        settings.MaxDownloadTime,
+                        fullQuery);
+
+                mMainWindow.ToastNotify(abandonMessage, ToastMessageStyles.Warning);
                 e.Cancel = true;
                 mMainWindow.ToggleContainerControlsForBrowser(true);
                 return;
@@ -107,19 +122,8 @@ namespace GemiNaut
                     File.Copy(rawFile, gmiFile);
 
                 }
-                else if (geminiResponse.Meta.Contains("image/"))
-                {
-                    //its an image - rename the raw file and just show it
-                    var ext = Path.GetExtension(fullQuery);
-
-                    var imgFile = rawFile + "." + ext;
-                    File.Copy(rawFile, imgFile, true); //rename overwriting
-
-                    mMainWindow.ShowImage(fullQuery, imgFile, e);
-                    return;
-
-                }
-                else
+                
+                else if (geminiResponse.Meta.Contains("text/"))
                 {
                     //convert plain text to a gemini version (wraps it in a preformatted section)
                     var textToGmiResult = TextToGmi(rawFile, gmiFile);
@@ -131,6 +135,50 @@ namespace GemiNaut
                         e.Cancel = true;
                         return;
                     }
+
+                } else
+                {
+
+                    //a download
+                    //its an image - rename the raw file and just show it
+                    var ext = Path.GetExtension(fullQuery);
+
+                    var binFile = rawFile + "." + ext;
+                    File.Copy(rawFile, binFile, true); //rename overwriting
+
+                    if (geminiResponse.Meta.Contains("image/"))
+                    {
+
+                        mMainWindow.ShowImage(fullQuery, binFile, e);
+                    } else
+                    {
+                        SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+                        saveFileDialog.FileName = Path.GetFileName(fullQuery);
+
+                        if (saveFileDialog.ShowDialog() == true)
+                        {
+
+                            try
+                            {
+                                //save the file
+                                var savePath = saveFileDialog.FileName;
+
+                                File.Copy(binFile, savePath, true); //rename overwriting
+
+                                mMainWindow.ToastNotify("File saved to " + savePath, ToastMessageStyles.Success);
+                            }
+                            catch (SystemException err)
+                            {
+                                mMainWindow.ToastNotify("Could not save the file due to: " + err.Message, ToastMessageStyles.Error);
+                            }
+                        }
+
+                        mMainWindow.ToggleContainerControlsForBrowser(true);
+                        e.Cancel = true;
+                    }
+
+                    return;
 
                 }
 
@@ -197,7 +245,6 @@ namespace GemiNaut
                     geminiUri = fullQuery;
                 }
 
-                var settings = new Settings();
                 var userThemesFolder = mFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
 
                 var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
