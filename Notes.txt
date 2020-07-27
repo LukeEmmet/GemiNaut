@@ -47,6 +47,7 @@ register gemini:// handler (with consent, not automatic)
 
 # Nice to have
 
+* some kind of progress bar or activity thing when downloading
 * save binary files with file/save dialog or offer to always save to user/downloads
 * File-Print menu
 * Ctrl-R refreshes
@@ -77,7 +78,8 @@ register gemini:// handler (with consent, not automatic)
 
 0.8.7
 
-* binary files can now be downloaded to chosen location, not open in proxy
+* navigated or redirected URIs are now normalised (e.g. remove port if it is the default for the scheme)
+* binary files can now be downloaded to chosen location, not open in proxy (gemini)
 * can specify download max size/time before abaondoning
 * new settings window for download options and home url
 * when upgrading from previous version, keep previous settings
@@ -87,6 +89,7 @@ register gemini:// handler (with consent, not automatic)
 * build links correctly when a port is given within the URL
 * server size and timeout for slow or too large content
 * simple image display within GemiNaut
+* updated build of gemget
 
 0.8.6
 

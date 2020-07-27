@@ -107,15 +107,16 @@ namespace GemiNaut
             ////this is how we could detect a click on a link to an image...
             //if (doc?.activeElement != null) {ToastNotify(doc.activeElement.outerHTML); }
 
+            var normalisedUri = UriTester.NormaliseUri(e.Uri);
 
-            var siteIdentity = new SiteIdentity(e.Uri, Session.Instance);
+            var siteIdentity = new SiteIdentity(normalisedUri, Session.Instance);
 
-            var fullQuery = e.Uri.OriginalString;
+            var fullQuery = normalisedUri.OriginalString;
 
             //sanity check we have a valid URL syntax at least
             if (e.Uri.Scheme == null)
             {
-                ToastNotify("Invalid URL: " + e.Uri.OriginalString, ToastMessageStyles.Error);
+                ToastNotify("Invalid URL: " + normalisedUri.OriginalString, ToastMessageStyles.Error);
                 e.Cancel = true;
             }
 
@@ -124,25 +125,25 @@ namespace GemiNaut
 
             //these are the only ones we "navigate" to. We do this by downloading the GMI content
             //converting to HTML and then actually navigating to that.
-            if (e.Uri.Scheme == "gemini")
+            if (normalisedUri.Scheme == "gemini")
             {
                 var geminiNavigator = new GeminiNavigator(this, this.BrowserControl);
                 geminiNavigator.NavigateGeminiScheme(fullQuery, e, siteIdentity);
             }
 
-            else if (e.Uri.Scheme == "gopher")
+            else if (normalisedUri.Scheme == "gopher")
             {
                 var gopherNavigator = new GopherNavigator(this, this.BrowserControl);
                 gopherNavigator.NavigateGopherScheme(fullQuery, e, siteIdentity);
             }
 
-            else if (e.Uri.Scheme == "about")
+            else if (normalisedUri.Scheme == "about")
             {
                 var aboutNavigator = new AboutNavigator(this, this.BrowserControl);
                 aboutNavigator.NavigateAboutScheme(e, siteIdentity);
 
             }
-            else if (e.Uri.Scheme == "file")
+            else if (normalisedUri.Scheme == "file")
             {
                 //just load the converted html file
                 //no further action.
