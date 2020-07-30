@@ -64,7 +64,22 @@ pre div {
 
 div.bullet {
   padding-left: 1.2em ;
-  text-indent: -0.9em ;
+  text-indent: -0.85em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
+
+
+div.gemini-link {
+  padding-left: 1.2em ;
+  text-indent: -1.45em ;
+  margin-left:0.3em;
+  margin-top:0.15em;
+} 
+
+div.other-link {
+  padding-left: 1.2em ;
+  text-indent: -1.68em ;
   margin-left:0.3em;
   margin-top:0.15em;
 } 
@@ -82,19 +97,7 @@ div.blockquote {
 }
 
 
-div.gemini-link {
-  padding-left: 1.2em ;
-  text-indent: -1.4em ;
-  margin-left:0.3em;
-  margin-top:0.15em;
-} 
 
-div.other-link {
-  padding-left: 1.2em ;
-  text-indent: -1.6em ;
-  margin-left:0.3em;
-  margin-top:0.15em;
-} 
 
 pre.inline {
 	background-color: #fafaff;
