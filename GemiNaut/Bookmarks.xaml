@@ -38,8 +38,8 @@
             DockPanel.Dock="Bottom"  
             VerticalAlignment="Bottom"
             Grid.Row="2">
-            
-            <Grid VerticalAlignment="Bottom"  DockPanel.Dock="Bottom">
+
+            <Grid VerticalAlignment="Bottom"  DockPanel.Dock="Bottom" Margin="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />

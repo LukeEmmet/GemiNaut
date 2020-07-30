@@ -78,14 +78,16 @@ register gemini:// handler (with consent, not automatic)
 
 0.8.7
 
+* file->new to start a new GemiNaut instance with the current URL to fork the browsing session
+* can start with a URL commandline parameter
+* use same identity in classic fabric theme for /~foo as users/foo
 * navigated or redirected URIs are now normalised (e.g. remove port if it is the default for the scheme)
 * binary files can now be downloaded to chosen location, not open in proxy (gemini)
-* can specify download max size/time before abaondoning
+* can specify download max size/time before abandoning
 * new settings window for download options and home url
 * when upgrading from previous version, keep previous settings
 * hanging indents for bullets and links in terminal theme
 * keyboard shortcuts for bookmarks (e.g. Alt+B) and other menus
-* accomodate non-standard ports when link building (currently ignored)
 * build links correctly when a port is given within the URL
 * server size and timeout for slow or too large content
 * simple image display within GemiNaut

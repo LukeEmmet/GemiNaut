@@ -39,7 +39,8 @@ either not none? arg-block [
     theme:  to-rebol-file (to-string debase/base arg-block/4 64)
     identicon-image: (to-string debase/base arg-block/5 64)
     fabric-image: (to-string debase/base arg-block/6 64)
-    site-id:   (to-string debase/base arg-block/7 64)
+    image-id:   (to-string debase/base arg-block/7 64)
+    site-id:   (to-string debase/base arg-block/8 64)
 
 
         ;uri: "gemini://gemini.circumlunar.space/"
@@ -67,7 +68,7 @@ either not none? arg-block [
 uri-object:   decode-url  uri
 page-scheme: (to-word uri-object/scheme)
 
-uri-md5: lowercase copy/part at (mold checksum/method (to-binary site-id) 'md5) 3 32        ;deprecated but classic fabric theme needs it
+uri-md5: image-id   ;lowercase copy/part at (mold checksum/method (to-binary site-id) 'md5) 3 32        ;deprecated but classic fabric theme needs it
 
 lines: read/lines in-path
 

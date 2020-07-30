@@ -22,6 +22,7 @@
         <DockPanel DockPanel.Dock="Top" Name="DockMenu">
             <Menu>
                 <MenuItem Header="_File">
+                    <MenuItem Header="_New window" Click="MenuFileNew_Click" ></MenuItem>
                     <MenuItem Header="E_xit" Click="MenuFileExit_Click" ></MenuItem>
                 </MenuItem>
                 <MenuItem Header="_View">

@@ -60,7 +60,7 @@ namespace GemiNaut
 
             foreach (var file in Directory.GetFiles(assetsFolder))
             {
-                File.Copy(file, Path.Combine(assetsTarget, Path.GetFileName(file)));
+                File.Copy(file, Path.Combine(assetsTarget, Path.GetFileName(file)), true);
             }
 
 

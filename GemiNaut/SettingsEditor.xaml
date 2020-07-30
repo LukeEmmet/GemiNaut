@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GemiNaut"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="Settings" Height="300" Width="700">
+        Title="Settings" Height="300" Width="700" MinHeight="300" MinWidth="700">
     <Grid VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -46,7 +46,7 @@
                  FontFamily="Consolas"
                  FontSize="12"
                  DockPanel.Dock="Top"
-                 Padding="10"
+                 Padding="8"
                  VerticalAlignment="Stretch"/>
 
             <TextBlock TextWrapping="Wrap" 
@@ -106,7 +106,7 @@
             VerticalAlignment="Bottom"
             Grid.Row="2">
             
-            <Grid VerticalAlignment="Bottom"  DockPanel.Dock="Bottom">
+            <Grid VerticalAlignment="Bottom"  DockPanel.Dock="Bottom" Margin="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />

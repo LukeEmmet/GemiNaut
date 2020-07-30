@@ -56,8 +56,16 @@ namespace GemiNaut
             _bookmarkManager.RefreshBookmarkMenu();
 
             var settings = new Settings();
+            var launchUri = settings.HomeUrl;
 
-            BrowserControl.Navigate(settings.HomeUrl);
+
+            String[] args = App.Args;
+            if (args != null)
+            {
+                launchUri = App.Args[0];
+            }
+
+            BrowserControl.Navigate(launchUri);
 
             BuildThemeMenu();
             TickSelectedThemeMenu();
@@ -229,7 +237,7 @@ namespace GemiNaut
             //working with command line parameters, so we need to escape quotes
             //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
             //also hypens are also problematic, so we base64 each param and unpack in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\" \"{8}\" ",
+            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\" \"{8}\" \"{9}\" ",
                 rebolPath, 
                 scriptPath,
                 Base64Service.Base64Encode(gmiPath),
@@ -238,6 +246,7 @@ namespace GemiNaut
                 Base64Service.Base64Encode(theme),
                 Base64Service.Base64Encode(identiconUri.AbsoluteUri),
                 Base64Service.Base64Encode(fabricUri.AbsoluteUri),
+                Base64Service.Base64Encode(siteIdentity.GetId()),
                 Base64Service.Base64Encode(siteIdentity.GetSiteId())
 
                 );
@@ -541,5 +550,11 @@ namespace GemiNaut
 
 
 
+        private void MenuFileNew_Click(object sender, RoutedEventArgs e)
+        {
+            //start a completely new GemiNaut session, with the current URL
+            Process.Start(System.Reflection.Assembly.GetEntryAssembly().Location, txtUrl.Text);
+
+        }
     }
 }
