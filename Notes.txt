@@ -47,6 +47,7 @@ register gemini:// handler (with consent, not automatic)
 
 # Nice to have
 
+* simplify the download options
 * some kind of progress bar or activity thing when downloading
 * save binary files with file/save dialog or offer to always save to user/downloads
 * File-Print menu
@@ -78,6 +79,7 @@ register gemini:// handler (with consent, not automatic)
 
 0.8.7
 
+* improve link wrap in gopher using monospace fonts in fabric themes
 * file->new to start a new GemiNaut instance with the current URL to fork the browsing session
 * can start with a URL commandline parameter
 * use same identity in classic fabric theme for /~foo as users/foo

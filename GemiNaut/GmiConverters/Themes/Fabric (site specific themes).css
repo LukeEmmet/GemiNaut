@@ -84,6 +84,13 @@ div.other-link {
   margin-top:0.15em;
 } 
 
+div.gopher.other-link {
+  text-indent: -1.95em ;
+}
+div.gopher.gemini-link {
+  text-indent: -1.75em ;
+}
+
 div.blockquote {
 	padding-left: 1em ;
 	padding-right: 1em ;
