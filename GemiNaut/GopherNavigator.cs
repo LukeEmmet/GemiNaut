@@ -141,7 +141,7 @@ namespace GemiNaut
             var finder = new ResourceFinder();
 
             //use local or dev binary for gemget
-            var gopherClient = finder.LocalOrDevFile(appDir, "GoGopher", "..\\..\\..\\GoGopher", "main.exe");
+            var gopherClient = finder.LocalOrDevFile(appDir, "GopherGet", "..\\..\\..\\GopherGet", "gopher-get.exe");
 
             string hash;
 

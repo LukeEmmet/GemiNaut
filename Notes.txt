@@ -76,6 +76,7 @@ kevinsan> I hadn't thought of that, yes it works fine.
 
 0.8.7
 
+* use maintained gopher client gopher-get published to https://github.com/LukeEmmet/gopher-get
 * resource download possible from cgi script as well as static files
 * improve link wrap in gopher using monospace fonts in fabric themes
 * file->new to start a new GemiNaut instance with the current URL to fork the browsing session
