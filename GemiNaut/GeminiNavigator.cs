@@ -79,12 +79,12 @@ namespace GemiNaut
 
             var settings = new Settings();
             
-            //use insecure flag as gemget does not check certs correctly in current version
+            //pass options to gemget for download
             var command = string.Format(
-                "\"{0}\" --header -m \"{1}\" -t {2} -o \"{3}\" \"{4}\"", 
+                "\"{0}\" --header -m \"{1}\"Mb -t {2} -o \"{3}\" \"{4}\"", 
                 gemGet, 
-                settings.MaxDownloadSize, 
-                settings.MaxDownloadTime, 
+                settings.MaxDownloadSizeMb, 
+                settings.MaxDownloadTimeSeconds, 
                 rawFile, 
                 fullQuery);
 
@@ -103,8 +103,8 @@ namespace GemiNaut
             {
                 var abandonMessage = String.Format(
                         "Download was abandoned as it exceeded the max size ({0}) or time ({1} s). See GemiNaut settings for details.\n\n{2}",
-                        settings.MaxDownloadSize,
-                        settings.MaxDownloadTime,
+                        settings.MaxDownloadSizeMb,
+                        settings.MaxDownloadTimeSeconds,
                         fullQuery);
 
                 mMainWindow.ToastNotify(abandonMessage, ToastMessageStyles.Warning);
@@ -141,9 +141,10 @@ namespace GemiNaut
 
                     //a download
                     //its an image - rename the raw file and just show it
-                    var ext = Path.GetExtension(fullQuery);
+                    var pathFragment = (new UriBuilder(fullQuery)).Path;
+                    var ext = Path.GetExtension(pathFragment);
 
-                    var binFile = rawFile + "." + ext;
+                    var binFile = rawFile + (ext == null ? "" : "." + ext);
                     File.Copy(rawFile, binFile, true); //rename overwriting
 
                     if (geminiResponse.Meta.Contains("image/"))
@@ -154,7 +155,7 @@ namespace GemiNaut
                     {
                         SaveFileDialog saveFileDialog = new SaveFileDialog();
 
-                        saveFileDialog.FileName = Path.GetFileName(fullQuery);
+                        saveFileDialog.FileName = Path.GetFileName(pathFragment);
 
                         if (saveFileDialog.ShowDialog() == true)
                         {

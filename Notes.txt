@@ -12,6 +12,7 @@
 * create zip from bin/release, plus include Gemget, gopher client, Rebol and GmiConverters folders copied into as well.
 * include docs
 
+# Bugs
 
 # To do
 
@@ -41,9 +42,7 @@ kevinsan> I hadn't thought of that, yes it works fine.
 <lukee> well all of this can be explored. My inclination is to keep the tooltip/hover popup for information about the link. But yes there is some fruitful options here
 <lukee> is->are
 
-open in new window (my idea not requested, but related)
 
-register gemini:// handler (with consent, not automatic)
 
 # Nice to have
 
@@ -64,9 +63,7 @@ register gemini:// handler (with consent, not automatic)
 * FAQ/design concepts
 * strip out terminal colour escape codes - e.g. on 
    gemini://bleyble.com/users/quokka/run2plan/couch25k.gmi
-* register with windows to handle gemini:// protocol
-* startup with passed url on commandline
-* open link in new window
+* register with windows to handle gemini:// protocol (with consent, not automatic)
 * footnotes style for inline links
 * navigate to parent folder
 * launchers.xml for alternative renderers, choosable by user
@@ -79,6 +76,7 @@ register gemini:// handler (with consent, not automatic)
 
 0.8.7
 
+* resource download possible from cgi script as well as static files
 * improve link wrap in gopher using monospace fonts in fabric themes
 * file->new to start a new GemiNaut instance with the current URL to fork the browsing session
 * can start with a URL commandline parameter

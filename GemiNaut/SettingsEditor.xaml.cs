@@ -18,8 +18,8 @@ namespace GemiNaut
 
             var settings = new Settings();
             txtUrl.Text = settings.HomeUrl;
-            MaxDownloadSize.Text = settings.MaxDownloadSize;
-            MaxDownloadTime.Text = settings.MaxDownloadTime.ToString();
+            MaxDownloadSize.Text = settings.MaxDownloadSizeMb.ToString();
+            MaxDownloadTime.Text = settings.MaxDownloadTimeSeconds.ToString();
 
 
         }
@@ -35,8 +35,8 @@ namespace GemiNaut
         {
             var settings = new Settings();
             settings.HomeUrl = txtUrl.Text;
-            settings.MaxDownloadSize = MaxDownloadSize.Text;
-            settings.MaxDownloadTime = int.Parse(MaxDownloadTime.Text);
+            settings.MaxDownloadSizeMb = int.Parse(MaxDownloadSize.Text);
+            settings.MaxDownloadTimeSeconds = int.Parse(MaxDownloadTime.Text);
 
             settings.Save();
 

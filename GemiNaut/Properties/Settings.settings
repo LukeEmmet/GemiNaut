@@ -16,10 +16,10 @@
     <Setting Name="UpgradeNeeded" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="MaxDownloadSize" Type="System.String" Scope="User">
-      <Value Profile="(Default)">10 Mb</Value>
+    <Setting Name="MaxDownloadSizeMb" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
     </Setting>
-    <Setting Name="MaxDownloadTime" Type="System.Int32" Scope="User">
+    <Setting Name="MaxDownloadTimeSeconds" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
   </Settings>

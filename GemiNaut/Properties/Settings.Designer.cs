@@ -75,25 +75,25 @@ namespace GemiNaut.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10 Mb")]
-        public string MaxDownloadSize {
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int MaxDownloadSizeMb {
             get {
-                return ((string)(this["MaxDownloadSize"]));
+                return ((int)(this["MaxDownloadSizeMb"]));
             }
             set {
-                this["MaxDownloadSize"] = value;
+                this["MaxDownloadSizeMb"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public int MaxDownloadTime {
+        public int MaxDownloadTimeSeconds {
             get {
-                return ((int)(this["MaxDownloadTime"]));
+                return ((int)(this["MaxDownloadTimeSeconds"]));
             }
             set {
-                this["MaxDownloadTime"] = value;
+                this["MaxDownloadTimeSeconds"] = value;
             }
         }
     }
