@@ -54,8 +54,7 @@ out: copy []
 
 ;--dont render links to CSO or telnet resources
 unsupported-selectors: "8+T2"
-binary-selectors: "4569gI;d"
-supported-link-selectors: "017"     ;text, gophermap and query only
+supported-link-selectors: "0174569gI;d"     ;text, gophermap, query and additionally these files (for download)
 
 
 
@@ -109,20 +108,6 @@ foreach line lines [
                 fields/1 
             ]
         ]
-
-        if (find binary-selectors selector)  [
-        ;use a proxy for these
-            rejoin [
-                "=> "
-                    "https://gopher.tildeverse.org/"
-                    fields/3
-                    "/"
-                    selector
-                    path
-                    " "
-                    fields/1
-            ]
-       ]
        
         
         ;unknown selector or unsupported one, render as a bullet

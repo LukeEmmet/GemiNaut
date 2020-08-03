@@ -23,6 +23,7 @@ using GemiNaut.Singletons;
 //===================================================
 
 using Microsoft.VisualBasic;
+using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Windows.Controls;
@@ -200,12 +201,55 @@ namespace GemiNaut
                 }
                 else
                 {
-                    //treat as text, but notify the type
-                    mMainWindow.ToastNotify("Loading a " + result.Item2.ToString());
+                    //a download
 
-                    parseFile = gopherFile;
+                    //copy to a file having its source extension
+                    var pathFragment = (new UriBuilder(fullQuery)).Path;
+                    var ext = Path.GetExtension(pathFragment);
 
+                    var binFile = gopherFile + (ext ?? "");
+
+                    File.Copy(gopherFile, binFile, true); //rename overwriting
+
+                    if ( stdOut.Contains("IMG") || stdOut.Contains("GIF") )
+                    {
+                        //show the image
+                        mMainWindow.ShowImage(fullQuery, binFile, e);
+
+                    }
+                    else
+                    {
+                        //show a save as dialog
+                        SaveFileDialog saveFileDialog = new SaveFileDialog();
+
+                        saveFileDialog.FileName = Path.GetFileName(pathFragment);
+
+                        if (saveFileDialog.ShowDialog() == true)
+                        {
+                            try
+                            {
+                                //save the file
+                                var savePath = saveFileDialog.FileName;
+
+                                File.Copy(binFile, savePath, true); //rename overwriting
+
+                                mMainWindow.ToastNotify("File saved to " + savePath, ToastMessageStyles.Success);
+                            }
+                            catch (SystemException err)
+                            {
+                                mMainWindow.ToastNotify("Could not save the file due to: " + err.Message, ToastMessageStyles.Error);
+                            }
+                        }
+
+                        mMainWindow.ToggleContainerControlsForBrowser(true);
+                        e.Cancel = true;
+
+                    }
+
+                    return;
                 }
+
+
 
                 if (!File.Exists(gmiFile))
                 {

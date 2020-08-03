@@ -144,7 +144,7 @@ namespace GemiNaut
                     var pathFragment = (new UriBuilder(fullQuery)).Path;
                     var ext = Path.GetExtension(pathFragment);
 
-                    var binFile = rawFile + (ext == null ? "" : "." + ext);
+                    var binFile = rawFile + (ext ?? "");
                     File.Copy(rawFile, binFile, true); //rename overwriting
 
                     if (geminiResponse.Meta.Contains("image/"))

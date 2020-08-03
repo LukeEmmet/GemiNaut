@@ -317,27 +317,7 @@ foreach line lines [
                                 ] [""]
                                                                 
                                 "</span>"]
-                                
-                            ;use an http/html proxy for these binary files which will open
-                            ;in users standard browser. In future we might handle them directly.
-                            either ((take-left link 9) = "gopher://") [
-                                link: rejoin [
-                                    "https://gopher.tildeverse.org/"
-                                    final-link-object/host
-                                    final-link-object/path                                
-                                ] 
-                            ] [
-                                
-                                    link: rejoin [
-                                       "gemini://"
-                                        final-link-object/host
-                                        final-link-object/path
-                                    
-                                    ]                                
-
-                            ]  
-
-
+                        
 
                     ] [
                         display-html: markup-escape display-part
