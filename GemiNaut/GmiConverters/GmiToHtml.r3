@@ -142,9 +142,8 @@ foreach line lines [
     ;-- a hint to the user -e.g. ```python
     if ((take-left line 3) = "```") [
         
-        pre-label: trim take-from line 4
-        if pre-label = "" [pre-label:  "preformatted text"]
-       in-block: not in-block
+        pre-label: trim take-from line 4    ;will be empty if not provided
+        in-block: not in-block
         last-element: 'preformat
         
         append out either in-block [

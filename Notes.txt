@@ -76,6 +76,9 @@ kevinsan> I hadn't thought of that, yes it works fine.
 
 0.8.7
 
+* only show tooltip on preformatted text if non-empty
+* drop use of proxy for gopher and allow file downloading
+* display images directly from gopher
 * use maintained gopher client gopher-get published to https://github.com/LukeEmmet/gopher-get
 * resource download possible from cgi script as well as static files
 * improve link wrap in gopher using monospace fonts in fabric themes
