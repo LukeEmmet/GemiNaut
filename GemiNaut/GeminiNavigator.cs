@@ -187,8 +187,20 @@ namespace GemiNaut
 
                 if (geminiResponse.Redirected)
                 {
-                    //normalise the URi (e.g. remove default port if specified)
-                    var redirectUri = UriTester.NormaliseUri(new Uri(geminiResponse.FinalUrl)).ToString();
+                    string redirectUri = fullQuery;
+
+                    if (geminiResponse.FinalUrl.Contains("://"))
+                    {
+                        //a full url
+                        //normalise the URi (e.g. remove default port if specified)
+                        redirectUri = UriTester.NormaliseUri(new Uri(geminiResponse.FinalUrl)).ToString();
+                    } else
+                    {
+                        //a relative one
+                        var baseUri = new Uri(fullQuery);
+                        var targetUri = new Uri(baseUri, geminiResponse.FinalUrl);
+                        redirectUri = UriTester.NormaliseUri(targetUri).ToString();
+                    }
 
                     if (redirectUri.Substring(0, 9) != "gemini://")
                     {
