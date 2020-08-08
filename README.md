@@ -15,6 +15,7 @@ You can download a pre-built application for Windows from the <a href="https://w
 * Keyboard shortcuts, wheelmouse zoom
 * Fast navigation through history, including remembering scroll offset
 * Support bullet, heading and quote line styles
+* View linked images or download linked files
 * Flexible theming engine
 * Site based themes
 * Visually distinguish internal (gopher, gemini) vs external links (http, https etc)
@@ -39,6 +40,31 @@ Dark theme:
 ![Screenshot](GemiNaut/Docs/images/dark_theme.png)
 
 # History
+
+## 0.8.7, 8-aug-2020
+
+0.8.7
+
+* only show tooltip on preformatted text if non-empty
+* drop use of proxy for gopher and allow file downloading
+* display images directly from gopher
+* use maintained gopher client gopher-get published to https://github.com/LukeEmmet/gopher-get
+* resource download possible from cgi script as well as static files
+* improve link wrap in gopher using monospace fonts in fabric themes
+* file->new to start a new GemiNaut instance with the current URL to fork the browsing session
+* can start with a URL commandline parameter
+* use same identity in classic fabric theme for /~foo as users/foo
+* navigated or redirected URIs are now normalised (e.g. remove port if it is the default for the scheme)
+* binary files can now be downloaded to chosen location, not open in proxy (gemini)
+* can specify download max size/time before abandoning
+* new settings window for download options and home url
+* when upgrading from previous version, keep previous settings
+* hanging indents for bullets and links in terminal theme
+* keyboard shortcuts for bookmarks (e.g. Alt+B) and other menus
+* build links correctly when a port is given within the URL
+* server size and timeout for slow or too large content
+* simple image display within GemiNaut
+* updated build of gemget
 
 ## 0.8.6, 6-Jul-2020
 
