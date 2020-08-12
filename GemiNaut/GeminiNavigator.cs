@@ -81,7 +81,7 @@ namespace GemiNaut
             
             //pass options to gemget for download
             var command = string.Format(
-                "\"{0}\" --header -m \"{1}\"Mb -t {2} -o \"{3}\" \"{4}\"", 
+                "\"{0}\" --header --no-progress-bar -m \"{1}\"Mb -t {2} -o \"{3}\" \"{4}\"", 
                 gemGet, 
                 settings.MaxDownloadSizeMb, 
                 settings.MaxDownloadTimeSeconds, 

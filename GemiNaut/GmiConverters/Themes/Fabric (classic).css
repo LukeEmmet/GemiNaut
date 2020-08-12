@@ -117,15 +117,17 @@ pre.inline {
 	border-style: solid;
 	border-color:#d0d0d0;
 	border-radius: 4px;
-	overflow-x: auto;
+	overflow-x: hidden;
 	overflow-y:hidden;
 	padding-bottom:1.3em;	/*to allow space for scroll bar to appear if necessary*/
 	padding-top:1.3em;	/*same as for bottom for visual balance*/
 	min-width:70%;
-
-	
 }
 
+/* scrollbars appear if necessary when hovered*/
+pre.inline:hover {
+	overflow-x: auto;
+}
 
 div.content-container{
 	border-radius: 10px;

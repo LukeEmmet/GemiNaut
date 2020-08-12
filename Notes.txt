@@ -74,6 +74,10 @@ kevinsan> I hadn't thought of that, yes it works fine.
 
 # Done
 
+0.8.8 
+
+* Scrollbars on preformatted text areas only appear when region is hovered to reduce clutter
+
 0.8.7
 
 * only show tooltip on preformatted text if non-empty

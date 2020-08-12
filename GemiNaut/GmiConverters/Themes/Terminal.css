@@ -87,9 +87,13 @@ pre.inline {
 	margin:0.7em;
 	border-style: solid;
 	border-color:#a0a0a0;
-	overflow-x: auto;
+	overflow-x: hidden;
 	overflow-y:hidden;
 	padding-bottom:1.3em;	/*to allow space for scroll bar to appear if necessary*/
 	padding-top:1.3em;	/*same as for bottom for visual balance*/
 	min-width:70%;
+}
+/* scrollbars appear if necessary when hovered*/
+pre.inline:hover {
+	overflow-x: auto;
 }
