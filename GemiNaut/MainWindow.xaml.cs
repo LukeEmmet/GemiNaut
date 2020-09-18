@@ -110,10 +110,6 @@ namespace GemiNaut
         {
 
 
-            ////doc might be null - you need to check when using!
-            //var doc = (HTMLDocument)BrowserControl.Document;
-            ////this is how we could detect a click on a link to an image...
-            //if (doc?.activeElement != null) {ToastNotify(doc.activeElement.outerHTML); }
 
             var normalisedUri = UriTester.NormaliseUri(e.Uri);
 
@@ -128,6 +124,7 @@ namespace GemiNaut
                 e.Cancel = true;
             }
 
+            var settings = new Settings();
 
             ToggleContainerControlsForBrowser(false);
 
@@ -149,6 +146,47 @@ namespace GemiNaut
             {
                 var aboutNavigator = new AboutNavigator(this, this.BrowserControl);
                 aboutNavigator.NavigateAboutScheme(e, siteIdentity);
+
+            }
+            else if (normalisedUri.Scheme.StartsWith("http"))       //both http and https
+            {
+                var linkId = "";
+                ////doc might be null - you need to check when using!
+                var doc = (HTMLDocument)BrowserControl.Document;
+                ////this is how we could detect a click on a link to an image...
+                if (doc?.activeElement != null) {
+                    linkId = doc.activeElement.id;
+                }
+
+                //detect ctrl click
+                if (
+                     Keyboard.IsKeyDown(Key.LeftCtrl) ||
+                     Keyboard.IsKeyDown(Key.RightCtrl) ||
+                     settings.HandleWebLinks == "System web browser" ||
+                     linkId == "web-launch-external"
+                    )
+                {
+                    //open in system web browser
+                    var launcher = new ExternalNavigator(this);
+                    launcher.LaunchExternalUri(e.Uri.ToString());
+                    ToggleContainerControlsForBrowser(true);
+                    e.Cancel = true;
+
+                } else if (settings.HandleWebLinks == "Gemini HTTP proxy") { 
+
+                    // use a gemini proxy for http links
+                    var geminiNavigator = new GeminiNavigator(this, this.BrowserControl);
+                    geminiNavigator.NavigateGeminiScheme(fullQuery, e, siteIdentity);
+
+                }
+                else {
+                    //use internal navigator
+                    var httpNavigator = new HttpNavigator(this, this.BrowserControl);
+                    httpNavigator.NavigateHttpScheme(fullQuery, e, siteIdentity, linkId);
+
+                }
+
+                
 
             }
             else if (normalisedUri.Scheme == "file")
@@ -191,10 +229,17 @@ namespace GemiNaut
             string hash;
 
             hash = HashService.GetMd5Hash(sourceUrl);
-            
+
+            var usedShowWebHeaderInfo = false;
+
+            var settings = new Settings();
+            var uri = new UriBuilder(sourceUrl);
+
+            //only show web header for self generated content, not proxied
+            usedShowWebHeaderInfo = uri.Scheme.StartsWith("http") && settings.HandleWebLinks != "Gemini HTTP proxy";
 
             //create the html file
-            var result = GmiToHtml(gmiFile, htmlFile, sourceUrl, siteIdentity, themePath);
+            var result = ConverterService.GmiToHtml(gmiFile, htmlFile, sourceUrl, siteIdentity, themePath, usedShowWebHeaderInfo);
 
             if (!File.Exists(htmlFile))
             {
@@ -219,44 +264,7 @@ namespace GemiNaut
 
 
 
-        //convert GMI to HTML for display and save to outpath
-        public Tuple<int, string, string> GmiToHtml (string gmiPath, string outPath, string uri, SiteIdentity siteIdentity, string theme)
-        {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
-            var finder = new ResourceFinder();
 
-            //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
-            //otherwise we use the development ones which are version controlled
-            var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "GmiToHtml.r3");
-
-            var identiconUri = new System.Uri(siteIdentity.IdenticonImagePath());
-            var fabricUri = new System.Uri(siteIdentity.FabricImagePath());
-
-            //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
-            //working with command line parameters, so we need to escape quotes
-            //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
-            //also hypens are also problematic, so we base64 each param and unpack in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\" \"{8}\" \"{9}\" ",
-                rebolPath, 
-                scriptPath,
-                Base64Service.Base64Encode(gmiPath),
-                Base64Service.Base64Encode(outPath),
-                Base64Service.Base64Encode(uri),
-                Base64Service.Base64Encode(theme),
-                Base64Service.Base64Encode(identiconUri.AbsoluteUri),
-                Base64Service.Base64Encode(fabricUri.AbsoluteUri),
-                Base64Service.Base64Encode(siteIdentity.GetId()),
-                Base64Service.Base64Encode(siteIdentity.GetSiteId())
-
-                );
-
-            var execProcess = new ExecuteProcess();
-
-            var result = execProcess.ExecuteCommand(command);
-
-            return (result);
-        }
 
 
         public enum ToastMessageStyles
@@ -420,6 +428,13 @@ namespace GemiNaut
                     txtUrl.Text = geminiUrl;
 
                     ShowTitle(BrowserControl.Document);
+
+                    var originalUri = new UriBuilder(geminiUrl);
+
+                    if (originalUri.Scheme == "http" || originalUri.Scheme == "https")
+                    {
+                        ShowLinkRenderMode(BrowserControl.Document);
+                    }
                 }
                 
              //if a text file (i.e. view->source), explicitly set the charset
@@ -436,9 +451,20 @@ namespace GemiNaut
 
             BrowserControl.Focus();
             ((HTMLDocument)BrowserControl.Document).focus();
+        }
 
+        //decorate links that switch the mode so the current mode is highlighted
+        private void ShowLinkRenderMode(dynamic document)
+        {
+            var doc = (HTMLDocument)document;
+            var settings = new Settings();
 
-
+            //decrate the current mode
+            if (doc.getElementById(settings.WebRenderMode) != null ) {
+                var modeLink = doc.getElementById(settings.WebRenderMode);
+                modeLink.innerText = "[" + modeLink.innerText + "]";
+                modeLink.style.fontWeight = "bold";
+            }
         }
 
         private void ShowTitle(dynamic document)

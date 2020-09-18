@@ -22,5 +22,14 @@
     <Setting Name="MaxDownloadTimeSeconds" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
+    <Setting Name="WebRenderMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">web-switch-simplified</Value>
+    </Setting>
+    <Setting Name="HttpSchemeProxy" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="HandleWebLinks" Type="System.String" Scope="User">
+      <Value Profile="(Default)">System web browser</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

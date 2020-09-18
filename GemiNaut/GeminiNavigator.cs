@@ -30,6 +30,8 @@ using System.Windows;
 using System.Windows.Controls;
 using static GemiNaut.MainWindow;
 
+
+
 namespace GemiNaut
 {
     public class GeminiNavigator
@@ -78,15 +80,32 @@ namespace GemiNaut
             File.Delete(htmlFile);
 
             var settings = new Settings();
-            
-            //pass options to gemget for download
-            var command = string.Format(
-                "\"{0}\" --header --no-progress-bar -m \"{1}\"Mb -t {2} -o \"{3}\" \"{4}\"", 
-                gemGet, 
-                settings.MaxDownloadSizeMb, 
-                settings.MaxDownloadTimeSeconds, 
-                rawFile, 
-                fullQuery);
+            string command = "";
+
+            if (e.Uri.Scheme == "gemini")
+            {
+                //pass options to gemget for download
+                command = string.Format(
+                    "\"{0}\" --header --no-progress-bar -m \"{1}\"Mb -t {2} -o \"{3}\" \"{4}\"",
+                    gemGet,
+                    settings.MaxDownloadSizeMb,
+                    settings.MaxDownloadTimeSeconds,
+                    rawFile,
+                    fullQuery);
+            } else
+            {
+                //pass options to gemget for download using the assigned http proxy
+                //since there is no longer a secure channel from the client to end server
+                //we dont bother checking certs for now - could make it a user option maybe
+                command = string.Format(
+                    "\"{0}\" -i --header --no-progress-bar -m \"{1}\"Mb -t {2} -o \"{3}\"  -p \"{4}\" \"{5}\"",
+                    gemGet,
+                    settings.MaxDownloadSizeMb,
+                    settings.MaxDownloadTimeSeconds,
+                    rawFile,
+                    settings.HttpSchemeProxy,
+                    fullQuery);
+            }
 
             
             var result = proc.ExecuteCommand(command, true, true);
@@ -123,10 +142,23 @@ namespace GemiNaut
 
                 }
                 
+                else if (geminiResponse.Meta.Contains("text/html"))
+                {
+                    //is an html file served over gemini - probably not common, but not unheard of
+                    var htmltoGmiResult = ConverterService.HtmlToGmi(rawFile, gmiFile);
+
+                    if (htmltoGmiResult.Item1 != 0)
+                    {
+                        mMainWindow.ToastNotify("Could not convert HTML to GMI: " + fullQuery, ToastMessageStyles.Error);
+                        mMainWindow.ToggleContainerControlsForBrowser(true);
+                        e.Cancel = true;
+                        return;
+                    }
+                }
                 else if (geminiResponse.Meta.Contains("text/"))
                 {
                     //convert plain text to a gemini version (wraps it in a preformatted section)
-                    var textToGmiResult = TextToGmi(rawFile, gmiFile);
+                    var textToGmiResult = ConverterService.TextToGmi(rawFile, gmiFile);
 
                     if (textToGmiResult.Item1 != 0)
                     {
@@ -144,7 +176,7 @@ namespace GemiNaut
                     var pathFragment = (new UriBuilder(fullQuery)).Path;
                     var ext = Path.GetExtension(pathFragment);
 
-                    var binFile = rawFile + (ext ?? "");
+                    var binFile = rawFile + (ext == "" ? ".tmp" : ext);
                     File.Copy(rawFile, binFile, true); //rename overwriting
 
                     if (geminiResponse.Meta.Contains("image/"))
@@ -202,31 +234,23 @@ namespace GemiNaut
                         redirectUri = UriTester.NormaliseUri(targetUri).ToString();
                     }
 
-                    if (redirectUri.Substring(0, 9) != "gemini://")
+                    var finalUri = new Uri(redirectUri);
+
+                    if (e.Uri.Scheme == "gemini" &&  finalUri.Scheme != "gemini")
                     {
-                        //need to unpack
-                        var redirectUriObj = new Uri(redirectUri);
-                        if (redirectUriObj.Scheme != "gemini")
-                        {
-                            //is external
-                            var launcher = new ExternalNavigator(mMainWindow);
-                            launcher.LaunchExternalUri(redirectUri);
-                            e.Cancel = true;
-                            mMainWindow.ToggleContainerControlsForBrowser(true);
-                        }
-                        else
-                        {
-                            //is a relative url, not yet implemented
-                            mMainWindow.ToastNotify("Redirect to relative URL not yet implemented: " + redirectUri, ToastMessageStyles.Warning);
-                            mMainWindow.ToggleContainerControlsForBrowser(true);
-                            e.Cancel = true;
-                        }
-                    }
-                    else
+                        //cross-scheme redirect, not supported
+                        mMainWindow.ToastNotify("Cross scheme redirect from Gemini not supported: " + redirectUri, ToastMessageStyles.Warning);
+                        mMainWindow.ToggleContainerControlsForBrowser(true);
+                        e.Cancel = true;
+                        return;
+                    } else
                     {
-                        //redirected to a full gemini url
-                        geminiUri = redirectUri;
+                        //others e.g. http->https redirect are fine
                     }
+
+                    //redirected to a full gemini url
+                    geminiUri = redirectUri;
+                    
 
                     //regenerate the hashes using the redirected target url
                     hash = HashService.GetMd5Hash(geminiUri);
@@ -304,36 +328,7 @@ namespace GemiNaut
 
 
 
-        //convert text to GMI for raw text
-        public Tuple<int, string, string> TextToGmi(string rawPath, string outPath)
-        {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
-            var finder = new ResourceFinder();
 
-            //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
-            //otherwise we use the development ones which are version controlled
-            var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "TextAsIs.r3");
-
-
-            //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
-            //working with command line parameters, so we need to escape quotes
-            //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
-            //also hypens are also problematic, so we base64 each param and unpack in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\"  ",
-                rebolPath,
-                scriptPath,
-                Base64Service.Base64Encode(rawPath),
-                Base64Service.Base64Encode(outPath)
-
-                );
-
-            var execProcess = new ExecuteProcess();
-
-            var result = execProcess.ExecuteCommand(command);
-
-            return (result);
-        }
 
         //navigate to a url but get some user input first
         public void NavigateGeminiWithInput(System.Windows.Navigation.NavigatingCancelEventArgs e, string message)

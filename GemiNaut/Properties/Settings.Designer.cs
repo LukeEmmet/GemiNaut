@@ -96,5 +96,41 @@ namespace GemiNaut.Properties {
                 this["MaxDownloadTimeSeconds"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("web-switch-simplified")]
+        public string WebRenderMode {
+            get {
+                return ((string)(this["WebRenderMode"]));
+            }
+            set {
+                this["WebRenderMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string HttpSchemeProxy {
+            get {
+                return ((string)(this["HttpSchemeProxy"]));
+            }
+            set {
+                this["HttpSchemeProxy"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("System web browser")]
+        public string HandleWebLinks {
+            get {
+                return ((string)(this["HandleWebLinks"]));
+            }
+            set {
+                this["HandleWebLinks"] = value;
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GemiNaut"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
-        Title="Settings" Height="300" Width="700" MinHeight="300" MinWidth="700">
+        Title="Settings" Height="300" Width="700" MinHeight="400" MinWidth="700">
     <Grid VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,8 +16,9 @@
 
         <TextBlock TextWrapping="Wrap" 
                    Padding="8" 
-                   Margin="10"
+                   Margin="5,10,5,10"
                    TextAlignment="Center"
+                   FontWeight="Bold"
                    Text="Personal settings for GemiNaut" 
                    Grid.Row="0"></TextBlock>
 
@@ -27,6 +28,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -57,7 +59,8 @@
                        Grid.Column="0"
                    Grid.Row="1"></TextBlock>
 
-            <Grid VerticalAlignment="Top"  Margin="3" HorizontalAlignment="Left" DockPanel.Dock="Left" 
+
+            <Grid VerticalAlignment="Top"   HorizontalAlignment="Left" DockPanel.Dock="Left" 
                   Grid.Row="1" Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition  />
@@ -69,7 +72,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <ComboBox  Grid.Column="0" Margin="0" Padding="8" Width="80" 
+                <ComboBox  Grid.Column="0"  Padding="8" Width="60" Margin="5"
                           Name="MaxDownloadSize" HorizontalAlignment="Left" >
                     <ComboBoxItem>1</ComboBoxItem>
                     <ComboBoxItem>5</ComboBoxItem>
@@ -79,10 +82,10 @@
                     <ComboBoxItem>200</ComboBoxItem>
                     <ComboBoxItem>500</ComboBoxItem>
                 </ComboBox>
-                
-                <TextBlock TextWrapping="Wrap" Padding="8" Grid.Column="1" Text="Mb, or after"/>
-                
-                <ComboBox  Grid.Column="2"  Padding="8" Width="80" 
+
+                <TextBlock TextWrapping="Wrap" Padding="8"  Grid.Column="1" Text="Mb, or after"/>
+
+                <ComboBox  Grid.Column="2"  Padding="8" Width="60" Margin="5"
                           Name="MaxDownloadTime"  HorizontalAlignment="Left" >
                     <ComboBoxItem>5</ComboBoxItem>
                     <ComboBoxItem>10</ComboBoxItem>
@@ -97,12 +100,58 @@
 
 
             </Grid>
+
+
+
+
+
+            <TextBlock TextWrapping="Wrap" 
+                   Padding="8" 
+                       Margin="3"
+                   Text="Open web links" 
+                   TextAlignment="Right"
+                       Grid.Column="0"
+                   Grid.Row="3"></TextBlock>
+
+            <Grid VerticalAlignment="Top"  Margin="3" HorizontalAlignment="Left" DockPanel.Dock="Left" 
+                  Grid.Row="3" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition  />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <ComboBox  Grid.Column="0"  Padding="8" Width="160" 
+                              Name="HandleWebLinks"  HorizontalAlignment="Left" SelectionChanged="HandleWebLinks_SelectionChanged" >
+                    <ComboBoxItem>System web browser</ComboBoxItem>
+                    <ComboBoxItem>GemiNaut web converter</ComboBoxItem>
+                    <ComboBoxItem>Gemini HTTP proxy</ComboBoxItem>
+
+                </ComboBox>
+                <TextBlock TextWrapping="Wrap" Padding="8" Grid.Column="1" Name="HttpSchemeProxyLabel" Text="gemini proxy"/>
+                <TextBox Name="HttpSchemeProxy"
+                         Width="200"
+                         Text="txtHttpSchemeProxy"  
+                         Grid.Row="0"
+                         Grid.Column="2"
+                         Padding="8"
+                VerticalAlignment="Stretch"
+                         FontFamily="Consolas"
+                         FontSize="12"
+                        />
+
+            </Grid>
+
         </Grid>
 
 
         <DockPanel 
             DockPanel.Dock="Bottom"  
             VerticalAlignment="Bottom"
+            Margin="5"
             Grid.Row="2">
             
             <Grid VerticalAlignment="Bottom"  DockPanel.Dock="Bottom" Margin="8">

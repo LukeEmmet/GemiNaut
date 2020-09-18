@@ -75,7 +75,10 @@
     <Compile Include="AppInit.cs" />
     <Compile Include="Base64Service.cs" />
     <Compile Include="BookmarkManager.cs" />
+    <Compile Include="ConverterService.cs" />
     <Compile Include="ExternalNavigator.cs" />
+    <Compile Include="HttpResponse.cs" />
+    <Compile Include="HttpNavigator.cs" />
     <Compile Include="GopherNavigator.cs" />
     <Compile Include="HashService.cs" />
     <Compile Include="ResourceFinder.cs" />

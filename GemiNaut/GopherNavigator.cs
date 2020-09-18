@@ -1,7 +1,4 @@
-﻿using GemiNaut.Properties;
-using GemiNaut.Serialization.Commandline;
-using GemiNaut.Singletons;
-//===================================================
+﻿//===================================================
 //    GemiNaut, a friendly browser for Gemini space on Windows
 
 //    Copyright (C) 2020, Luke Emmet 
@@ -20,8 +17,10 @@ using GemiNaut.Singletons;
 
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-//===================================================
-
+//===================================================using GemiNaut.Properties;
+using GemiNaut.Properties;
+using GemiNaut.Serialization.Commandline;
+using GemiNaut.Singletons;
 using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System;
@@ -86,37 +85,7 @@ namespace GemiNaut
             }
         }
 
-        //convert GopherText to GMI and save to outpath
-        public void GophertoGmi(string gopherPath, string outPath, string uri, GopherParseTypes parseType)
-        {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
-            var finder = new ResourceFinder();
 
-            var parseScript = (parseType == GopherParseTypes.Map) ? "GophermapToGmi.r3" : "GophertextToGmi.r3";
-
-            //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
-            //otherwise we use the development ones which are version controlled
-            var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", parseScript);
-
-            //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
-            //working with command line parameters, so we need to escape quotes
-            //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
-            //also hypens are also problematic, so we base64 each parameter and unpack it in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" ",
-                rebolPath,
-                scriptPath,
-                Base64Service.Base64Encode(gopherPath),
-                Base64Service.Base64Encode(outPath),
-                Base64Service.Base64Encode(uri)
-
-                );
-
-            var execProcess = new ExecuteProcess();
-
-            var result = execProcess.ExecuteCommand(command);
-
-        }
 
         public void NavigateGopherScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity)
         {
@@ -189,13 +158,13 @@ namespace GemiNaut
                     //convert gophermap to text/gemini
 
                     //ToastNotify("Converting gophermap to " + gmiFile);
-                    GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Map);
+                    result =  ConverterService .GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Map);
                     parseFile = gmiFile;
 
                 }
                 else if (stdOut.Contains("TXT"))
                 {
-                    GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Text);
+                    result = ConverterService.GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Text);
                     parseFile = gmiFile;
 
                 }
