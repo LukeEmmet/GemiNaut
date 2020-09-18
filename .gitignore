@@ -6,3 +6,5 @@ GemiNaut/obj/*
 GemiNaut/GmiConverters/TestContent/*
 Releases/
 GemiNaut/packages/*
+Installer/GemiNaut-cache/
+Installer/Setup Files/
