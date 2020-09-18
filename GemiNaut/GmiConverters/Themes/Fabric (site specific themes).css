@@ -6,7 +6,7 @@ body {
 	font-size: 0.9em;
 	margin:0;
 	padding:0;
-	line-height:1.35em;
+	line-height:1.4em;
 }
 a.other {
 	color: #585858;
@@ -79,7 +79,7 @@ div.gemini-link {
 
 div.other-link {
   padding-left: 1.2em ;
-  text-indent: -1.6em ;
+  text-indent: -1.68em ;
   margin-left:0.3em;
   margin-top:0.15em;
 } 

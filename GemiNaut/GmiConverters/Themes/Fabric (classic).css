@@ -6,8 +6,10 @@ body {
 	font-size: 0.9em;
 	margin:0;
 	padding:0;
-	line-height:1.35em;
+	line-height:1.4em;
 }
+
+
 a.other {
 	color: #585858;
 }
