@@ -28,6 +28,7 @@ REBOL [
 do load %utils.r3
 do load %link-builder.r3
 do load %gopher-utils.r3
+do load %wire-up.r3
 
 
 arg-block:  system/options/args
@@ -41,6 +42,7 @@ either not none? arg-block [
     fabric-image: (to-string debase/base arg-block/6 64)
     image-id:   (to-string debase/base arg-block/7 64)
     site-id:   (to-string debase/base arg-block/8 64)
+    show-web-header:   (to-string debase/base arg-block/9 64) = "true"
 
 
         ;uri: "gemini://gemini.circumlunar.space/"
@@ -51,14 +53,18 @@ either not none? arg-block [
 
     in-path: to-rebol-file join folder {test1.gmi}
     out-path: to-rebol-file join folder {test1.htm}
-    uri: "gopher://gemini.circumlunar.space/0/users/foo/foo?.gz"
+    uri: "http://gemini.circumlunar.space/0/users/foo/foo?.gz"
    identicon-image: "https://fqz04mg9a6.execute-api.eu-west-1.amazonaws.com/Prod/api/identicon/identicon.png"
     fabric-image: "https://fqz04mg9a6.execute-api.eu-west-1.amazonaws.com/Prod/api/identicon/fabric.png"
     theme: %Themes/Plain
     site-id: "domain/foo"
+    image-id: "imageid"
+    show-web-header: false
     
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\9fdfcb2ef4244d6821091d62e3a0e06a.gmi}
+   
+   in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_4axq2vlp.3qz\0524a1573e578f797cd22fd8cd36ff83.gmi}
    
    ; in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_g1erlqb5.ivb\fa05d16b14d60da41efc204acf7e20ac.txt}
      
@@ -71,6 +77,19 @@ page-scheme: (to-word uri-object/scheme)
 uri-md5: image-id   ;lowercase copy/part at (mold checksum/method (to-binary site-id) 'md5) 3 32        ;deprecated but classic fabric theme needs it
 
 lines: read/lines in-path
+
+;structure to hold info for hotlinks extracted from the content using square bracket footnotes
+hotlinks: context [
+    expand-citations: off
+    citations: copy []
+    replacements: make map! []      ;returns none if entry is missing
+]
+
+if not none? (find ['http 'https ] uri-object/scheme) [
+   ;---only do fancy citations on web content for now
+   hotlinks/citations: get-citations lines uri-object
+   hotlinks/expand-citations: on
+]
 
 out: copy []
 
@@ -131,7 +150,7 @@ process-heading: func [line level] [
          display: trim take-from  line (level + 1)
          add-to-toc (copy display) level
          last-element: 'heading
-         rejoin [{<h} level { id="} (join "id" heading-count) {">} (markup-escape display) {</h} level {>}]
+         rejoin [{<h} level { id="} (join "id" heading-count) {">} (apply-citation-set (markup-escape display) hotlinks) {</h} level {>}]
 ]    
 
 
@@ -180,7 +199,7 @@ foreach line lines [
                 if not find [bullet link] last-element [ insert-missing-preceding-line]
                 display: trim take-from line 3
                  last-element: 'bullet
-                 rejoin [{<div class="bullet } page-scheme {">&bull;&nbsp;} (markup-escape display) "</div>"]
+                 rejoin [{<div class="bullet } page-scheme {">&bull;&nbsp;} (apply-citation-set (markup-escape display) hotlinks) "</div>"]
             ]
 
             ;---handle quotes
@@ -188,7 +207,7 @@ foreach line lines [
                 if last-element <> 'quote [ insert-missing-preceding-line]
                 display: trim take-from line 2
                  last-element: 'quote
-                 rejoin [{<div class=blockquote } page-scheme {">} (markup-escape display) "&nbsp;</div>"]
+                 rejoin [{<div class=blockquote } page-scheme {">} (apply-citation-set( markup-escape display) hotlinks) "&nbsp;</div>"]
             ]
 
 
@@ -330,7 +349,7 @@ foreach line lines [
 
                 ]
                 
-               rejoin [
+               link-html: rejoin [
                     {<div class="} link-class " "  page-scheme {">}
                 {<span class="link-gliph">} link-gliph {</span>} 
                     {&nbsp;<a } 
@@ -339,6 +358,18 @@ foreach line lines [
                         { class="} class {"}
                         {>}   (trim display-html) "</a></div>"
                 ]
+                
+                keep: true
+                
+                if hotlinks/expand-citations [
+                    link-candidate:  extract-citation line uri-object
+                    if not none? link-candidate [
+                        index: link-candidate/1
+                        keep: not hotlinks/replacements/:index
+                    ]
+                ]
+                either keep [link-html] [""]
+
             ]
             
             if ((take-left line 3) = "```") [""]
@@ -361,7 +392,10 @@ foreach line lines [
                     
                     if first-text-line = "" [first-text-line: join (take-left line 60) "..."]
 
-                    display-html:  rejoin [{<div class="} page-scheme {">} markup-escape line "</div>"]
+                    display-html:  rejoin [{<div class="} page-scheme {">} (apply-citation-set (markup-escape line) hotlinks) "</div>"]
+                    
+                    
+
                 ]
                 
                
@@ -420,6 +454,61 @@ either (1 < length? table-of-contents ) [
     navigation-container-class: "navigation-container-no-toc"
 
 ]
+    
+
+
+if  show-web-header and ((page-scheme = 'http) or (page-scheme = 'https)) [
+    insert head out-string rejoin [
+        {<div style="font-size:small;margin-bottom:1em;text-align:center;margin-left:3em; width:450px">
+                
+                    <i>Simplified web page with reduced interactivity and tracking. <br>
+                        Some content may not be visible.</i>
+        
+        <table cellpadding=0 cell-spacing=0 
+            style="width:80%;text-align:center;margin-left:auto; margin-right:auto;margin-bottom:1em;">
+            <tr>
+                <td align=center width=25% valign=top style=font-size:small>
+                    <a 
+                        style=text-decoration:none
+                        class=other
+                        title="View main page text only" 
+                        id="web-switch-plain"
+                        href="} uri  {"> <i><nobr>plain text</nobr></i></a>
+                </td>
+                <td align=center width=20% valign=top style=font-size:small>
+                    <a 
+                        style=text-decoration:none
+                        class=other
+                        id="web-switch-simplified"
+                        title="View simplified main content only, with some links and headings" 
+                        href="} uri  {"><i> simplified</i></a>
+                </td>
+                <td align=center width=20% valign=top style=font-size:small>
+                    <a 
+                        style=text-decoration:none
+                        class=other
+                        id="web-switch-all"
+                        title="Verbose view of all content of the web page, including any navigational boilerplate links and content" 
+                        href="} uri  {"><i> verbose</i></a>
+                </td>
+                <td align=center width=35% valign=top style=font-size:small>
+                    <a 
+                        style=text-decoration:none
+                        class=other
+                        id="web-launch-external"
+                        title="View full content using system web browser"
+                        href="} uri  {"><i><nobr>launch browser</nobr></i></a>
+                </td>
+            </tr>
+
+        </table>
+        
+        <hr noshade style=align:center;width:80%;height:1px>
+        </div>
+        }
+    ]
+]
+    
     
 ;--save the content to a HTML file
 ;--theme html should be UTF-8 charset, which is the standard format.
