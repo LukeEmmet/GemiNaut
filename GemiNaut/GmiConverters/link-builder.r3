@@ -47,8 +47,7 @@ build-link: func [ uri-object link-part] [
             ;--simplify links to current folder - we dont need leading ./
         if ("./" = substring link-part 1 2) [link-part: next next link-part]
 
-                
-        either (none? find  link-part "://") and (none? find link-part "maito:") [
+        either (none?  find  link-part "://") and (none?  find link-part "mailto:") [
             ;---protocol not given so we need to assemble a full path
             
             link:  any [
@@ -94,4 +93,6 @@ build-link: func [ uri-object link-part] [
     link
 ]
 
+
+;print build-link (decode-url to-url "http://www.foo.com/users/") "mailto:foo"
 ;print build-link (decode-url to-url "http://www.foo.com/users/") "bar"
