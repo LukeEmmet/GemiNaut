@@ -79,8 +79,9 @@ namespace GemiNaut
             var httpResponse = new GemiNaut.Response.HttpResponse(fullQuery);
 
             Tuple<int, string, string> result;
- 
-            if (IsModeSwitch(linkId) && File.Exists(rawFile)) {
+
+            if (IsModeSwitch(linkId) && File.Exists(rawFile))
+            {
                 //use the existing content
                 reRender = true;
                 result = new Tuple<int, string, string>(0, "", "");
@@ -89,7 +90,8 @@ namespace GemiNaut
                 settings.WebRenderMode = linkId;
                 settings.Save();
 
-            } else
+            }
+            else
             {
                 File.Delete(rawFile);
 
@@ -102,25 +104,53 @@ namespace GemiNaut
 
                 //pass options to gemget for download
                 var command = string.Format(
-                    "\"{0}\" --header -o \"{1}\" \"{2}\"", 
-                    httpGet, 
-                    rawFile, 
+                    "\"{0}\" --header -o \"{1}\" \"{2}\"",
+                    httpGet,
+                    rawFile,
                     fullQuery);
 
-            
+
                 result = proc.ExecuteCommand(command, true, true);
 
+                if (result.Item1 != 0)
+                {
+                    mMainWindow.ToastNotify("Could not access web resource: " + fullQuery + "\n" + result.Item3, ToastMessageStyles.Warning);
+                    mMainWindow.ToggleContainerControlsForBrowser(true);
+                    e.Cancel = true;
+                    return;
+                }
 
                 httpResponse.ParseGemGet(result.Item2);   //parse stdout   
                 httpResponse.ParseGemGet(result.Item3);   //parse stderr
 
-                //ToastNotify(httpResponse.Status + " " + httpResponse.Meta);  
-            }
 
+                if (httpResponse.StatusCode == 404)
+                {
+                    {
+                        mMainWindow.ToastNotify("Resource not found:\n" + fullQuery, ToastMessageStyles.Warning);
+                        mMainWindow.ToggleContainerControlsForBrowser(true);
+                        e.Cancel = true;
+                        return;
+
+                    }
+                    //ToastNotify(httpResponse.Status + " " + httpResponse.Meta);  
+                }
+                else if (httpResponse.StatusCode != 200)
+                {
+                    //some other error
+                    mMainWindow.ToastNotify("Could not get resource: " 
+                        + httpResponse.Status + "\n" 
+                        + fullQuery, ToastMessageStyles.Warning);
+                    mMainWindow.ToggleContainerControlsForBrowser(true);
+                    e.Cancel = true;
+                    return;
+                }
+
+            }
 
             //delete any existing html file to encourage webbrowser to reload it
             File.Delete(htmlFile);
-
+            
 
             if (File.Exists(rawFile))
             {
@@ -297,7 +327,7 @@ namespace GemiNaut
 
             }
 
-            else if (httpResponse.Status == 404)
+            else if (httpResponse.StatusCode == 404)
             {
                 mMainWindow.ToastNotify("Page not found (status 51)\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
             }

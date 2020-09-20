@@ -27,7 +27,8 @@ namespace GemiNaut.Response
 {
     public class HttpResponse
     {
-        public int Status;
+        public int StatusCode;
+        public string Status;
         public string ContentType;
         public List<string> Info;
         public List<string> Errors;
@@ -40,7 +41,8 @@ namespace GemiNaut.Response
 
         public HttpResponse(string url)
         {
-            Status = 0;
+            StatusCode = 0;
+            Status = "";
             ContentType = "";
             Info = new List<string>();
             Errors = new List<string>();
@@ -68,13 +70,17 @@ namespace GemiNaut.Response
 
                     if (line.Substring(0, 12) == "StatusCode: ")
                     {
-                        Status = int.Parse(line.Substring(12));
+                        StatusCode = int.Parse(line.Substring(12));
+                    }
+                    else if (line.Substring(0, 8) == "Status: ")
+                    {
+                        Status = line.Substring(8);
                     }
                     else if (line.Substring(0, 14) == "Content-Type: ")
                     {
                         ContentType = line.Substring(14);
                     }
-                   else if (line.Substring(0, 12) == "Redirected: ")
+                    else if (line.Substring(0, 12) == "Redirected: ")
                     {
                         line = line.Substring(12);
                         //is redirected.
