@@ -94,11 +94,12 @@ namespace GemiNaut
                     fullQuery);
             } else
             {
-                //pass options to gemget for download using the assigned http proxy
-                //since there is no longer a secure channel from the client to end server
-                //we dont bother checking certs for now - could make it a user option maybe
+                //pass options to gemget for download using the assigned http proxy, such as 
+                //duckling-proxy https://github.com/LukeEmmet/duckling-proxy
+                //this should obviously be a trusted server since it is in the middle of the 
+                //request
                 command = string.Format(
-                    "\"{0}\" -i --header --no-progress-bar -m \"{1}\"Mb -t {2} -o \"{3}\"  -p \"{4}\" \"{5}\"",
+                    "\"{0}\" --header --no-progress-bar -m \"{1}\"Mb -t {2} -o \"{3}\"  -p \"{4}\" \"{5}\"",
                     gemGet,
                     settings.MaxDownloadSizeMb,
                     settings.MaxDownloadTimeSeconds,
