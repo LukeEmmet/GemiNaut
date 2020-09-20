@@ -5,6 +5,17 @@ A user friendly client to browse Gemini (and Gopher) from Windows.
 Gemini is a radically simple protocol and text format for browsing on the Internet.
 For more information see <a href="https://gemini.circumlunar.space/">https://gemini.circumlunar.space/</a>
 
+## UI innovations
+
+GemiNaut has led the way with a number of user interface innovations, some of which are being adopted by other Gemini clients, including:
+
+* User selectable themes
+* Site-specific theming
+* Page level table of contents
+* Visual distinguishing of link protocols by style
+* Visual distinguishing of linked file type (e.g. images, documents, music)
+* Active footnotes for viewing web content as text/gemini
+
 # Download
 
 You can download a pre-built application for Windows from the <a href="https://www.marmaladefoo.com/pages/geminaut">GemiNaut home page</a>
@@ -24,6 +35,8 @@ You can download a pre-built application for Windows from the <a href="https://w
 * Support both Gemini and Gopher protocol
 * Autolinking of urls in Gopher text pages
 * View source
+* Option to view a simplified rendering of linked web pages
+
 
 # License 
 
@@ -40,6 +53,23 @@ Dark theme:
 ![Screenshot](GemiNaut/Docs/images/dark_theme.png)
 
 # History
+
+## 0.8.8 
+
+Sailing the small web
+
+* scrollbars on preformatted text areas only appear when region is hovered to reduce clutter
+* can access the small web using an HTTP proxy for Gemini (e.g. https://github.com/LukeEmmet/duckling-proxy)
+* can access the small web using native converter 
+* live footnote style links for native converter or if HTTP proxy uses numbered citations (e.g. "[1]")
+* integrate Goose to allow for a "simplified" view of web content
+* allow switching modes between different rendering options for web content
+* update to use latest gemget 1.5
+* fix bug to allow downloading from paths having no file extension
+* fix bug to correctly render mailto: links
+* create application installer
+* slighly more whitespace (increased line spacing) in themes to improve readability
+
 
 ## 0.8.7, 8-aug-2020
 

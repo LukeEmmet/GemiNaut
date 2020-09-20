@@ -9,8 +9,7 @@
 
 # Deploy notes
 
-* create zip from bin/release, plus include Gemget, gopher client, Rebol and GmiConverters folders copied into as well.
-* include docs
+* run the MSI installer
 
 # Bugs
 
@@ -52,7 +51,6 @@ kevinsan> I hadn't thought of that, yes it works fine.
 * File-Print menu
 * Ctrl-R refreshes
 * find text on current page (works, but wire up to menu)
-* global switch between stylesheets or maybe templates including any CSS
 * alternative html renderers
 * integrate c# library for gemini protocol
 * zoom reset to 100%
@@ -64,7 +62,6 @@ kevinsan> I hadn't thought of that, yes it works fine.
 * strip out terminal colour escape codes - e.g. on 
    gemini://bleyble.com/users/quokka/run2plan/couch25k.gmi
 * register with windows to handle gemini:// protocol (with consent, not automatic)
-* footnotes style for inline links
 * navigate to parent folder
 * launchers.xml for alternative renderers, choosable by user
 * use EdgeHtml for rendering engine
@@ -74,11 +71,21 @@ kevinsan> I hadn't thought of that, yes it works fine.
 
 # Done
 
-0.8.8 
+## 0.8.8 
 
-* Scrollbars on preformatted text areas only appear when region is hovered to reduce clutter
+* scrollbars on preformatted text areas only appear when region is hovered to reduce clutter
+* can access the small web using an HTTP proxy for Gemini (e.g. https://github.com/LukeEmmet/duckling-proxy)
+* can access the small web using native converter 
+* live footnote style links for native converter or if HTTP proxy uses numbered citations (e.g. "[1]")
+* integrate Goose to allow for a "simplified" view of web content
+* allow switching modes between different rendering options for web content
+* update to use latest gemget 1.5
+* fix bug to allow downloading from paths having no file extension
+* fix bug to correctly render mailto: links
+* create application installer
+* slighly more whitespace (increased line spacing) in themes to improve readability
 
-0.8.7
+## 0.8.7
 
 * only show tooltip on preformatted text if non-empty
 * drop use of proxy for gopher and allow file downloading
@@ -101,7 +108,7 @@ kevinsan> I hadn't thought of that, yes it works fine.
 * simple image display within GemiNaut
 * updated build of gemget
 
-0.8.6
+## 0.8.6
 
 * .net based identikons
 * show same theme for /~foo as users/foo
@@ -120,7 +127,7 @@ kevinsan> I hadn't thought of that, yes it works fine.
 * gopher text wrapping - softwrap beyond 85 chars, otherwise fixed width
 * integrate gopher client based on go-gopher
 
-0.8.5
+## 0.8.5
 
 * update to use gemget 0.1.2
 * show server text in input prompt
@@ -144,16 +151,16 @@ kevinsan> I hadn't thought of that, yes it works fine.
 * only show TOC if more than one entry
 * show site id in window title
 
-0.8.3
+## 0.8.3
 
 * page specific table of contents
 
-0.8.2 
+## 0.8.2 
 
 * fix keyboard focus problem so you dont have to click into browser on each page
 * display view->source GMI as utf-8
 
-0.8.1 first release
+## 0.8.1 first release
 
 * added simple userguide
 * infer the document title from the first heading or para text line and show in window caption
@@ -192,7 +199,7 @@ kevinsan> I hadn't thought of that, yes it works fine.
 * prettify links, headings and bullets
 
 
-# Free in virture of using mshtml HTML library
+## Inherent features in virture of using mshtml HTML library
 
 * go back and forward remembers scroll offset
 * rich CSS styling and visual design

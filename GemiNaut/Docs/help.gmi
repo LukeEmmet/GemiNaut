@@ -1,6 +1,6 @@
 # Help for GemiNaut
 
-GemiNaut is a user friendly GUI client for the Gemini and Gopher protocols by Luke Emmet. It aims to provide a comfortable and user friendly experience of Gemini on MS Windows.
+GemiNaut is a user friendly GUI client for the Gemini and Gopher protocols by Luke Emmet. It aims to provide a comfortable and user friendly experience of Gemini on Windows.
 
 In many ways it behaves just like a normal web browser, except it is for viewing gemini:// or gopher:// pages.
 
@@ -33,6 +33,7 @@ Gopher is a simpler text and link based format that is one of the inspirations b
 * Auto-linking URLs in Gopher text files
 * Page based table of contents
 * Bookmarks
+* Option to view a simplified rendering of linked web pages
 
 These are described in more detail below.
 
@@ -86,9 +87,9 @@ Sites are identified as follows:
 Link types in GemiNaut can be easily distinguished:
 
 ⇒ Gemini links start with a "fat" arrow. These will open in GemiNaut.
-⇝ External links have a "squiggly" arrow. These will open in the system web browser.
+⇝ External links have a "squiggly" arrow. These will open in the system web browser (or you can turn on display of web pages - see below).
 
-Additionally, links to probable binary files are labelled for ease of identification. These will open in an external browser.
+Images can be viewed, and linked binary files are downloaded.
 
 ### View source
 
@@ -101,6 +102,18 @@ GemiNaut has a simple bookmarks system. You can add the current page to your boo
 You can also edit your bookmarks using a simple text window. The bookmarks are stored using Gemini's text format, so each link starts "=> ". Other line types can be included in the bookmarks text, but only the links are shown in the bookmarks menu.
 
 Create a break between sections of bookmarks with a line of hyphens or underscores (two or more).
+
+### Using GemiNaut as a Small Web browser
+
+GemiNaut can convert web pages to gemtext and display them directly. This works with many simple web pages that do not need authentication, forms, cookies or videos to work correctly (aka The Small Web).
+
+To access this feature change the option in View->Settings. You can either use the internal converter, or connect to a HTTP proxy for Gemini, such as Duckling Proxy:
+
+=> https://github.com/LukeEmmet/duckling-proxy Duckling Proxy
+
+Otherwise web links will be opened in the system web browser. 
+
+Even with GemiNaut set to display web pages, you can open any web link in the system web browser by Ctrl-Clicking on the link.
 
 ## Acknowledgements
 
