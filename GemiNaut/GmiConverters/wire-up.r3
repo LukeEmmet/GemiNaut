@@ -72,7 +72,7 @@ get-citations: funct [lines uri-object] [
 ]
 
 
-link-wirer: funct [span-content hotlinks] [ 
+link-wirer: funct [span-content hotlinks as-monospace] [ 
     
    either (error? try [index: to-integer span-content]) [
          rejoin ["[" span-content "]"]
@@ -81,15 +81,18 @@ link-wirer: funct [span-content hotlinks] [
         citation: rejoin [ "[" span-content "]"]
         
         either ( none? hotlinks/citations/:citation) [
-         rejoin ["[" span-content "]"]
+            rejoin ["[" span-content "]"]
         ] [
-        hotlinks/replacements/:citation: true
-        ;citations/:citation
-        rejoin [{<sup><a }
-               { style=text-decoration:none;font-size:0.95em }
-            { title="} hotlinks/citations/:citation {"}
-            { href="} hotlinks/citations/:citation {"}
-            {>}  "[" span-content "]" {</a></sup>}        ;--dont use [ as these are in the search
+            hotlinks/replacements/:citation: true
+            ;citations/:citation
+            rejoin [
+                (either as-monospace [""] [{<sup>}])
+                {<a }
+                       { style=text-decoration:none;font-size:0.95em }
+                    { title="} hotlinks/citations/:citation {"}
+                    { href="} hotlinks/citations/:citation {"}
+                    {>}  "[" span-content "]" {</a>}
+                (either as-monospace [""] [{</sup>}])
             ]
         ]
     ]
@@ -100,7 +103,7 @@ link-wirer: funct [span-content hotlinks] [
 
 ;---expands numeric square bracket citations using a handler that operates on their 
 ;---content. E.g. [nn] -> [F(nn)]
-expand-citations: funct [text hotlinks handler] [
+expand-citations: funct [text hotlinks handler as-monospace] [
     out: copy ""
     buffer: copy ""
     to-buffer: off
@@ -119,7 +122,7 @@ expand-citations: funct [text hotlinks handler] [
                 buffer-content: copy next buffer
                 
                 either (parse next buffer [some digit]) [
-                    append out rejoin [ (handler buffer-content hotlinks) ]
+                    append out rejoin [ (handler buffer-content hotlinks as-monospace) ]
                 ] [
                     append out join buffer char
                 ]
@@ -143,9 +146,9 @@ expand-citations: funct [text hotlinks handler] [
     :out
 ]
 
-apply-citation-set: funct [line hotlinks] [
+apply-citation-set: funct [line hotlinks as-monospace] [
     either hotlinks/expand-citations [
-        expand-citations line hotlinks :link-wirer
+        expand-citations line hotlinks :link-wirer as-monospace
     ] [
         line
     ]

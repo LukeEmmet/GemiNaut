@@ -81,10 +81,12 @@ foreach line lines [
         result: any [
            
            ;lines of form [label] url, common form used by phloggers, also matches [3] url forms
-           if (parse trimmed-line [ "[" copy label thru "]" thru whitespace to known-scheme copy url to end]) [
+           if (parse trimmed-line [ "[" copy label to "]" thru "]" thru whitespace to known-scheme copy url to end]) [
                 either  (1 = length? (parse/all url " ")) [
+                    
+                    
                     rejoin [
-                        "=> " url " " trimmed-line
+                        "=> " url " [" label "]" url
                     ] 
                 ] [
                     gopher-escape line

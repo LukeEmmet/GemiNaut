@@ -64,7 +64,7 @@ either not none? arg-block [
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
      ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\9fdfcb2ef4244d6821091d62e3a0e06a.gmi}
    
-   in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_4axq2vlp.3qz\0524a1573e578f797cd22fd8cd36ff83.gmi}
+   ;in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_4axq2vlp.3qz\0524a1573e578f797cd22fd8cd36ff83.gmi}
    
    ; in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_g1erlqb5.ivb\fa05d16b14d60da41efc204acf7e20ac.txt}
      
@@ -76,6 +76,7 @@ page-scheme: (to-word uri-object/scheme)
 
 uri-md5: image-id   ;lowercase copy/part at (mold checksum/method (to-binary site-id) 'md5) 3 32        ;deprecated but classic fabric theme needs it
 
+uri-extension: last parse/all uri-object/path "."
 lines: read/lines in-path
 
 ;structure to hold info for hotlinks extracted from the content using square bracket footnotes
@@ -85,7 +86,15 @@ hotlinks: context [
     replacements: make map! []      ;returns none if entry is missing
 ]
 
-if not none? (find ['http 'https ] uri-object/scheme) [
+hot-wire-links: does [
+    (page-scheme = 'gemini and (not none? find ["html" "htm"] uri-extension)) or 
+    (page-scheme = 'http) or
+    (page-scheme = 'https) or
+    (page-scheme = 'gopher)
+
+]
+
+if  hot-wire-links [
    ;---only do fancy citations on web content for now
    hotlinks/citations: get-citations lines uri-object
    hotlinks/expand-citations: on
@@ -150,7 +159,7 @@ process-heading: func [line level] [
          display: trim take-from  line (level + 1)
          add-to-toc (copy display) level
          last-element: 'heading
-         rejoin [{<h} level { id="} (join "id" heading-count) {">} (apply-citation-set (markup-escape display) hotlinks) {</h} level {>}]
+         rejoin [{<h} level { id="} (join "id" heading-count) {">} (apply-citation-set (markup-escape display) hotlinks  false) {</h} level {>}]
 ]    
 
 
@@ -173,7 +182,9 @@ foreach line lines [
     ]
     
 
-        
+    ;flag to determine whether any wired up links in lines are done monospace style
+    monospace-style: in-block or (page-scheme = 'gopher)
+
     
     
     either not  in-block [
@@ -199,7 +210,7 @@ foreach line lines [
                 if not find [bullet link] last-element [ insert-missing-preceding-line]
                 display: trim take-from line 3
                  last-element: 'bullet
-                 rejoin [{<div class="bullet } page-scheme {">&bull;&nbsp;} (apply-citation-set (markup-escape display) hotlinks) "</div>"]
+                 rejoin [{<div class="bullet } page-scheme {">&bull;&nbsp;} (apply-citation-set (markup-escape display) hotlinks false) "</div>"]
             ]
 
             ;---handle quotes
@@ -207,7 +218,7 @@ foreach line lines [
                 if last-element <> 'quote [ insert-missing-preceding-line]
                 display: trim take-from line 2
                  last-element: 'quote
-                 rejoin [{<div class=blockquote } page-scheme {">} (apply-citation-set( markup-escape display) hotlinks) "&nbsp;</div>"]
+                 rejoin [{<div class=blockquote } page-scheme {">} (apply-citation-set( markup-escape display) hotlinks false) "&nbsp;</div>"]
             ]
 
 
@@ -392,7 +403,8 @@ foreach line lines [
                     
                     if first-text-line = "" [first-text-line: join (take-left line 60) "..."]
 
-                    display-html:  rejoin [{<div class="} page-scheme {">} (apply-citation-set (markup-escape line) hotlinks) "</div>"]
+                    
+                    display-html:  rejoin [{<div class="} page-scheme {">} (apply-citation-set (markup-escape line) hotlinks monospace-style) "</div>"]
                     
                     
 
