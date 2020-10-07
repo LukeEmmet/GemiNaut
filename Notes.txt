@@ -73,9 +73,10 @@ kevinsan> I hadn't thought of that, yes it works fine.
 
 ## 0.8.8 
 
+* can access the small web (document web) using native converter html->gmi
+* default is to try to check certificate validity on all servers, if validation not successful, warn with toast message and connect anyway
 * scrollbars on preformatted text areas only appear when region is hovered to reduce clutter
 * can access the small web using an HTTP proxy for Gemini (e.g. https://github.com/LukeEmmet/duckling-proxy)
-* can access the small web using native converter 
 * live footnote style links for native converter or if HTTP proxy uses numbered citations (e.g. "[1]")
 * integrate Goose to allow for a "simplified" view of web content
 * allow switching modes between different rendering options for web content
