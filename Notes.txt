@@ -45,27 +45,41 @@ kevinsan> I hadn't thought of that, yes it works fine.
 
 # Nice to have
 
-* simplify the download options
-* some kind of progress bar or activity thing when downloading
-* save binary files with file/save dialog or offer to always save to user/downloads
+
+* non-blocking calls to command line apps allowing user to cancel page loads mid flow etc
+* custom context menu, not the default mshtml one
+* some kind of progress bar or activity thing when downloading larger files
 * File-Print menu
 * Ctrl-R refreshes
 * find text on current page (works, but wire up to menu)
-* alternative html renderers
-* integrate c# library for gemini protocol
 * zoom reset to 100%
-* bring back the nice rounded borders in Fabric theme, recently turned off for 0.8.1
-* link ids in headings - lower-kebab-case
-* darken the background a tiny bit in Fabric theme to be less saturated
-* rounded borders in Fabric theme
-* FAQ/design concepts
-* strip out terminal colour escape codes - e.g. on 
-   gemini://bleyble.com/users/quokka/run2plan/couch25k.gmi
 * register with windows to handle gemini:// protocol (with consent, not automatic)
 * navigate to parent folder
-* launchers.xml for alternative renderers, choosable by user
 * use EdgeHtml for rendering engine
-* page specifc deep linking e.g. foo.gmi#foo links to the foo heading in that doc
+* more experiments to try other theme ideas
+* some better design documentation or summary of overall aproach and direction
+
+# Blocked things
+
+Needs updating to EdgeHTML rendering engine
+
+* popup images as an option to display them (lightbox style perhaps)
+* bring back the nice rounded borders in Fabric theme, recently turned off for 0.8.1
+* darken the background a tiny bit in Fabric theme to be less saturated
+* rounded borders in Fabric theme
+
+Needs updates to gemget
+
+* TOFU support for server certs
+* client certs
+
+# Maybe implement some day
+
+* integrate c# library for gemini protocol - a new one or maybe from TwinPeaks client
+* strip out terminal colour escape codes - e.g. on 
+   gemini://bleyble.com/users/quokka/run2plan/couch25k.gmi
+* persistent page specifc deep linking e.g. foo.gmi#foo links to the foo heading in that doc - but no standard on that yet
+
 
 
 
