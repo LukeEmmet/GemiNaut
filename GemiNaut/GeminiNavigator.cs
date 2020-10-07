@@ -49,8 +49,12 @@ namespace GemiNaut
         }
 
 
-
         public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity)
+        {
+            NavigateGeminiScheme(fullQuery, e, siteIdentity, true);
+        }
+
+        public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity, bool requireSecure)
         {
             string geminiUri;
             geminiUri = e.Uri.OriginalString;
@@ -82,12 +86,15 @@ namespace GemiNaut
             var settings = new Settings();
             string command = "";
 
+            var secureFlag = requireSecure ? "" : " -i ";
+
             if (e.Uri.Scheme == "gemini")
             {
                 //pass options to gemget for download
                 command = string.Format(
-                    "\"{0}\" --header --no-progress-bar -m \"{1}\"Mb -t {2} -o \"{3}\" \"{4}\"",
+                    "\"{0}\" {1} --header --no-progress-bar -m \"{2}\"Mb -t {3} -o \"{4}\" \"{5}\"",
                     gemGet,
+                    secureFlag,
                     settings.MaxDownloadSizeMb,
                     settings.MaxDownloadTimeSeconds,
                     rawFile,
@@ -99,8 +106,9 @@ namespace GemiNaut
                 //this should obviously be a trusted server since it is in the middle of the 
                 //request
                 command = string.Format(
-                    "\"{0}\" --header --no-progress-bar -m \"{1}\"Mb -t {2} -o \"{3}\"  -p \"{4}\" \"{5}\"",
+                    "\"{0}\" {1} --header --no-progress-bar -m \"{2}\"Mb -t {3} -o \"{4}\"  -p \"{5}\" \"{6}\"",
                     gemGet,
+                    secureFlag,
                     settings.MaxDownloadSizeMb,
                     settings.MaxDownloadTimeSeconds,
                     rawFile,
@@ -118,6 +126,30 @@ namespace GemiNaut
 
             //ToastNotify(geminiResponse.Status + " " + geminiResponse.Meta);
 
+            //in these early days of Gemini we dont forbid visiting a site with an expired cert or mismatched host name
+            //but we do give a warning each time
+            if (result.Item1 == 1  && requireSecure)
+            {
+                var tryInsecure = false;
+                var securityError = "";
+                if (geminiResponse.Errors[0].Contains("server cert is expired"))
+                {
+                    tryInsecure = true;
+                    securityError = "Server certificate is expired";
+                } else if (geminiResponse.Errors[0].Contains("hostname does not verify"))
+                {
+                    tryInsecure = true;
+                    securityError = "Host name does not verify";
+
+                }
+                if (tryInsecure)
+                {
+                    //give a warning and try again with insecure
+                    mMainWindow.ToastNotify("Note: " + securityError + " for: " + e.Uri.Authority, MainWindow.ToastMessageStyles.Warning);
+                    NavigateGeminiScheme(fullQuery, e, siteIdentity, false);
+                    return;
+                }
+            }
 
             if (geminiResponse.AbandonedTimeout || geminiResponse.AbandonedSize)
             {
