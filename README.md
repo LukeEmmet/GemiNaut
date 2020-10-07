@@ -54,10 +54,12 @@ Dark theme:
 
 # History
 
-## 0.8.8 
+## 0.8.8, 7-Oct-2020
 
 Sailing the small web
 
+* can access the small web (document web) using native converter html->gmi
+* default is to try to check certificate validity on all servers, if validation not successful, warn with toast message and connect anyway
 * scrollbars on preformatted text areas only appear when region is hovered to reduce clutter
 * can access the small web using an HTTP proxy for Gemini (e.g. https://github.com/LukeEmmet/duckling-proxy)
 * can access the small web using native converter 
@@ -71,7 +73,7 @@ Sailing the small web
 * slighly more whitespace (increased line spacing) in themes to improve readability
 
 
-## 0.8.7, 8-aug-2020
+## 0.8.7, 8-Aug-2020
 
 0.8.7
 
