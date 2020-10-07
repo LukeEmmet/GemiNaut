@@ -49,7 +49,7 @@ namespace GemiNaut.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("=> gemini://gemini.marmaladefoo.com/geminaut GemNaut home page\r\n=> gemini://gemin" +
+        [global::System.Configuration.DefaultSettingValueAttribute("=> gemini://gemini.marmaladefoo.com/geminaut GemiNaut home page\r\n=> gemini://gemin" +
             "i.circumlunar.space/ Gemini project home page\r\n=> gemini://gus.guru/ GUS search " +
             "engine")]
         public string Bookmarks {
