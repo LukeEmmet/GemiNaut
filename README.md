@@ -58,8 +58,10 @@ Dark theme:
 
 Sailing the small web
 
+* application binaries and installer are now signed
 * can access the small web (document web) using native converter html->gmi
 * default is to try to check certificate validity on all servers, if validation not successful, warn with toast message and connect anyway
+* can render text/html files served in gemini (simplified)
 * scrollbars on preformatted text areas only appear when region is hovered to reduce clutter
 * can access the small web using an HTTP proxy for Gemini (e.g. https://github.com/LukeEmmet/duckling-proxy)
 * can access the small web using native converter 

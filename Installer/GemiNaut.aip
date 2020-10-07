@@ -77,8 +77,8 @@
     <ROW File="Fabricclassic.htm" Component_="Dark.css" FileName="FABRIC~1.HTM|Fabric (classic).htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Fabric (classic).htm" SelfReg="false" NextFile="Fabricsitespecificthemes.css"/>
     <ROW File="Fabricsitespecificthemes.css" Component_="Dark.css" FileName="FABRIC~2.CSS|Fabric (site specific themes).css" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Fabric (site specific themes).css" SelfReg="false" NextFile="Fabricsitespecificthemes.htm"/>
     <ROW File="Fabricsitespecificthemes.htm" Component_="Dark.css" FileName="FABRIC~2.HTM|Fabric (site specific themes).htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Fabric (site specific themes).htm" SelfReg="false" NextFile="Plain.css"/>
-    <ROW File="GemiNaut.exe" Component_="GemiNaut.exe" FileName="GemiNaut.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Release\GemiNaut.exe" SelfReg="false" NextFile="GemiNaut.exe.config" DigSign="true"/>
-    <ROW File="GemiNaut.exe.config" Component_="GemiNaut.exe.config" FileName="GEMINA~1.CON|GemiNaut.exe.config" Attributes="0" SourcePath="..\GemiNaut\bin\Release\GemiNaut.exe.config" SelfReg="false" NextFile="Jdenticon.dll"/>
+    <ROW File="GemiNaut.exe" Component_="GemiNaut.exe" FileName="GemiNaut.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\GemiNaut.exe" SelfReg="false" NextFile="GemiNaut.exe.config" DigSign="true"/>
+    <ROW File="GemiNaut.exe.config" Component_="GemiNaut.exe.config" FileName="GEMINA~1.CON|GemiNaut.exe.config" Attributes="0" SourcePath="..\GemiNaut\bin\Build\GemiNaut.exe.config" SelfReg="false" NextFile="Jdenticon.dll"/>
     <ROW File="GmiToHtml.r3" Component_="GmiToHtml.r3" FileName="GMITOH~1.R3|GmiToHtml.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\GmiToHtml.r3" SelfReg="false" NextFile="gopherutils.r3"/>
     <ROW File="GophermapToGmi.r3" Component_="GmiToHtml.r3" FileName="GOPHER~2.R3|GophermapToGmi.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\GophermapToGmi.r3" SelfReg="false" NextFile="GophertextToGmi.r3"/>
     <ROW File="GophertextToGmi.r3" Component_="GmiToHtml.r3" FileName="GOPHER~3.R3|GophertextToGmi.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\GophertextToGmi.r3" SelfReg="false" NextFile="linkbuilder.r3"/>
@@ -87,7 +87,6 @@
     <ROW File="Plain.htm" Component_="Dark.css" FileName="Plain.htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Plain.htm" SelfReg="false" NextFile="Terminal.css"/>
     <ROW File="Terminal.css" Component_="Dark.css" FileName="Terminal.css" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Terminal.css" SelfReg="false" NextFile="Terminal.htm"/>
     <ROW File="Terminal.htm" Component_="Dark.css" FileName="Terminal.htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Terminal.htm" SelfReg="false" NextFile="UnifiedUI.css"/>
-    <ROW File="Test.r3" Component_="GmiToHtml.r3" FileName="Test.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Test.r3" SelfReg="false" NextFile="TextAsIs.r3"/>
     <ROW File="TextAsIs.r3" Component_="GmiToHtml.r3" FileName="TextAsIs.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\TextAsIs.r3" SelfReg="false" NextFile="Transparent_circle.svg_500px.png_1"/>
     <ROW File="ToastNotifications.Messages.dll" Component_="ToastNotifications.Messages.dll" FileName="TOASTN~2.DLL|ToastNotifications.Messages.dll" Attributes="0" SourcePath="..\GemiNaut\ToastNotifications\ToastNotifications.Messages.dll" SelfReg="false" NextFile="gemgetwindows386.exe"/>
     <ROW File="ToastNotifications.dll" Component_="ToastNotifications.dll" FileName="TOASTN~1.DLL|ToastNotifications.dll" Attributes="0" SourcePath="..\GemiNaut\ToastNotifications\ToastNotifications.dll" SelfReg="false" NextFile="ToastNotifications.Messages.dll"/>
@@ -95,22 +94,22 @@
     <ROW File="UnifiedUI.css" Component_="Dark.css" FileName="UNIFIE~1.CSS|UnifiedUI.css" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\UnifiedUI.css" SelfReg="false" NextFile="UnifiedUI.htm"/>
     <ROW File="UnifiedUI.htm" Component_="Dark.css" FileName="UNIFIE~1.HTM|UnifiedUI.htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\UnifiedUI.htm" SelfReg="false" NextFile="utils.r3"/>
     <ROW File="dark_theme.png" Component_="dark_theme.png" FileName="DARK_T~1.PNG|dark_theme.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\dark_theme.png" SelfReg="false" NextFile="geminaut_home.png"/>
-    <ROW File="gemgetwindows386.exe" Component_="gemgetwindows386.exe" FileName="GEMGET~1.EXE|gemget-windows-386.exe" Attributes="0" SourcePath="..\Gemget\gemget-windows-386.exe" SelfReg="false" NextFile="readme.txt" DigSign="true"/>
+    <ROW File="gemgetwindows386.exe" Component_="gemgetwindows386.exe" FileName="GEMGET~1.EXE|gemget-windows-386.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\Gemget\gemget-windows-386.exe" SelfReg="false" NextFile="readme.txt" DigSign="true"/>
     <ROW File="geminaut_home.png" Component_="dark_theme.png" FileName="GEMINA~1.PNG|geminaut_home.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\geminaut_home.png" SelfReg="false" NextFile="gemini_home.png"/>
     <ROW File="gemini_home.png" Component_="dark_theme.png" FileName="GEMINI~1.PNG|gemini_home.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\gemini_home.png" SelfReg="false" NextFile="gopher.png"/>
-    <ROW File="goosecli.exe" Component_="goosecli.exe" FileName="GOOSE-~1.EXE|goose-cli.exe" Attributes="0" SourcePath="..\Goose\goose-cli.exe" SelfReg="false" NextFile="httpget.exe" DigSign="true"/>
+    <ROW File="goosecli.exe" Component_="goosecli.exe" FileName="GOOSE-~1.EXE|goose-cli.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\Goose\goose-cli.exe" SelfReg="false" NextFile="httpget.exe" DigSign="true"/>
     <ROW File="gopher.png" Component_="dark_theme.png" FileName="gopher.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\gopher.png" SelfReg="false" NextFile="gus_home.png"/>
-    <ROW File="gopherget.exe" Component_="gopherget.exe" FileName="GOPHER~1.EXE|gopher-get.exe" Attributes="0" SourcePath="..\GopherGet\gopher-get.exe" SelfReg="false" NextFile="readme.txt_1" DigSign="true"/>
+    <ROW File="gopherget.exe" Component_="gopherget.exe" FileName="GOPHER~1.EXE|gopher-get.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\GopherGet\gopher-get.exe" SelfReg="false" NextFile="readme.txt_1" DigSign="true"/>
     <ROW File="gopherutils.r3" Component_="GmiToHtml.r3" FileName="GOPHER~1.R3|gopher-utils.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\gopher-utils.r3" SelfReg="false" NextFile="GophermapToGmi.r3"/>
     <ROW File="gus_home.png" Component_="dark_theme.png" FileName="gus_home.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\gus_home.png" SelfReg="false" NextFile="plain_theme.png"/>
     <ROW File="help.gmi" Component_="helptheme.css" FileName="help.gmi" Attributes="0" SourcePath="..\GemiNaut\Docs\help.gmi" SelfReg="false" NextFile="dark_theme.png"/>
     <ROW File="helptheme.css" Component_="helptheme.css" FileName="HELP-T~1.CSS|help-theme.css" Attributes="0" SourcePath="..\GemiNaut\Docs\help-theme.css" SelfReg="false" NextFile="helptheme.htm"/>
     <ROW File="helptheme.htm" Component_="helptheme.css" FileName="HELP-T~1.HTM|help-theme.htm" Attributes="0" SourcePath="..\GemiNaut\Docs\help-theme.htm" SelfReg="false" NextFile="help.gmi"/>
-    <ROW File="html2gmi.exe" Component_="html2gmi.exe" FileName="html2gmi.exe" Attributes="0" SourcePath="..\HtmlToGmi\html2gmi.exe" SelfReg="false" NextFile="helptheme.css" DigSign="true"/>
-    <ROW File="httpget.exe" Component_="httpget.exe" FileName="http-get.exe" Attributes="0" SourcePath="..\HttpGet\http-get.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="linkbuilder.r3" Component_="GmiToHtml.r3" FileName="LINK-B~1.R3|link-builder.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\link-builder.r3" SelfReg="false" NextFile="Test.r3"/>
+    <ROW File="html2gmi.exe" Component_="html2gmi.exe" FileName="html2gmi.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\HtmlToGmi\html2gmi.exe" SelfReg="false" NextFile="helptheme.css" DigSign="true"/>
+    <ROW File="httpget.exe" Component_="httpget.exe" FileName="http-get.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\HttpGet\http-get.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="linkbuilder.r3" Component_="GmiToHtml.r3" FileName="LINK-B~1.R3|link-builder.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\link-builder.r3" SelfReg="false" NextFile="TextAsIs.r3"/>
     <ROW File="plain_theme.png" Component_="dark_theme.png" FileName="PLAIN_~1.PNG|plain_theme.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\plain_theme.png" SelfReg="false" NextFile="terminal_theme.png"/>
-    <ROW File="r3core.exe" Component_="r3core.exe" FileName="r3-core.exe" Attributes="0" SourcePath="..\GemiNaut\Rebol\r3-core.exe" SelfReg="false" NextFile="goosecli.exe" DigSign="true"/>
+    <ROW File="r3core.exe" Component_="r3core.exe" FileName="r3-core.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\Rebol\r3-core.exe" SelfReg="false" NextFile="goosecli.exe" DigSign="true"/>
     <ROW File="readme.txt" Component_="readme.txt" FileName="readme.txt" Attributes="0" SourcePath="..\Gemget\readme.txt" SelfReg="false" NextFile="gopherget.exe"/>
     <ROW File="readme.txt_1" Component_="readme.txt_1" FileName="readme.txt" Attributes="0" SourcePath="..\GopherGet\readme.txt" SelfReg="false" NextFile="html2gmi.exe"/>
     <ROW File="terminal_theme.png" Component_="dark_theme.png" FileName="TERMIN~1.PNG|terminal_theme.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\terminal_theme.png" SelfReg="false" NextFile="GmiToHtml.r3"/>
