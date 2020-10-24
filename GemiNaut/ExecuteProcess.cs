@@ -54,32 +54,46 @@ namespace GemiNaut.Serialization.Commandline
             p.StartInfo.FileName = fileName;
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.WorkingDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
-            p.Start();
-            // Do not wait for the child process to exit before
-            // reading to the end of its redirected stream.
-            // p.WaitForExit();
-            // Read the output stream first and then wait.
-
             string stdErr = "";
             string stdOut = "";
-            if (captureStdErr)
+            int exitCode = -1;
+
+            try
             {
-                stdErr = p.StandardError.ReadToEnd();
+                p.Start();
+                // Do not wait for the child process to exit before
+                // reading to the end of its redirected stream.
+                // p.WaitForExit();
+                // Read the output stream first and then wait.
+
+                if (captureStdErr)
+                {
+                    stdErr = p.StandardError.ReadToEnd();
+                }
+                if (captureStdOut)
+                {
+                    stdOut = p.StandardOutput.ReadToEnd();
+                }
+
+                p.WaitForExit();
+
+                //string errors = p.StandardError.ReadToEnd();
+                exitCode = p.ExitCode;
             }
-            if (captureStdOut)
+            catch (Exception err)
             {
-                stdOut = p.StandardOutput.ReadToEnd();
+                if (err.Message == "The system cannot find the file specified")
+                {
+                    stdErr = "GemiNaut attempted to launch a helper app with the command line : " 
+                        + fileName 
+                        + " but the program could not be found. It may have been removed in error by security software.";
+                }
+                else
+                {
+                    stdErr = err.ToString();
+                }
             }
-
-            p.WaitForExit();
-
-            //string errors = p.StandardError.ReadToEnd();
-            int exitCode = p.ExitCode;
-
-
             return new Tuple<int, string, string>(exitCode, stdOut, stdErr);
-
-
         }
         /// <summary>
         /// Execute Command line and return results as a tuple: (exitCode,stdout,stderr)
