@@ -116,7 +116,14 @@ table-of-contents-string: copy ""
 heading-count: 0
 
 make-toc-entry: funct [heading-text heading-level id] [
-         use-text: (markup-escape copy heading-text) 
+        
+        
+        ;trim length to a sensible size
+        max-length: 70 
+        use-text: copy heading-text
+        if max-length < length? use-text [use-text: join (take-left use-text max-length) "…"]
+        
+         use-text: (markup-escape use-text) 
          replace/all use-text "&nbsp;" " "   ;--bit of a hack to undo the work of markup escape on gopher...        e.g. TOC for  gopher://gemini.circumlunar.space/0/docs/faq.txt
          rejoin  [
             {<div class="toc} heading-level {"><a class=toc title="Item on this page" href="#} id {">} 
@@ -175,7 +182,7 @@ foreach line lines [
         last-element: 'preformat
         
         append out either in-block [
-             rejoin [{<pre class=inline title="} pre-label {">} ]
+             rejoin [{<pre class=inline title="} (markup-escape pre-label) {">} ]
         ] [
             "</pre>"
         ]
@@ -258,7 +265,7 @@ foreach line lines [
                     ;---and warn the user in the tooltip. we cannot know for certain as we cannot do any kind of HEAD
                     ;---request in gemini. Here are the most common binary file types we might expect.
                     binary-extensions: [
-                        "tar" "gz" "zip" "exe" "7z" "tar"
+                        "tar" "gz" "zip" "exe" "7z" "tar" "rar"
                     ]
                     
                     image-extensions: [
