@@ -170,7 +170,7 @@ namespace GemiNaut
                         if (pathParts[count + 1] != "")
                         {
                             keepParts.Add(pathPart);
-                            keepParts.Add(pathParts[count + 1].ToString());
+                            keepParts.Add(pathParts[count + 1]);
                         }
                         break;
                     }

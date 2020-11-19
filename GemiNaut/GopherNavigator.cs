@@ -54,7 +54,7 @@ namespace GemiNaut
 
             var windowCentre = WindowGeometry.WindowCentre(mMainWindow);
             var inputPrompt = "Input request from Gopher server\n\n" +
-                "  " + e.Uri.Host + e.Uri.LocalPath.ToString() + "\n\n" +
+                "  " + e.Uri.Host + e.Uri.LocalPath + "\n\n" +
                 "Please provide your input:";
 
             string input = Interaction.InputBox(inputPrompt, "Server input request", "", windowCentre.Item1, windowCentre.Item2);

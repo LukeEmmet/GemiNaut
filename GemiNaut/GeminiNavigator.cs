@@ -27,7 +27,6 @@ using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System;
 using System.IO;
-using System.Windows;
 using System.Windows.Controls;
 using static GemiNaut.Views.MainWindow;
 
@@ -344,9 +343,9 @@ namespace GemiNaut
         {
             //position input box approx in middle of main window
 
-            var windowCentre = WindowGeometry.WindowCentre((Window)mMainWindow);
+            var windowCentre = WindowGeometry.WindowCentre(mMainWindow);
             var inputPrompt = "Input request from Gemini server\n\n" +
-                "  " + e.Uri.Host + e.Uri.LocalPath.ToString() + "\n\n" +
+                "  " + e.Uri.Host + e.Uri.LocalPath + "\n\n" +
                 message;
 
             string input = Interaction.InputBox(inputPrompt, "Server input request", "", windowCentre.Item1, windowCentre.Item2);
