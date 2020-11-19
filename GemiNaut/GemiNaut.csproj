@@ -32,6 +32,12 @@
     <Compile Remove="Commandline\ExecuteProcess.cs" />
   </ItemGroup>
   <ItemGroup>
+	<None Update="Rebol\*">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
+	<None Update="Docs\*">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
     <None Update="GmiConverters\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
