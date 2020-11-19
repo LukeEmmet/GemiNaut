@@ -38,6 +38,9 @@
 	<None Update="Docs\*">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
+	<None Update="Docs\images\*">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
     <None Update="GmiConverters\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
