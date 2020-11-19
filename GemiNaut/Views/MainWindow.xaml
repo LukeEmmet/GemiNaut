@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="GemiNaut - a friendly Gemini browser" Height="600" Width="900"
         Closing="Window_Closing"
-        Icon="Resources/pretty-text.ico"
+        Icon="../Resources/pretty-text.ico"
         >
     <Window.CommandBindings>
         <CommandBinding Command="NavigationCommands.BrowseBack" CanExecute="BrowseBack_CanExecute" Executed="BrowseBack_Executed" />

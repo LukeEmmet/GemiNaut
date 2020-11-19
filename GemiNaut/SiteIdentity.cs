@@ -100,8 +100,8 @@ namespace GemiNaut
             var identiconId = identifier;
             var identiconStyle = new IdenticonStyle
             {
-                ColorLightness = Range.Create(0.22f, 0.75f),
-                GrayscaleLightness = Range.Create(0.52f, 0.7f),
+                ColorLightness = Jdenticon.Range.Create(0.22f, 0.75f),
+                GrayscaleLightness = Jdenticon.Range.Create(0.52f, 0.7f),
                 GrayscaleSaturation = 0.10f,
                 ColorSaturation = 0.75f,
                 Padding = 0f
@@ -119,8 +119,8 @@ namespace GemiNaut
             var fabricId = ReverseString(identifier);
             var fabricStyle = new IdenticonStyle
             {
-                ColorLightness = Range.Create(0.33f, 0.48f),
-                GrayscaleLightness = Range.Create(0.30f, 0.45f),
+                ColorLightness = Jdenticon.Range.Create(0.33f, 0.48f),
+                GrayscaleLightness = Jdenticon.Range.Create(0.30f, 0.45f),
                 ColorSaturation = 0.7f,
                 GrayscaleSaturation = 0.7f,
                 Padding = 0f

@@ -18,6 +18,7 @@
 
 using GemiNaut.Serialization.Commandline;
 using System;
+using System.IO;
 using static GemiNaut.GopherNavigator;
 
 namespace GemiNaut
@@ -122,8 +123,8 @@ namespace GemiNaut
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
             //otherwise we use the development ones which are version controlled
-            var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "GmiToHtml.r3");
+            var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\..\Rebol", "r3-core.exe");
+            var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\..\GmiConverters", "GmiToHtml.r3");
 
             var identiconUri = new System.Uri(siteIdentity.IdenticonImagePath());
             var fabricUri = new System.Uri(siteIdentity.FabricImagePath());
@@ -152,6 +153,15 @@ namespace GemiNaut
             var result = execProcess.ExecuteCommand(command);
 
             return result;
+        }
+
+        public static void CreateDirectoriesIfNeeded(params string[] directories)
+        {
+            foreach (var directoryPath in directories)
+            {
+                var directory = Path.GetDirectoryName(directoryPath);
+                Directory.CreateDirectory(directory);
+            }
         }
     }
 }

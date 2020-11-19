@@ -198,11 +198,10 @@ namespace GemiNaut.Views
             //instead tell the browser to load the content
             BrowserControl.Navigate(@"file:///" + imgFile);
         }
+
         public void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, SiteIdentity siteIdentity, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
-            string hash;
-
-            hash = HashService.GetMd5Hash(sourceUrl);
+            var hash = HashService.GetMd5Hash(sourceUrl);
 
             var usedShowWebHeaderInfo = false;
 
@@ -213,11 +212,12 @@ namespace GemiNaut.Views
             usedShowWebHeaderInfo = uri.Scheme.StartsWith("http") && settings.HandleWebLinks != "Gemini HTTP proxy";
 
             //create the html file
+            ConverterService.CreateDirectoriesIfNeeded(gmiFile, htmlFile, themePath);
             var result = ConverterService.GmiToHtml(gmiFile, htmlFile, sourceUrl, siteIdentity, themePath, usedShowWebHeaderInfo);
 
             if (!File.Exists(htmlFile))
             {
-                ToastNotify("GMIToHTML did not create content for " + sourceUrl + "\n\n" + "File: " + gmiFile, ToastMessageStyles.Error);
+                ToastNotify("GMIToHTML did not create content for " + sourceUrl + "\n\nFile: " + gmiFile, ToastMessageStyles.Error);
 
                 ToggleContainerControlsForBrowser(true);
                 e.Cancel = true;
@@ -424,9 +424,12 @@ namespace GemiNaut.Views
             //update title, this might fail when called from Navigated as the document might not be ready yet
             //but we also call on LoadCompleted. This should catch both situations
             //of real navigation and also back and forth in history
+
+            const string geminiTitle = "GemiNaut, a friendly GUI browser";
+
             try
             {
-                Application.Current.MainWindow.Title = document.Title + " - GemiNaut, a friendly GUI browser";
+                Application.Current.MainWindow.Title = document == null ? geminiTitle : document.Title + " - " + geminiTitle;
             }
             catch (Exception e)
             {
@@ -481,7 +484,7 @@ namespace GemiNaut.Views
 
         private void BrowserControl_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            var doc = (HTMLDocument)BrowserControl.Document;
+            var doc = ((WebBrowser)sender).Document;
 
             ShowTitle(doc);
 

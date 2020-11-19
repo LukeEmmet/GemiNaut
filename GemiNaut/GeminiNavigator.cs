@@ -63,7 +63,7 @@ namespace GemiNaut
             var proc = new ExecuteProcess();
 
             //use local or dev binary for gemget
-            var gemGet = mFinder.LocalOrDevFile(appDir, "Gemget", "..\\..\\..\\Gemget", "gemget-windows-386.exe");
+            var gemGet = mFinder.LocalOrDevFile(appDir, "Gemget", "..\\..\\..\\..\\Gemget", "gemget-windows-386.exe");
 
             var hash = HashService.GetMd5Hash(fullQuery);
 
