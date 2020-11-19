@@ -101,11 +101,8 @@ namespace GemiNaut
                 return;
             }
 
-            var proc = new ExecuteProcess();
-            var finder = new ResourceFinder();
-
             //use local or dev binary for gemget
-            var gopherClient = finder.LocalOrDevFile(appDir, "GopherGet", "..\\..\\..\\GopherGet", "gopher-get.exe");
+            var gopherClient = ResourceFinder.LocalOrDevFile(appDir, "GopherGet", "..\\..\\..\\GopherGet", "gopher-get.exe");
 
             var hash = HashService.GetMd5Hash(fullQuery);
 

@@ -36,14 +36,11 @@ namespace GemiNaut
     {
         private readonly MainWindow mMainWindow;
         private readonly WebBrowser mWebBrowser;
-        private readonly ResourceFinder mFinder;
 
         public HttpNavigator(MainWindow mainWindow, WebBrowser browserControl)
         {
             mMainWindow = mainWindow;
             mWebBrowser = browserControl;
-
-            mFinder = new ResourceFinder();
         }
 
         public static bool IsModeSwitch(string linkId)
@@ -59,8 +56,6 @@ namespace GemiNaut
 
             var sessionPath = Session.Instance.SessionPath;
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
-
-            var proc = new ExecuteProcess();
 
             var hash = HashService.GetMd5Hash(fullQuery);
 
@@ -96,7 +91,7 @@ namespace GemiNaut
                 File.Delete(gmiFile);
 
                 //use local or dev binary for gemget
-                var httpGet = mFinder.LocalOrDevFile(appDir, "HttpGet", "..\\..\\..\\..\\HttpGet", "http-get.exe");
+                var httpGet = ResourceFinder.LocalOrDevFile(appDir, "HttpGet", "..\\..\\..\\..\\HttpGet", "http-get.exe");
 
                 //pass options to gemget for download
                 var command = string.Format(
@@ -148,7 +143,7 @@ namespace GemiNaut
                 if (httpResponse.ContentType.Contains("text/html") || reRender)
                 {
                     //use local or dev binary for goose
-                    var gooseConvert = mFinder.LocalOrDevFile(appDir, "Goose", "..\\..\\..\\..\\Goose", "goose-cli.exe");
+                    var gooseConvert = ResourceFinder.LocalOrDevFile(appDir, "Goose", "..\\..\\..\\..\\Goose", "goose-cli.exe");
                     var gooseOut = sessionPath + "\\" + hash + ".goose";
 
                     var gooseCommand = "";

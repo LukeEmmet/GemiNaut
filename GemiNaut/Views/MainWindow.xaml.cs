@@ -440,7 +440,6 @@ namespace GemiNaut.Views
         private void BuildThemeMenu()
         {
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
-            var finder = new ResourceFinder();
 
             var themeFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
 

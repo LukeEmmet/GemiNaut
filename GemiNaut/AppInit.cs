@@ -44,7 +44,6 @@ namespace GemiNaut
         {
             var sessionPath = Session.Instance.SessionPath;
             var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
-            var finder = new ResourceFinder();
 
             var assetsTarget = Path.Combine(sessionPath, "Assets");
 

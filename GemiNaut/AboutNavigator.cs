@@ -38,7 +38,6 @@ namespace GemiNaut
             var hashFile = Path.Combine(sessionPath, hash + ".txt");
             var htmlCreateFile = Path.Combine(sessionPath, hash + ".htm");
 
-            var finder = new ResourceFinder();
             var helpFolder = ResourceFinder.LocalOrDevFolder(appDir, @"Docs", @"..\..\..\Docs");
             var helpFile = Path.Combine(helpFolder, sourceFileName);
 

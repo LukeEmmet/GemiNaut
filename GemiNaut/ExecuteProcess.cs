@@ -27,9 +27,9 @@ using System.Linq;
 
 namespace GemiNaut.Serialization.Commandline
 {
-    internal class ExecuteProcess
+    internal static class ExecuteProcess
     {
-        public string DebugLog { get; set; }
+        public static string DebugLog { get; set; }
 
         public static Tuple<int, string, string> ExecuteCommand(string fileName, bool captureStdOut, bool captureStdErr)
         {
@@ -135,10 +135,8 @@ namespace GemiNaut.Serialization.Commandline
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public Tuple<int, string, string> LoggedExecute(string command)
+        public static Tuple<int, string, string> LoggedExecute(string command)
         {
-            var exec = new ExecuteProcess();
-
             var log = SimpleLogger.Instance;
 
             log.Log(command);
@@ -176,8 +174,6 @@ namespace GemiNaut.Serialization.Commandline
 
         public static Tuple<int, string, string> LoggedExecute(string command, bool captureStdOut, bool captureStdErr)
         {
-            var exec = new ExecuteProcess();
-
             var log = SimpleLogger.Instance;
 
             log.Log(command);

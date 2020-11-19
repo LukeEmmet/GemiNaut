@@ -36,14 +36,11 @@ namespace GemiNaut
     {
         private readonly MainWindow mMainWindow;
         private readonly WebBrowser mWebBrowser;
-        private readonly ResourceFinder mFinder;
 
         public GeminiNavigator(MainWindow mainWindow, WebBrowser browserControl)
         {
             mMainWindow = mainWindow;
             mWebBrowser = browserControl;
-
-            mFinder = new ResourceFinder();
         }
 
         public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity, bool requireSecure = true)
@@ -53,10 +50,8 @@ namespace GemiNaut
             var sessionPath = Session.Instance.SessionPath;
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
 
-            var proc = new ExecuteProcess();
-
             //use local or dev binary for gemget
-            var gemGet = mFinder.LocalOrDevFile(appDir, "Gemget", "..\\..\\..\\..\\Gemget", "gemget-windows-386.exe");
+            var gemGet = ResourceFinder.LocalOrDevFile(appDir, "Gemget", "..\\..\\..\\..\\Gemget", "gemget-windows-386.exe");
 
             var hash = HashService.GetMd5Hash(fullQuery);
 

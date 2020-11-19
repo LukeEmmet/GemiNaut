@@ -29,18 +29,15 @@ namespace GemiNaut
         public static Tuple<int, string, string> HtmlToGmi(string rawPath, string outPath)
         {
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
-            var finder = new ResourceFinder();
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
             //otherwise we use the development ones which are version controlled
-            var converterPath = finder.LocalOrDevFile(appDir, @"HtmlToGmi", @"..\..\..\..\HtmlToGmi", "html2gmi.exe");
+            var converterPath = ResourceFinder.LocalOrDevFile(appDir, @"HtmlToGmi", @"..\..\..\..\HtmlToGmi", "html2gmi.exe");
 
             //for some unknown reason, the -m flag (numbered citations) must not be last when calling from this context
             //-e (show embedded images as links)
             //-n (number links)
             var command = $"\"{converterPath}\" -mne -i \"{rawPath}\" -o \"{outPath}\"";
-
-            var execProcess = new ExecuteProcess();
 
             var result = ExecuteProcess.ExecuteCommand(command);
 
@@ -51,12 +48,11 @@ namespace GemiNaut
         public static Tuple<int, string, string> TextToGmi(string rawPath, string outPath)
         {
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
-            var finder = new ResourceFinder();
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
             //otherwise we use the development ones which are version controlled
-            var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "TextAsIs.r3");
+            var rebolPath = ResourceFinder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
+            var scriptPath = ResourceFinder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "TextAsIs.r3");
 
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
             //working with command line parameters, so we need to escape quotes
@@ -68,8 +64,6 @@ namespace GemiNaut
                 Base64Service.Base64Encode(rawPath),
                 Base64Service.Base64Encode(outPath));
 
-            var execProcess = new ExecuteProcess();
-
             var result = ExecuteProcess.ExecuteCommand(command);
 
             return result;
@@ -79,14 +73,12 @@ namespace GemiNaut
         public static Tuple<int, string, string> GophertoGmi(string gopherPath, string outPath, string uri, GopherParseTypes parseType)
         {
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
-            var finder = new ResourceFinder();
-
             var parseScript = (parseType == GopherParseTypes.Map) ? "GophermapToGmi.r3" : "GophertextToGmi.r3";
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
             //otherwise we use the development ones which are version controlled
-            var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", parseScript);
+            var rebolPath = ResourceFinder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
+            var scriptPath = ResourceFinder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", parseScript);
 
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
             //working with command line parameters, so we need to escape quotes
@@ -99,8 +91,6 @@ namespace GemiNaut
                 Base64Service.Base64Encode(outPath),
                 Base64Service.Base64Encode(uri));
 
-            var execProcess = new ExecuteProcess();
-
             var result = ExecuteProcess.ExecuteCommand(command);
 
             return result;
@@ -110,12 +100,11 @@ namespace GemiNaut
         public static Tuple<int, string, string> GmiToHtml(string gmiPath, string outPath, string uri, SiteIdentity siteIdentity, string theme, bool showWebHeader)
         {
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
-            var finder = new ResourceFinder();
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
             //otherwise we use the development ones which are version controlled
-            var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\..\Rebol", "r3-core.exe");
-            var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\..\GmiConverters", "GmiToHtml.r3");
+            var rebolPath = ResourceFinder.LocalOrDevFile(appDir, @"Rebol", @"..\..\..\Rebol", "r3-core.exe");
+            var scriptPath = ResourceFinder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\..\GmiConverters", "GmiToHtml.r3");
 
             var identiconUri = new Uri(siteIdentity.IdenticonImagePath());
             var fabricUri = new Uri(siteIdentity.FabricImagePath());
@@ -136,8 +125,6 @@ namespace GemiNaut
                 Base64Service.Base64Encode(siteIdentity.GetId()),
                 Base64Service.Base64Encode(siteIdentity.GetSiteId()),
                 Base64Service.Base64Encode(showWebHeader ? "true" : "false"));
-
-            var execProcess = new ExecuteProcess();
 
             var result = ExecuteProcess.ExecuteCommand(command);
 

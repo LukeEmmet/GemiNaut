@@ -23,11 +23,11 @@ using System.IO;
 
 namespace GemiNaut
 {
-    public class ResourceFinder
+    public static class ResourceFinder
     {
         //return the expected location of a file in two possible folders, preferring the local one
         //(only checks for folder existence, not file)
-        public string LocalOrDevFile(string startFolder, string localFolder, string devFolder, string filename)
+        public static string LocalOrDevFile(string startFolder, string localFolder, string devFolder, string filename)
         {
             var useFolder = LocalOrDevFolder(startFolder, localFolder, devFolder);
 
