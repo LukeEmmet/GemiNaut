@@ -17,18 +17,12 @@
     <Resource Include="Resources\pretty-text.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Jdenticon-net" Version="2.2.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="ToastNotifications.Messages" Version="2.5.1" />
     <PackageReference Include="Unofficial.Microsoft.mshtml" Version="7.0.3300" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Commandline\ExecuteProcess.cs" />
   </ItemGroup>
   <ItemGroup>
 	<None Update="Rebol\*">
@@ -40,10 +34,13 @@
 	<None Update="Docs\images\*">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
-    <None Update="GmiConverters\*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+  <None Update="GmiConverters\*">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </None>
 	<None Update="GmiConverters\Themes\*">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</None>
+  <None Update="GmiConverters\Themes\Assets*">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>
   </ItemGroup>
