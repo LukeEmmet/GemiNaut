@@ -50,7 +50,7 @@ namespace GemiNaut
 
             if (!Directory.Exists(assetsTarget)) { Directory.CreateDirectory(assetsTarget); }
 
-            var assetsFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\Themes\Assets", @"..\..\GmiConverters\Themes\Assets");
+            var assetsFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\Themes\Assets", @"..\..\..\GmiConverters\Themes\Assets");
 
             foreach (var file in Directory.GetFiles(assetsFolder))
             {
