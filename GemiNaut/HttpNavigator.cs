@@ -74,7 +74,7 @@ namespace GemiNaut
 
             var reRender = false;       //if just re-rendering the same content in a different mode, dont re-fetch
 
-            var httpResponse = new GemiNaut.Response.HttpResponse(fullQuery);
+            var httpResponse = new Response.HttpResponse(fullQuery);
 
             Tuple<int, string, string> result;
 
@@ -96,7 +96,7 @@ namespace GemiNaut
                 File.Delete(gmiFile);
 
                 //use local or dev binary for gemget
-                var httpGet = mFinder.LocalOrDevFile(appDir, "HttpGet", "..\\..\\..\\HttpGet", "http-get.exe");
+                var httpGet = mFinder.LocalOrDevFile(appDir, "HttpGet", "..\\..\\..\\..\\HttpGet", "http-get.exe");
 
                 //pass options to gemget for download
                 var command = string.Format(
@@ -148,7 +148,7 @@ namespace GemiNaut
                 if (httpResponse.ContentType.Contains("text/html") || reRender)
                 {
                     //use local or dev binary for goose
-                    var gooseConvert = mFinder.LocalOrDevFile(appDir, "Goose", "..\\..\\..\\Goose", "goose-cli.exe");
+                    var gooseConvert = mFinder.LocalOrDevFile(appDir, "Goose", "..\\..\\..\\..\\Goose", "goose-cli.exe");
                     var gooseOut = sessionPath + "\\" + hash + ".goose";
 
                     var gooseCommand = "";

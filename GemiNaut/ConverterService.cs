@@ -33,7 +33,7 @@ namespace GemiNaut
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
             //otherwise we use the development ones which are version controlled
-            var converterPath = finder.LocalOrDevFile(appDir, @"HtmlToGmi", @"..\..\..\HtmlToGmi", "html2gmi.exe");
+            var converterPath = finder.LocalOrDevFile(appDir, @"HtmlToGmi", @"..\..\..\..\HtmlToGmi", "html2gmi.exe");
 
             //for some unknown reason, the -m flag (numbered citations) must not be last when calling from this context
             //-e (show embedded images as links)

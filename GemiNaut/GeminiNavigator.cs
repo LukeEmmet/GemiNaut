@@ -115,7 +115,7 @@ namespace GemiNaut
 
             var result = proc.ExecuteCommand(command, true, true);
 
-            var geminiResponse = new GemiNaut.Response.GeminiResponse(fullQuery);
+            var geminiResponse = new Response.GeminiResponse(fullQuery);
 
             geminiResponse.ParseGemGet(result.Item2);   //parse stdout   
             geminiResponse.ParseGemGet(result.Item3);   //parse stderr
