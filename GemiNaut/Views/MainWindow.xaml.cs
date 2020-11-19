@@ -22,6 +22,7 @@ namespace GemiNaut.Views
         private readonly Dictionary<string, string> _urlsByHash;
         private readonly Notifier _notifier;
         private readonly BookmarkManager _bookmarkManager;
+        private bool _isNavigating;
 
         public MainWindow()
         {
@@ -97,6 +98,8 @@ namespace GemiNaut.Views
 
         private void BrowserControl_Navigating(object sender, NavigatingCancelEventArgs e)
         {
+            _isNavigating = true;
+
             var normalisedUri = UriTester.NormaliseUri(e.Uri);
 
             var siteIdentity = new SiteIdentity(normalisedUri, Session.Instance);
@@ -182,6 +185,11 @@ namespace GemiNaut.Views
                 launcher.LaunchExternalUri(e.Uri.ToString());
                 ToggleContainerControlsForBrowser(true);
                 e.Cancel = true;
+            }
+
+            if (e.Cancel)
+            {
+                _isNavigating = false;
             }
         }
 
@@ -293,7 +301,7 @@ namespace GemiNaut.Views
 
         private void GoToPage_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            e.CanExecute = !_isNavigating;
         }
 
         private void GoToPage_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -401,6 +409,8 @@ namespace GemiNaut.Views
 
             BrowserControl.Focus();
             ((HTMLDocument)BrowserControl.Document).focus();
+
+            _isNavigating = false;
         }
 
         //decorate links that switch the mode so the current mode is highlighted

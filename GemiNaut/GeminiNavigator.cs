@@ -27,6 +27,7 @@ using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Windows.Controls;
 using static GemiNaut.Views.MainWindow;
 
