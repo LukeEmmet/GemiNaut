@@ -49,11 +49,12 @@ namespace GemiNaut.Views
             HttpSchemeProxy.Visibility = (value == "Gemini HTTP proxy") ? Visibility.Visible : Visibility.Collapsed;
             HttpSchemeProxyLabel.Visibility = HttpSchemeProxy.Visibility;
         }
+
         private void HandleWebLinks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //string text = ((ComboBox)sender).SelectedValue.ToString();
             // string text = (sender as ComboBox).SelectedItem as string;
-            string text = (e.AddedItems[0] as ComboBoxItem).Content as string;
+            string text = (e.AddedItems[0] as ComboBoxItem)?.Content as string;
             ShowProxyWidget(text);
         }
     }
