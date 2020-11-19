@@ -25,13 +25,12 @@ using System.IO;
 using GemiNaut.Singletons;
 using Jdenticon;
 
-
 namespace GemiNaut
 {
     public class SiteIdentity
     {
-        private Uri mUri;
-        private Session  mSession;
+        private readonly Uri mUri;
+        private readonly Session mSession;
 
         public SiteIdentity(Uri uri, Session session)
         {
@@ -39,13 +38,9 @@ namespace GemiNaut
             mSession = session;
 
             CreateIdenticon(GetId());
-
         }
 
-
-
-
-        static string ReplaceFirst(string text, string search, string replace)
+        private static string ReplaceFirst(string text, string search, string replace)
         {
             int pos = text.IndexOf(search);
             if (pos < 0)
@@ -55,7 +50,6 @@ namespace GemiNaut
             return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
         }
 
-        
         public string GetThemeId()
         {
             // for the purposes of themeing, the theme id is same as site id except
@@ -72,7 +66,7 @@ namespace GemiNaut
                 siteId = ReplaceFirst(siteId, "/1/", "/");    // dont use leading item type to drive the theme id -now the user gets same theme in gemini and gopher on the same serve
             }
 
-            return (siteId);
+            return siteId;
         }
 
         public static string ReverseString(string s)
@@ -85,30 +79,29 @@ namespace GemiNaut
         public string IdenticonImagePath()
         {
             var sessionPath = Session.Instance.SessionPath;
-            return (Path.Combine(sessionPath, GetId() + ".png"));
+            return Path.Combine(sessionPath, GetId() + ".png");
         }
         public string FabricImagePath()
         {
             var sessionPath = Session.Instance.SessionPath;
-            return (Path.Combine(sessionPath, ReverseString(GetId()) + ".png"));
+            return Path.Combine(sessionPath, ReverseString(GetId()) + ".png");
         }
 
         public string GetId()
         {
-            return( HashService.GetMd5Hash(GetThemeId()));
+            return HashService.GetMd5Hash(GetThemeId());
         }
 
         public void CreateIdenticon(string identifier)
         {
-
             //these are fine tuned. Fabric should be not too light, as there is quite a bit of white space in the design
 
             //identicon
             var identiconId = identifier;
             var identiconStyle = new IdenticonStyle
             {
-                ColorLightness = Range.Create(0.22f, 0.75f),
-                GrayscaleLightness = Range.Create(0.52f, 0.7f),
+                ColorLightness = Jdenticon.Range.Create(0.22f, 0.75f),
+                GrayscaleLightness = Jdenticon.Range.Create(0.52f, 0.7f),
                 GrayscaleSaturation = 0.10f,
                 ColorSaturation = 0.75f,
                 Padding = 0f
@@ -120,16 +113,14 @@ namespace GemiNaut
             if (!File.Exists(IdenticonImagePath()))
             {
                 identicon.SaveAsPng(IdenticonImagePath());
-
             }
-
 
             //fabric
             var fabricId = ReverseString(identifier);
             var fabricStyle = new IdenticonStyle
             {
-                ColorLightness = Range.Create(0.33f, 0.48f),
-                GrayscaleLightness = Range.Create(0.30f, 0.45f),
+                ColorLightness = Jdenticon.Range.Create(0.33f, 0.48f),
+                GrayscaleLightness = Jdenticon.Range.Create(0.30f, 0.45f),
                 ColorSaturation = 0.7f,
                 GrayscaleSaturation = 0.7f,
                 Padding = 0f
@@ -141,10 +132,7 @@ namespace GemiNaut
             if (!File.Exists(FabricImagePath()))
             {
                 fabricIcon.SaveAsPng(FabricImagePath());
-
             }
-
-
         }
 
         public string GetSiteId()
@@ -168,7 +156,6 @@ namespace GemiNaut
             {
                 foreach (var pathPartOriginal in pathParts)
                 {
-
                     var pathPart = pathPartOriginal;
 
                     //special treatment of the first component of gopher paths - ensure site home is accessied as type 1
@@ -180,10 +167,10 @@ namespace GemiNaut
 
                     if (pathPart == "users")
                     {
-                        if ("" != pathParts[count + 1].ToString())
+                        if (pathParts[count + 1] != "")
                         {
                             keepParts.Add(pathPart);
-                            keepParts.Add(pathParts[count + 1].ToString());
+                            keepParts.Add(pathParts[count + 1]);
                         }
                         break;
                     }
@@ -204,10 +191,7 @@ namespace GemiNaut
                 siteId = uri.Authority + usePath;
             }
 
-            return (siteId);
-
+            return siteId;
         }
-
-
     }
 }

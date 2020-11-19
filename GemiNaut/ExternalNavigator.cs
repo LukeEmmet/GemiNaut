@@ -19,22 +19,25 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
+using GemiNaut.Views;
+using System.Diagnostics;
+
 namespace GemiNaut
 {
     public class ExternalNavigator
     {
-        private MainWindow mMainWindow;
+        private readonly MainWindow mMainWindow;
 
         public ExternalNavigator(MainWindow Window)
         {
             mMainWindow = Window;
         }
+
         //launch url in system browser
         public void LaunchExternalUri(string uri)
         {
-            System.Diagnostics.Process.Start(uri);
+            Process.Start(new ProcessStartInfo(uri) { UseShellExecute = true });
             mMainWindow.ToastNotify("Launching in system browser: " + uri);
         }
-
     }
 }

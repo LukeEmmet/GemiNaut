@@ -1,23 +1,16 @@
 ﻿using GemiNaut.Properties;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
-
-namespace GemiNaut
+namespace GemiNaut.Views
 {
     /// <summary>
     /// Interaction logic for Bookmarks.xaml
     /// </summary>
     public partial class Bookmarks : Window
     {
-        MainWindow _mainWindow;
-        WebBrowser _webBrowser;
+        private readonly MainWindow _mainWindow;
+        private readonly WebBrowser _webBrowser;
 
         public Bookmarks(MainWindow window, WebBrowser browser)
         {
@@ -30,10 +23,8 @@ namespace GemiNaut
             _webBrowser = browser;
         }
 
-
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-
             this.Close();
         }
 
@@ -47,7 +38,6 @@ namespace GemiNaut
             bmManager.RefreshBookmarkMenu();
 
             this.Close();
-
         }
     }
 }

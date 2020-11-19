@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 
-
 namespace GemiNaut.Response
 {
     public class GeminiResponse
@@ -54,8 +53,7 @@ namespace GemiNaut.Response
 
         public void ParseGemGet(string response)
         {
-
-            string[] split = response.Split(new Char[] { '\n' });
+            string[] split = response.Split(new char[] { '\n' });
 
             foreach (string s in split)
             {
@@ -65,12 +63,11 @@ namespace GemiNaut.Response
 
                 if (line != "")
                 {
-
                     if (line.Substring(0, 8) == "Header: ")
                     {
                         line = line.Substring(8);
 
-                        string[] headerSplit = line.Split(new Char[] { ' ', '\t' }, 2);
+                        string[] headerSplit = line.Split(new char[] { ' ', '\t' }, 2);
 
                         Status = Convert.ToInt32(headerSplit[0]);
                         Meta = headerSplit[1].Trim();
@@ -81,7 +78,6 @@ namespace GemiNaut.Response
                             FinalUrl = Meta;
                             Redirected = true;
                         }
-
                     }
                     else if (line.Substring(0, 7) == "Error: ")
                     {
@@ -94,22 +90,21 @@ namespace GemiNaut.Response
                         if (message.Contains("File is larger than max size limit"))
                         {
                             AbandonedSize = true;
-                        } else if (message.Contains("Download timed out"))
+                        }
+                        else if (message.Contains("Download timed out"))
                         {
                             AbandonedTimeout = true;
-                        } else
+                        }
+                        else
                         {
                             Info.Add(message);
                         }
-
                     }
                     else
                     {
                         Notes.Add(line);
                     }
                 }
-
-
             }
         }
     }

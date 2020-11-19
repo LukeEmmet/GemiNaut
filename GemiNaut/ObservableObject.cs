@@ -22,9 +22,8 @@
 using System.ComponentModel;
 namespace GemiNaut
 {
-    public class ObservableObject :INotifyPropertyChanged
+    public class ObservableObject : INotifyPropertyChanged
     {
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -39,6 +38,5 @@ namespace GemiNaut
                 PropertyChanged(this, e);
             }
         }
-
     }
 }

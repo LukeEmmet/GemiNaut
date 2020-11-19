@@ -20,20 +20,15 @@
 //===================================================
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GemiNaut.Singletons
 {
-
     /// <summary>
     /// simple singleton logger, based on
     /// http://csharpindepth.com/Articles/General/Singleton.aspx#cctor
     /// </summary>
-    public class Session : ObservableObject
+    public class Session : ObservableObject, IDisposable
     {
         private static readonly Session instance = new Session();
 
@@ -47,7 +42,6 @@ namespace GemiNaut.Singletons
 
         private Session()
         {
-
             CreateSessionFolder();
         }
 
@@ -59,15 +53,12 @@ namespace GemiNaut.Singletons
             }
         }
 
-        
         private void CreateSessionFolder()
         {
-
             _sessionPath = GetTemporaryDirectory("geminaut_");
-
         }
 
-        private string GetTemporaryDirectory(string prefix)
+        private static string GetTemporaryDirectory(string prefix)
         {
             string tempDirectory = Path.Combine(Path.GetTempPath(), prefix + Path.GetRandomFileName());
             Directory.CreateDirectory(tempDirectory);
@@ -83,7 +74,6 @@ namespace GemiNaut.Singletons
             //**TBD would be nice to handle this gracefully by marking
             //any files or folder for deletion on reboot...
             Directory.Delete(_sessionPath, true);
-
         }
 
         public string SessionPath
@@ -101,6 +91,5 @@ namespace GemiNaut.Singletons
         {
             DestroySessionFolder();
         }
-
     }
 }

@@ -22,53 +22,39 @@
 using GemiNaut.Properties;
 using GemiNaut.Serialization.Commandline;
 using GemiNaut.Singletons;
+using GemiNaut.Views;
 using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System;
 using System.IO;
-using System.Windows;
+using System.IO.MemoryMappedFiles;
 using System.Windows.Controls;
-using static GemiNaut.MainWindow;
-
-
+using static GemiNaut.Views.MainWindow;
 
 namespace GemiNaut
 {
     public class GeminiNavigator
     {
-        private MainWindow mMainWindow;
-        private WebBrowser mWebBrowser;
-        private ResourceFinder mFinder;
+        private readonly MainWindow mMainWindow;
+        private readonly WebBrowser mWebBrowser;
 
         public GeminiNavigator(MainWindow mainWindow, WebBrowser browserControl)
         {
             mMainWindow = mainWindow;
             mWebBrowser = browserControl;
-
-            mFinder = new ResourceFinder();
         }
 
-
-        public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity)
+        public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity, bool requireSecure = true)
         {
-            NavigateGeminiScheme(fullQuery, e, siteIdentity, true);
-        }
-
-        public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity, bool requireSecure)
-        {
-            string geminiUri;
-            geminiUri = e.Uri.OriginalString;
+            var geminiUri = e.Uri.OriginalString;
 
             var sessionPath = Session.Instance.SessionPath;
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
-
-            var proc = new ExecuteProcess();
+            var appDir = AppDomain.CurrentDomain.BaseDirectory;
 
             //use local or dev binary for gemget
-            var gemGet = mFinder.LocalOrDevFile(appDir, "Gemget", "..\\..\\..\\Gemget", "gemget-windows-386.exe");
+            var gemGet = ResourceFinder.LocalOrDevFile(appDir, "Gemget", "..\\..\\..\\..\\Gemget", "gemget-windows-386.exe");
 
             var hash = HashService.GetMd5Hash(fullQuery);
-
 
             //uses .txt as extension so content loaded as text/plain not interpreted by the browser
             //if user requests a view-source.
@@ -99,7 +85,8 @@ namespace GemiNaut
                     settings.MaxDownloadTimeSeconds,
                     rawFile,
                     fullQuery);
-            } else
+            }
+            else
             {
                 //pass options to gemget for download using the assigned http proxy, such as 
                 //duckling-proxy https://github.com/LukeEmmet/duckling-proxy
@@ -116,10 +103,9 @@ namespace GemiNaut
                     fullQuery);
             }
 
-            
-            var result = proc.ExecuteCommand(command, true, true);
+            var result = ExecuteProcess.ExecuteCommand(command, true, true);
 
-            var geminiResponse = new GemiNaut.Response.GeminiResponse(fullQuery);
+            var geminiResponse = new Response.GeminiResponse(fullQuery);
 
             geminiResponse.ParseGemGet(result.Item2);   //parse stdout   
             geminiResponse.ParseGemGet(result.Item3);   //parse stderr
@@ -128,7 +114,7 @@ namespace GemiNaut
 
             //in these early days of Gemini we dont forbid visiting a site with an expired cert or mismatched host name
             //but we do give a warning each time
-            if (result.Item1 == 1  && requireSecure)
+            if (result.Item1 == 1 && requireSecure)
             {
                 var tryInsecure = false;
                 var securityError = "";
@@ -136,16 +122,16 @@ namespace GemiNaut
                 {
                     tryInsecure = true;
                     securityError = "Server certificate is expired";
-                } else if (geminiResponse.Errors[0].Contains("hostname does not verify"))
+                }
+                else if (geminiResponse.Errors[0].Contains("hostname does not verify"))
                 {
                     tryInsecure = true;
                     securityError = "Host name does not verify";
-
                 }
                 if (tryInsecure)
                 {
                     //give a warning and try again with insecure
-                    mMainWindow.ToastNotify("Note: " + securityError + " for: " + e.Uri.Authority, MainWindow.ToastMessageStyles.Warning);
+                    mMainWindow.ToastNotify("Note: " + securityError + " for: " + e.Uri.Authority, ToastMessageStyles.Warning);
                     NavigateGeminiScheme(fullQuery, e, siteIdentity, false);
                     return;
                 }
@@ -153,7 +139,7 @@ namespace GemiNaut
 
             if (geminiResponse.AbandonedTimeout || geminiResponse.AbandonedSize)
             {
-                var abandonMessage = String.Format(
+                var abandonMessage = string.Format(
                         "Download was abandoned as it exceeded the max size ({0}) or time ({1} s). See GemiNaut settings for details.\n\n{2}",
                         settings.MaxDownloadSizeMb,
                         settings.MaxDownloadTimeSeconds,
@@ -165,16 +151,12 @@ namespace GemiNaut
                 return;
             }
 
-
             if (File.Exists(rawFile))
             {
-
                 if (geminiResponse.Meta.Contains("text/gemini"))
                 {
                     File.Copy(rawFile, gmiFile);
-
                 }
-                
                 else if (geminiResponse.Meta.Contains("text/html"))
                 {
                     //is an html file served over gemini - probably not common, but not unheard of
@@ -200,10 +182,9 @@ namespace GemiNaut
                         e.Cancel = true;
                         return;
                     }
-
-                } else
+                }
+                else
                 {
-
                     //a download
                     //its an image - rename the raw file and just show it
                     var pathFragment = (new UriBuilder(fullQuery)).Path;
@@ -214,9 +195,9 @@ namespace GemiNaut
 
                     if (geminiResponse.Meta.Contains("image/"))
                     {
-
                         mMainWindow.ShowImage(fullQuery, binFile, e);
-                    } else
+                    }
+                    else
                     {
                         SaveFileDialog saveFileDialog = new SaveFileDialog();
 
@@ -224,7 +205,6 @@ namespace GemiNaut
 
                         if (saveFileDialog.ShowDialog() == true)
                         {
-
                             try
                             {
                                 //save the file
@@ -245,10 +225,7 @@ namespace GemiNaut
                     }
 
                     return;
-
                 }
-
-
 
                 if (geminiResponse.Redirected)
                 {
@@ -259,7 +236,8 @@ namespace GemiNaut
                         //a full url
                         //normalise the URi (e.g. remove default port if specified)
                         redirectUri = UriTester.NormaliseUri(new Uri(geminiResponse.FinalUrl)).ToString();
-                    } else
+                    }
+                    else
                     {
                         //a relative one
                         var baseUri = new Uri(fullQuery);
@@ -269,25 +247,24 @@ namespace GemiNaut
 
                     var finalUri = new Uri(redirectUri);
 
-                    if (e.Uri.Scheme == "gemini" &&  finalUri.Scheme != "gemini")
+                    if (e.Uri.Scheme == "gemini" && finalUri.Scheme != "gemini")
                     {
                         //cross-scheme redirect, not supported
                         mMainWindow.ToastNotify("Cross scheme redirect from Gemini not supported: " + redirectUri, ToastMessageStyles.Warning);
                         mMainWindow.ToggleContainerControlsForBrowser(true);
                         e.Cancel = true;
                         return;
-                    } else
+                    }
+                    else
                     {
                         //others e.g. http->https redirect are fine
                     }
 
                     //redirected to a full gemini url
                     geminiUri = redirectUri;
-                    
 
                     //regenerate the hashes using the redirected target url
                     hash = HashService.GetMd5Hash(geminiUri);
-                    
 
                     var gmiFileNew = sessionPath + "\\" + hash + ".txt";
                     var htmlFileNew = sessionPath + "\\" + hash + ".htm";
@@ -309,44 +286,38 @@ namespace GemiNaut
                     //update locations of gmi and html file
                     gmiFile = gmiFileNew;
                     htmlFile = htmlFileNew;
-
                 }
                 else
                 {
                     geminiUri = fullQuery;
                 }
 
-                var userThemesFolder = mFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+                var userThemesFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
 
                 var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
                 mMainWindow.ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, siteIdentity, e);
-
             }
             else if (geminiResponse.Status == 10 || geminiResponse.Status == 11)
             {
-
                 //needs input
 
                 mMainWindow.ToggleContainerControlsForBrowser(true);
 
                 NavigateGeminiWithInput(e, geminiResponse.Meta);
-
-
             }
             else if (geminiResponse.Status == 50 || geminiResponse.Status == 51)
             {
-
                 mMainWindow.ToastNotify("Page not found (status 51)\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
             }
             else
             {
                 //some othe error - show to the user for info
-                mMainWindow.ToastNotify(String.Format(
+                mMainWindow.ToastNotify(string.Format(
                     "Cannot retrieve the content (exit code {0}): \n\n{1} \n\n{2}",
                     result.Item1,
-                    String.Join("\n\n", geminiResponse.Info),
-                    String.Join("\n\n", geminiResponse.Errors)
+                    string.Join("\n\n", geminiResponse.Info),
+                    string.Join("\n\n", geminiResponse.Errors)
                     ),
                     ToastMessageStyles.Error);
             }
@@ -355,23 +326,16 @@ namespace GemiNaut
 
             //no further navigation right now
             e.Cancel = true;
-
-
         }
-
-
-
-
 
         //navigate to a url but get some user input first
         public void NavigateGeminiWithInput(System.Windows.Navigation.NavigatingCancelEventArgs e, string message)
         {
-
             //position input box approx in middle of main window
 
-            var windowCentre = WindowGeometry.WindowCentre((Window) mMainWindow);
+            var windowCentre = WindowGeometry.WindowCentre(mMainWindow);
             var inputPrompt = "Input request from Gemini server\n\n" +
-                "  " + e.Uri.Host + e.Uri.LocalPath.ToString() + "\n\n" +
+                "  " + e.Uri.Host + e.Uri.LocalPath + "\n\n" +
                 message;
 
             string input = Interaction.InputBox(inputPrompt, "Server input request", "", windowCentre.Item1, windowCentre.Item2);
@@ -385,7 +349,7 @@ namespace GemiNaut
                 if (e.Uri.Port != -1) { b.Port = e.Uri.Port; }
                 b.Path = e.Uri.LocalPath;
                 //!%22%C2%A3$%25%5E&*()_+1234567890-=%7B%7D:@~%3C%3E?[];'#,./
-                b.Query = System.Uri.EscapeDataString(input);      //escape the query result
+                b.Query = Uri.EscapeDataString(input);      //escape the query result
 
                 //ToastNotify(b.ToString());
 
@@ -397,8 +361,5 @@ namespace GemiNaut
                 e.Cancel = true;
             }
         }
-
-
-
     }
 }
