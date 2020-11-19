@@ -74,7 +74,7 @@
                 </Button>
 
 
-                <TextBox Name="txtUrl" KeyUp="txtUrl_KeyUp"  Grid.Column="3" Margin="0,5,5,5" FontSize="14" Text="gemini://domain/path" />
+                <TextBox Name="txtUrl" KeyUp="TxtUrl_KeyUp"  Grid.Column="3" Margin="0,5,5,5" FontSize="14" Text="gemini://domain/path" />
 
                 <Button Command="NavigationCommands.GoToPage" Grid.Column="4" Margin="0,5,5,5" FontSize="14" BorderThickness="0" Background="#ffffff">
                     <TextBlock>Go</TextBlock>

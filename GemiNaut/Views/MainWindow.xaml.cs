@@ -17,7 +17,6 @@ using mshtml;
 namespace GemiNaut.Views
 {
     public partial class MainWindow : Window
-
     {
         private readonly Dictionary<string, string> _urlsByHash;
         private readonly Notifier _notifier;
@@ -67,9 +66,10 @@ namespace GemiNaut.Views
             TickSelectedThemeMenu();
         }
 
-        private void txtUrl_KeyUp(object sender, KeyEventArgs e)
+        private void TxtUrl_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
+            {
                 if (UriTester.TextIsUri(txtUrl.Text))
                 {
                     BrowserControl.Navigate(txtUrl.Text);
@@ -78,6 +78,7 @@ namespace GemiNaut.Views
                 {
                     ToastNotify("Not a valid URI: " + txtUrl.Text, ToastMessageStyles.Error);
                 }
+            }
         }
 
         public void ToggleContainerControlsForBrowser(bool toState)
