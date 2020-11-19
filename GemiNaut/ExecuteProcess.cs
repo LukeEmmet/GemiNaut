@@ -29,18 +29,9 @@ namespace GemiNaut.Serialization.Commandline
 {
     internal class ExecuteProcess
     {
-        private string _debugLog;
+        public string DebugLog { get; set; }
 
-        public string DebugLog
-        {
-            get { return _debugLog; }
-            set
-            {
-                _debugLog = value;
-            }
-        }
-
-        public Tuple<int, string, string> ExecuteCommand(string fileName, bool captureStdOut, bool captureStdErr)
+        public static Tuple<int, string, string> ExecuteCommand(string fileName, bool captureStdOut, bool captureStdErr)
         {
             // Start the child process.
             Process p = new Process();
@@ -81,8 +72,8 @@ namespace GemiNaut.Serialization.Commandline
             {
                 if (err.Message == "The system cannot find the file specified")
                 {
-                    stdErr = "GemiNaut attempted to launch a helper app with the command line : " 
-                        + fileName 
+                    stdErr = "GemiNaut attempted to launch a helper app with the command line : "
+                        + fileName
                         + " but the program could not be found. It may have been removed in error by security software.";
                 }
                 else
@@ -92,13 +83,14 @@ namespace GemiNaut.Serialization.Commandline
             }
             return new Tuple<int, string, string>(exitCode, stdOut, stdErr);
         }
+
         /// <summary>
         /// Execute Command line and return results as a tuple: (exitCode,stdout,stderr)
         /// based on https://msdn.microsoft.com/en-us/library/system.diagnostics.process.standardoutput.aspx
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public Tuple<int, string, string> ExecuteCommand(string fileName)
+        public static Tuple<int, string, string> ExecuteCommand(string fileName)
         {
             // Start the child process.
             Process p = new Process();
@@ -128,7 +120,7 @@ namespace GemiNaut.Serialization.Commandline
             return new Tuple<int, string, string>(exitCode, output, errors);
         }
 
-        private void LogCommand(string command)
+        private static void LogCommand(string command)
         {
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
             var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -136,7 +128,6 @@ namespace GemiNaut.Serialization.Commandline
 
             //disabled for now, uncomment to help debug integrations
             //File.AppendAllText(logLocation, command + "\r\n");
-
         }
 
         /// <summary>
@@ -144,7 +135,6 @@ namespace GemiNaut.Serialization.Commandline
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        /// 
         public Tuple<int, string, string> LoggedExecute(string command)
         {
             var exec = new ExecuteProcess();
@@ -184,7 +174,7 @@ namespace GemiNaut.Serialization.Commandline
             return result;
         }
 
-        public Tuple<int, string, string> LoggedExecute(string command, bool captureStdOut, bool captureStdErr)
+        public static Tuple<int, string, string> LoggedExecute(string command, bool captureStdOut, bool captureStdErr)
         {
             var exec = new ExecuteProcess();
 

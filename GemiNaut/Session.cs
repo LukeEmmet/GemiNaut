@@ -58,7 +58,7 @@ namespace GemiNaut.Singletons
             _sessionPath = GetTemporaryDirectory("geminaut_");
         }
 
-        private string GetTemporaryDirectory(string prefix)
+        private static string GetTemporaryDirectory(string prefix)
         {
             string tempDirectory = Path.Combine(Path.GetTempPath(), prefix + Path.GetRandomFileName());
             Directory.CreateDirectory(tempDirectory);

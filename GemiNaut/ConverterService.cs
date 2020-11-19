@@ -42,7 +42,7 @@ namespace GemiNaut
 
             var execProcess = new ExecuteProcess();
 
-            var result = execProcess.ExecuteCommand(command);
+            var result = ExecuteProcess.ExecuteCommand(command);
 
             return result;
         }
@@ -70,7 +70,7 @@ namespace GemiNaut
 
             var execProcess = new ExecuteProcess();
 
-            var result = execProcess.ExecuteCommand(command);
+            var result = ExecuteProcess.ExecuteCommand(command);
 
             return result;
         }
@@ -101,7 +101,7 @@ namespace GemiNaut
 
             var execProcess = new ExecuteProcess();
 
-            var result = execProcess.ExecuteCommand(command);
+            var result = ExecuteProcess.ExecuteCommand(command);
 
             return result;
         }
@@ -139,7 +139,7 @@ namespace GemiNaut
 
             var execProcess = new ExecuteProcess();
 
-            var result = execProcess.ExecuteCommand(command);
+            var result = ExecuteProcess.ExecuteCommand(command);
 
             return result;
         }

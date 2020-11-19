@@ -48,8 +48,7 @@ namespace GemiNaut
 
         public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity, bool requireSecure = true)
         {
-            string geminiUri;
-            geminiUri = e.Uri.OriginalString;
+            var geminiUri = e.Uri.OriginalString;
 
             var sessionPath = Session.Instance.SessionPath;
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -108,7 +107,7 @@ namespace GemiNaut
                     fullQuery);
             }
 
-            var result = proc.ExecuteCommand(command, true, true);
+            var result = ExecuteProcess.ExecuteCommand(command, true, true);
 
             var geminiResponse = new Response.GeminiResponse(fullQuery);
 
@@ -297,7 +296,7 @@ namespace GemiNaut
                     geminiUri = fullQuery;
                 }
 
-                var userThemesFolder = mFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+                var userThemesFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
 
                 var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 

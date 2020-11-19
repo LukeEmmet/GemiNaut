@@ -46,7 +46,7 @@ namespace GemiNaut
             mFinder = new ResourceFinder();
         }
 
-        public bool IsModeSwitch(string linkId)
+        public static bool IsModeSwitch(string linkId)
         {
             return linkId == "web-switch-plain" ||
                         linkId == "web-switch-simplified" ||
@@ -105,7 +105,7 @@ namespace GemiNaut
                     rawFile,
                     fullQuery);
 
-                result = proc.ExecuteCommand(command, true, true);
+                result = ExecuteProcess.ExecuteCommand(command, true, true);
 
                 if (result.Item1 != 0)
                 {
@@ -164,7 +164,7 @@ namespace GemiNaut
                             rawFile,
                             gooseOut);
 
-                        result = proc.ExecuteCommand(gooseCommand, true, true);
+                        result = ExecuteProcess.ExecuteCommand(gooseCommand, true, true);
 
                         //just use plain text
                         File.Copy(gooseOut, gmiFile, true);
@@ -181,7 +181,7 @@ namespace GemiNaut
                                 gooseOut);
 
                             //get main html of the page
-                            result = proc.ExecuteCommand(gooseCommand, true, true);
+                            result = ExecuteProcess.ExecuteCommand(gooseCommand, true, true);
 
                             htmlPath = gooseOut;
                         }
@@ -297,7 +297,7 @@ namespace GemiNaut
                     httpUri = fullQuery;
                 }
 
-                var userThemesFolder = mFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+                var userThemesFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
 
                 var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 

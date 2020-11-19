@@ -39,7 +39,7 @@ namespace GemiNaut
             var htmlCreateFile = Path.Combine(sessionPath, hash + ".htm");
 
             var finder = new ResourceFinder();
-            var helpFolder = finder.LocalOrDevFolder(appDir, @"Docs", @"..\..\..\Docs");
+            var helpFolder = ResourceFinder.LocalOrDevFolder(appDir, @"Docs", @"..\..\..\Docs");
             var helpFile = Path.Combine(helpFolder, sourceFileName);
 
             //use a specific theme so about pages look different to user theme

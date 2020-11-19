@@ -34,7 +34,7 @@ namespace GemiNaut
             return Path.GetFullPath(Path.Combine(startFolder, useFolder, filename));
         }
 
-        public string LocalOrDevFolder(string startFolder, string localFolder, string devFolder)
+        public static string LocalOrDevFolder(string startFolder, string localFolder, string devFolder)
         {
             return Path.GetFullPath(Directory.Exists(Path.Combine(startFolder, localFolder))
                 ? startFolder + localFolder

@@ -107,9 +107,7 @@ namespace GemiNaut
             //use local or dev binary for gemget
             var gopherClient = finder.LocalOrDevFile(appDir, "GopherGet", "..\\..\\..\\GopherGet", "gopher-get.exe");
 
-            string hash;
-
-            hash = HashService.GetMd5Hash(fullQuery);
+            var hash = HashService.GetMd5Hash(fullQuery);
 
             //uses .txt as extension so content loaded as text/plain not interpreted by the browser
             //if user requests a view-source.
@@ -126,7 +124,7 @@ namespace GemiNaut
             //save to the file
             var command = string.Format("\"{0}\" \"{1}\" \"{2}\"", gopherClient, fullQuery, gopherFile);
 
-            var result = proc.ExecuteCommand(command, true, true);
+            var result = ExecuteProcess.ExecuteCommand(command, true, true);
 
             var exitCode = result.Item1;
             var stdOut = result.Item2;
@@ -213,7 +211,7 @@ namespace GemiNaut
                 else
                 {
                     var settings = new Settings();
-                    var userThemesFolder = finder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+                    var userThemesFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
 
                     var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 

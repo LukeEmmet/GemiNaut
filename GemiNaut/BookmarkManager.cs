@@ -40,7 +40,8 @@ namespace GemiNaut
             mMainWindow = window;
             mWebBrowser = browser;
         }
-        public string[] BookmarkLines()
+
+        public static string[] BookmarkLines()
         {
             var settings = new Settings();
             string[] array = new string[2];
@@ -108,7 +109,7 @@ namespace GemiNaut
                 }
             }
         }
-        public string[] ParseGeminiLink(string line)
+        public static string[] ParseGeminiLink(string line)
         {
             var linkRegex = new Regex(@"\s*=>\s([^\s]*)(.*)");
             string[] array = new string[2];

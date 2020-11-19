@@ -405,7 +405,7 @@ namespace GemiNaut.Views
         }
 
         //decorate links that switch the mode so the current mode is highlighted
-        private void ShowLinkRenderMode(dynamic document)
+        private static void ShowLinkRenderMode(dynamic document)
         {
             var doc = (HTMLDocument)document;
             var settings = new Settings();
@@ -442,7 +442,7 @@ namespace GemiNaut.Views
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
             var finder = new ResourceFinder();
 
-            var themeFolder = finder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+            var themeFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
 
             foreach (var file in Directory.EnumerateFiles(themeFolder, "*.htm"))
             {
