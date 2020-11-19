@@ -523,7 +523,17 @@ namespace GemiNaut.Views
         private void MenuFileNew_Click(object sender, RoutedEventArgs e)
         {
             //start a completely new GemiNaut session, with the current URL
-            Process.Start(System.Reflection.Assembly.GetEntryAssembly().Location, txtUrl.Text);
+            var location = System.Reflection.Assembly.GetEntryAssembly().Location;
+
+            var info = new ProcessStartInfo()
+            {
+                FileName = "dotnet",
+                CreateNoWindow = true,
+                WorkingDirectory = Path.GetDirectoryName(location),
+                ArgumentList = { Path.GetFileName(location), txtUrl.Text }
+            };
+
+            Process.Start(info);
         }
     }
 }
