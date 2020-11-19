@@ -20,6 +20,7 @@
 //===================================================
 
 using GemiNaut.Views;
+using System.Diagnostics;
 
 namespace GemiNaut
 {
@@ -31,10 +32,11 @@ namespace GemiNaut
         {
             mMainWindow = Window;
         }
+
         //launch url in system browser
         public void LaunchExternalUri(string uri)
         {
-            System.Diagnostics.Process.Start(uri);
+            Process.Start(new ProcessStartInfo(uri) { UseShellExecute = true });
             mMainWindow.ToastNotify("Launching in system browser: " + uri);
         }
     }
