@@ -33,14 +33,13 @@ namespace GemiNaut
             //I think it requires a domain for parsing...
             fullQuery = e.Uri.OriginalString;
 
-            string hash;
-            hash = HashService.GetMd5Hash(fullQuery);
+            var hash = HashService.GetMd5Hash(fullQuery);
 
             var hashFile = Path.Combine(sessionPath, hash + ".txt");
             var htmlCreateFile = Path.Combine(sessionPath, hash + ".htm");
 
             var finder = new ResourceFinder();
-            var helpFolder = finder.LocalOrDevFolder(appDir, @"Docs", @"..\..\Docs");
+            var helpFolder = finder.LocalOrDevFolder(appDir, @"Docs", @"..\..\..\Docs");
             var helpFile = Path.Combine(helpFolder, sourceFileName);
 
             //use a specific theme so about pages look different to user theme
