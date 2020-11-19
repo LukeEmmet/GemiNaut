@@ -22,21 +22,20 @@
 using GemiNaut.Properties;
 using GemiNaut.Serialization.Commandline;
 using GemiNaut.Singletons;
-using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System;
 using System.IO;
-using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 using static GemiNaut.MainWindow;
 
 namespace GemiNaut
 {
     public class HttpNavigator
     {
-        private MainWindow mMainWindow;
-        private WebBrowser mWebBrowser;
-        private ResourceFinder mFinder;
+        private readonly MainWindow mMainWindow;
+        private readonly WebBrowser mWebBrowser;
+        private readonly ResourceFinder mFinder;
 
         public HttpNavigator(MainWindow mainWindow, WebBrowser browserControl)
         {
@@ -46,7 +45,6 @@ namespace GemiNaut
             mFinder = new ResourceFinder();
         }
 
-
         public bool IsModeSwitch(string linkId)
         {
             return linkId == "web-switch-plain" ||
@@ -54,13 +52,12 @@ namespace GemiNaut
                         linkId == "web-switch-all";
         }
 
-        public void NavigateHttpScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity, string linkId)
+        public void NavigateHttpScheme(string fullQuery, NavigatingCancelEventArgs e, SiteIdentity siteIdentity, string linkId)
         {
-            string httpUri;
-            httpUri = e.Uri.OriginalString;
+            var httpUri = e.Uri.OriginalString;
 
             var sessionPath = Session.Instance.SessionPath;
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+            var appDir = AppDomain.CurrentDomain.BaseDirectory;
 
             var proc = new ExecuteProcess();
 
@@ -89,7 +86,6 @@ namespace GemiNaut
                 //set default mode to this mode
                 settings.WebRenderMode = linkId;
                 settings.Save();
-
             }
             else
             {
@@ -101,14 +97,12 @@ namespace GemiNaut
                 //use local or dev binary for gemget
                 var httpGet = mFinder.LocalOrDevFile(appDir, "HttpGet", "..\\..\\..\\HttpGet", "http-get.exe");
 
-
                 //pass options to gemget for download
                 var command = string.Format(
                     "\"{0}\" --header -o \"{1}\" \"{2}\"",
                     httpGet,
                     rawFile,
                     fullQuery);
-
 
                 result = proc.ExecuteCommand(command, true, true);
 
@@ -123,7 +117,6 @@ namespace GemiNaut
                 httpResponse.ParseGemGet(result.Item2);   //parse stdout   
                 httpResponse.ParseGemGet(result.Item3);   //parse stderr
 
-
                 if (httpResponse.StatusCode == 404)
                 {
                     {
@@ -131,33 +124,28 @@ namespace GemiNaut
                         mMainWindow.ToggleContainerControlsForBrowser(true);
                         e.Cancel = true;
                         return;
-
                     }
                     //ToastNotify(httpResponse.Status + " " + httpResponse.Meta);  
                 }
                 else if (httpResponse.StatusCode != 200)
                 {
                     //some other error
-                    mMainWindow.ToastNotify("Could not get resource: " 
-                        + httpResponse.Status + "\n" 
+                    mMainWindow.ToastNotify("Could not get resource: "
+                        + httpResponse.Status + "\n"
                         + fullQuery, ToastMessageStyles.Warning);
                     mMainWindow.ToggleContainerControlsForBrowser(true);
                     e.Cancel = true;
                     return;
                 }
-
             }
 
             //delete any existing html file to encourage webbrowser to reload it
             File.Delete(htmlFile);
-            
 
             if (File.Exists(rawFile))
             {
-
                 if (httpResponse.ContentType.Contains("text/html") || reRender)
                 {
-
                     //use local or dev binary for goose
                     var gooseConvert = mFinder.LocalOrDevFile(appDir, "Goose", "..\\..\\..\\Goose", "goose-cli.exe");
                     var gooseOut = sessionPath + "\\" + hash + ".goose";
@@ -179,7 +167,6 @@ namespace GemiNaut
 
                         //just use plain text
                         File.Copy(gooseOut, gmiFile, true);
-
                     }
                     else
                     {
@@ -214,9 +201,7 @@ namespace GemiNaut
                             return;
                         }
                     }
-
                 }
-                
                 else if (httpResponse.ContentType.Contains("text/"))
                 {
                     //convert plain text to a http version (wraps it in a preformatted section)
@@ -229,10 +214,9 @@ namespace GemiNaut
                         e.Cancel = true;
                         return;
                     }
-
-                } else
+                }
+                else
                 {
-
                     //a download
                     //its an image - rename the raw file and just show it
                     var pathFragment = (new UriBuilder(fullQuery)).Path;
@@ -243,9 +227,9 @@ namespace GemiNaut
 
                     if (httpResponse.ContentType.Contains("image/"))
                     {
-
                         mMainWindow.ShowImage(fullQuery, binFile, e);
-                    } else
+                    }
+                    else
                     {
                         SaveFileDialog saveFileDialog = new SaveFileDialog();
 
@@ -253,7 +237,6 @@ namespace GemiNaut
 
                         if (saveFileDialog.ShowDialog() == true)
                         {
-
                             try
                             {
                                 //save the file
@@ -274,10 +257,7 @@ namespace GemiNaut
                     }
 
                     return;
-
                 }
-
-
 
                 if (httpResponse.Redirected)
                 {
@@ -286,11 +266,9 @@ namespace GemiNaut
                     redirectUri = httpResponse.FinalUrl;
                     //redirected to a full http url
                     httpUri = redirectUri;
-                    
 
                     //regenerate the hashes using the redirected target url
                     hash = HashService.GetMd5Hash(httpUri);
-                    
 
                     var gmiFileNew = sessionPath + "\\" + hash + ".txt";
                     var htmlFileNew = sessionPath + "\\" + hash + ".htm";
@@ -312,7 +290,6 @@ namespace GemiNaut
                     //update locations of gmi and html file
                     gmiFile = gmiFileNew;
                     htmlFile = htmlFileNew;
-
                 }
                 else
                 {
@@ -324,9 +301,7 @@ namespace GemiNaut
                 var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
                 mMainWindow.ShowUrl(httpUri, gmiFile, htmlFile, userThemeBase, siteIdentity, e);
-
             }
-
             else if (httpResponse.StatusCode == 404)
             {
                 mMainWindow.ToastNotify("Page not found (status 51)\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
@@ -334,11 +309,11 @@ namespace GemiNaut
             else
             {
                 //some othe error - show to the user for info
-                mMainWindow.ToastNotify(String.Format(
+                mMainWindow.ToastNotify(string.Format(
                     "Cannot retrieve the content (exit code {0}): \n\n{1} \n\n{2}",
                     result.Item1,
-                    String.Join("\n\n", httpResponse.Info),
-                    String.Join("\n\n", httpResponse.Errors)
+                    string.Join("\n\n", httpResponse.Info),
+                    string.Join("\n\n", httpResponse.Errors)
                     ),
                     ToastMessageStyles.Error);
             }
@@ -347,13 +322,6 @@ namespace GemiNaut
 
             //no further navigation right now
             e.Cancel = true;
-
-
         }
-
-
-
-
-
     }
 }

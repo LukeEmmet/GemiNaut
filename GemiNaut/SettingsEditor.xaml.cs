@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 
-
 namespace GemiNaut
 {
     /// <summary>
@@ -10,8 +9,6 @@ namespace GemiNaut
     /// </summary>
     public partial class SettingsEditor : Window
     {
-
-
         public SettingsEditor()
         {
             InitializeComponent();
@@ -24,15 +21,11 @@ namespace GemiNaut
             HttpSchemeProxy.Text = settings.HttpSchemeProxy;
             HandleWebLinks.Text = settings.HandleWebLinks;
 
-
             ShowProxyWidget(HandleWebLinks.Text);
-
         }
-
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-
             this.Close();
         }
 
@@ -41,32 +34,25 @@ namespace GemiNaut
             var settings = new Settings();
             settings.HomeUrl = txtUrl.Text;
             settings.MaxDownloadSizeMb = int.Parse(MaxDownloadSize.Text);
-            settings.MaxDownloadTimeSeconds = int.Parse(MaxDownloadTime.Text);            
+            settings.MaxDownloadTimeSeconds = int.Parse(MaxDownloadTime.Text);
 
             settings.HttpSchemeProxy = HttpSchemeProxy.Text;
             settings.HandleWebLinks = HandleWebLinks.Text;
 
-
             settings.Save();
 
-
             this.Close();
-
         }
 
         private void ShowProxyWidget(string value)
         {
-            
-
             HttpSchemeProxy.Visibility = (value == "Gemini HTTP proxy") ? Visibility.Visible : Visibility.Collapsed;
             HttpSchemeProxyLabel.Visibility = HttpSchemeProxy.Visibility;
-
-
         }
         private void HandleWebLinks_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //string text = ((ComboBox)sender).SelectedValue.ToString();
-           // string text = (sender as ComboBox).SelectedItem as string;
+            // string text = (sender as ComboBox).SelectedItem as string;
             string text = (e.AddedItems[0] as ComboBoxItem).Content as string;
             ShowProxyWidget(text);
         }

@@ -19,23 +19,14 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
-using System;
-
 namespace GemiNaut.Singletons
 {
-
-
-
     /// <summary>
     /// simple singleton logger, based on
     /// http://csharpindepth.com/Articles/General/Singleton.aspx#cctor
     /// </summary>
-    public class SimpleLogger : ObservableObject
+    public sealed class SimpleLogger : ObservableObject
     {
-        private static readonly SimpleLogger instance = new SimpleLogger();
-
-        private string _messages;
-
         // Explicit static constructor to tell C# compiler
         // not to mark type as beforefieldinit
         static SimpleLogger()
@@ -46,13 +37,7 @@ namespace GemiNaut.Singletons
         {
         }
 
-        public static SimpleLogger Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        public static SimpleLogger Instance { get; } = new SimpleLogger();
 
         /// <summary>
         /// log a message
@@ -60,8 +45,8 @@ namespace GemiNaut.Singletons
         /// <param name="message"></param>
         public void Log(string message)
         {
-            _messages += message + "\n";
-            base.RaisePropertyChangedEvent("Messages");
+            Messages += message + "\n";
+            RaisePropertyChangedEvent("Messages");
         }
 
         public void LogMessage(string message)
@@ -73,16 +58,12 @@ namespace GemiNaut.Singletons
         /// </summary>
         public void Clear()
         {
-            _messages = "";
+            Messages = "";
         }
 
         /// <summary>
         /// get the messages
         /// </summary>
-        public string Messages
-        {
-            get { return _messages; }
-            set { _messages = value; }
-        }
+        public string Messages { get; set; }
     }
 }

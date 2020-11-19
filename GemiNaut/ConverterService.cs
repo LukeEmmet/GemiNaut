@@ -18,22 +18,16 @@
 
 using GemiNaut.Serialization.Commandline;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static GemiNaut.GopherNavigator;
 
 namespace GemiNaut
 {
-
     internal static class ConverterService
     {
-
         //convert text to GMI for raw text
         public static Tuple<int, string, string> HtmlToGmi(string rawPath, string outPath)
         {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+            var appDir = AppDomain.CurrentDomain.BaseDirectory;
             var finder = new ResourceFinder();
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
@@ -43,7 +37,7 @@ namespace GemiNaut
             //for some unknown reason, the -m flag (numbered citations) must not be last when calling from this context
             //-e (show embedded images as links)
             //-n (number links)
-            var command = String.Format("\"{0}\" -mne -i \"{1}\" -o \"{2}\"",
+            var command = string.Format("\"{0}\" -mne -i \"{1}\" -o \"{2}\"",
                 converterPath,
                 rawPath,
                 outPath
@@ -54,14 +48,13 @@ namespace GemiNaut
 
             var result = execProcess.ExecuteCommand(command);
 
-            return (result);
+            return result;
         }
-
 
         //convert text to GMI for raw text
         public static Tuple<int, string, string> TextToGmi(string rawPath, string outPath)
         {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+            var appDir = AppDomain.CurrentDomain.BaseDirectory;
             var finder = new ResourceFinder();
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
@@ -69,12 +62,11 @@ namespace GemiNaut
             var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
             var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "TextAsIs.r3");
 
-
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
             //working with command line parameters, so we need to escape quotes
             //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
             //also hypens are also problematic, so we base64 each param and unpack in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\"  ",
+            var command = string.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\"  ",
                 rebolPath,
                 scriptPath,
                 Base64Service.Base64Encode(rawPath),
@@ -86,14 +78,13 @@ namespace GemiNaut
 
             var result = execProcess.ExecuteCommand(command);
 
-            return (result);
+            return result;
         }
-
 
         //convert GopherText to GMI and save to outpath
         public static Tuple<int, string, string> GophertoGmi(string gopherPath, string outPath, string uri, GopherParseTypes parseType)
         {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+            var appDir = AppDomain.CurrentDomain.BaseDirectory;
             var finder = new ResourceFinder();
 
             var parseScript = (parseType == GopherParseTypes.Map) ? "GophermapToGmi.r3" : "GophertextToGmi.r3";
@@ -107,7 +98,7 @@ namespace GemiNaut
             //working with command line parameters, so we need to escape quotes
             //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
             //also hypens are also problematic, so we base64 each parameter and unpack it in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" ",
+            var command = string.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" ",
                 rebolPath,
                 scriptPath,
                 Base64Service.Base64Encode(gopherPath),
@@ -120,14 +111,13 @@ namespace GemiNaut
 
             var result = execProcess.ExecuteCommand(command);
 
-            return (result);
-
+            return result;
         }
 
         //convert GMI to HTML for display and save to outpath
         public static Tuple<int, string, string> GmiToHtml(string gmiPath, string outPath, string uri, SiteIdentity siteIdentity, string theme, bool showWebHeader)
         {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+            var appDir = AppDomain.CurrentDomain.BaseDirectory;
             var finder = new ResourceFinder();
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
@@ -142,7 +132,7 @@ namespace GemiNaut
             //working with command line parameters, so we need to escape quotes
             //see https://stackoverflow.com/questions/6721636/passing-quoted-arguments-to-a-rebol-3-script
             //also hypens are also problematic, so we base64 each param and unpack in the script
-            var command = String.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\" \"{8}\" \"{9}\" \"{10}\" ",
+            var command = string.Format("\"{0}\" -cs \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\" \"{8}\" \"{9}\" \"{10}\" ",
                 rebolPath,
                 scriptPath,
                 Base64Service.Base64Encode(gmiPath),
@@ -153,7 +143,7 @@ namespace GemiNaut
                 Base64Service.Base64Encode(fabricUri.AbsoluteUri),
                 Base64Service.Base64Encode(siteIdentity.GetId()),
                 Base64Service.Base64Encode(siteIdentity.GetSiteId()),
-                Base64Service.Base64Encode((showWebHeader ? "true" : "false"))
+                Base64Service.Base64Encode(showWebHeader ? "true" : "false")
 
                 );
 
@@ -161,9 +151,7 @@ namespace GemiNaut
 
             var result = execProcess.ExecuteCommand(command);
 
-            return (result);
+            return result;
         }
     }
-
-
 }

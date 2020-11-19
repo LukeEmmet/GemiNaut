@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using GemiNaut.Serialization.Commandline;
 using System.Collections.Generic;
 using System.IO;
 using ToastNotifications;
@@ -12,7 +11,6 @@ using System.Diagnostics;
 using GemiNaut.Singletons;
 using System.Windows.Controls;
 using System.Text.RegularExpressions;
-using Microsoft.VisualBasic;
 using GemiNaut.Properties;
 using mshtml;
 
@@ -21,10 +19,9 @@ namespace GemiNaut
     public partial class MainWindow : Window
 
     {
-        private Dictionary<string, string> _urlsByHash;
-        private Notifier _notifier;
-        private BookmarkManager _bookmarkManager;
-
+        private readonly Dictionary<string, string> _urlsByHash;
+        private readonly Notifier _notifier;
+        private readonly BookmarkManager _bookmarkManager;
 
         public MainWindow()
         {
@@ -58,8 +55,7 @@ namespace GemiNaut
             var settings = new Settings();
             var launchUri = settings.HomeUrl;
 
-
-            String[] args = App.Args;
+            string[] args = App.Args;
             if (args != null)
             {
                 launchUri = App.Args[0];
@@ -71,28 +67,21 @@ namespace GemiNaut
             TickSelectedThemeMenu();
         }
 
-
-
-
         private void txtUrl_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
-
                 if (UriTester.TextIsUri(txtUrl.Text))
                 {
                     BrowserControl.Navigate(txtUrl.Text);
-
-                } else
+                }
+                else
                 {
                     ToastNotify("Not a valid URI: " + txtUrl.Text, ToastMessageStyles.Error);
                 }
         }
 
-
-
         public void ToggleContainerControlsForBrowser(bool toState)
         {
-
             //we need to turn off other elements so focus doesnt move elsewhere
             //in that case the keyboard events go elsewhere and you have to click 
             //into the browser to get it to work again
@@ -104,13 +93,8 @@ namespace GemiNaut
             GridMain.IsEnabled = toState;
         }
 
-
-
         private void BrowserControl_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
-
-
-
             var normalisedUri = UriTester.NormaliseUri(e.Uri);
 
             var siteIdentity = new SiteIdentity(normalisedUri, Session.Instance);
@@ -135,18 +119,15 @@ namespace GemiNaut
                 var geminiNavigator = new GeminiNavigator(this, this.BrowserControl);
                 geminiNavigator.NavigateGeminiScheme(fullQuery, e, siteIdentity);
             }
-
             else if (normalisedUri.Scheme == "gopher")
             {
                 var gopherNavigator = new GopherNavigator(this, this.BrowserControl);
                 gopherNavigator.NavigateGopherScheme(fullQuery, e, siteIdentity);
             }
-
             else if (normalisedUri.Scheme == "about")
             {
                 var aboutNavigator = new AboutNavigator(this, this.BrowserControl);
                 aboutNavigator.NavigateAboutScheme(e, siteIdentity);
-
             }
             else if (normalisedUri.Scheme.StartsWith("http"))       //both http and https
             {
@@ -154,7 +135,8 @@ namespace GemiNaut
                 ////doc might be null - you need to check when using!
                 var doc = (HTMLDocument)BrowserControl.Document;
                 ////this is how we could detect a click on a link to an image...
-                if (doc?.activeElement != null) {
+                if (doc?.activeElement != null)
+                {
                     linkId = doc.activeElement.id;
                 }
 
@@ -171,23 +153,19 @@ namespace GemiNaut
                     launcher.LaunchExternalUri(e.Uri.ToString());
                     ToggleContainerControlsForBrowser(true);
                     e.Cancel = true;
-
-                } else if (settings.HandleWebLinks == "Gemini HTTP proxy") { 
-
+                }
+                else if (settings.HandleWebLinks == "Gemini HTTP proxy")
+                {
                     // use a gemini proxy for http links
                     var geminiNavigator = new GeminiNavigator(this, this.BrowserControl);
                     geminiNavigator.NavigateGeminiScheme(fullQuery, e, siteIdentity);
-
                 }
-                else {
+                else
+                {
                     //use internal navigator
                     var httpNavigator = new HttpNavigator(this, this.BrowserControl);
                     httpNavigator.NavigateHttpScheme(fullQuery, e, siteIdentity, linkId);
-
                 }
-
-                
-
             }
             else if (normalisedUri.Scheme == "file")
             {
@@ -205,13 +183,11 @@ namespace GemiNaut
             }
         }
 
-
         public void ShowImage(string sourceUrl, string imgFile, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
             string hash;
 
             hash = HashService.GetMd5Hash(sourceUrl);
-            
 
             _urlsByHash[hash] = sourceUrl;
 
@@ -220,12 +196,9 @@ namespace GemiNaut
 
             //instead tell the browser to load the content
             BrowserControl.Navigate(@"file:///" + imgFile);
-
-
         }
         public void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, SiteIdentity siteIdentity, System.Windows.Navigation.NavigatingCancelEventArgs e)
         {
-
             string hash;
 
             hash = HashService.GetMd5Hash(sourceUrl);
@@ -250,7 +223,6 @@ namespace GemiNaut
             }
             else
             {
-
                 _urlsByHash[hash] = sourceUrl;
 
                 //no further navigation right now
@@ -259,13 +231,7 @@ namespace GemiNaut
                 //instead tell the browser to load the content
                 BrowserControl.Navigate(@"file:///" + htmlFile);
             }
-
         }
-
-
-
-
-
 
         public enum ToastMessageStyles
         {
@@ -281,7 +247,6 @@ namespace GemiNaut
                 if (style == ToastMessageStyles.Error) { _notifier.ShowError(message); }
                 if (style == ToastMessageStyles.Success) { _notifier.ShowSuccess(message); }
                 if (style == ToastMessageStyles.Warning) { _notifier.ShowWarning(message); }
-
             }
             catch
             {
@@ -294,9 +259,6 @@ namespace GemiNaut
         {
             ToastNotify(message, ToastMessageStyles.Information);
         }
-
-
-        
 
         private void BrowseBack_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -346,7 +308,6 @@ namespace GemiNaut
             }
         }
 
-        
         private void MenuFileExit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
@@ -354,7 +315,6 @@ namespace GemiNaut
 
         private void MenuHelpAbout_Click(object sender, RoutedEventArgs e)
         {
-
             System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             string version = fvi.FileVersion;
@@ -366,10 +326,8 @@ namespace GemiNaut
 
         private void MenuHelpContents_Click(object sender, RoutedEventArgs e)
         {
-
             //this will be a look up into docs folder
             BrowserControl.Navigate("about://geminaut/help.gmi");
-
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -377,7 +335,6 @@ namespace GemiNaut
             //shutdown and dispose of session singleton
             Session.Instance.Dispose();
             Application.Current.Shutdown();
-
         }
 
         private void MenuViewSource_Click(object sender, RoutedEventArgs e)
@@ -389,23 +346,18 @@ namespace GemiNaut
             var sessionPath = Session.Instance.SessionPath;
 
             hash = HashService.GetMd5Hash(txtUrl.Text);
-            
 
             //uses .txt as extension so content loaded as text/plain not interpreted by the browser
             var gmiFile = sessionPath + "\\" + hash + ".txt";
 
-             BrowserControl.Navigate(gmiFile);
-
-
+            BrowserControl.Navigate(gmiFile);
         }
 
         private void MenuViewSettings_Click(object sender, RoutedEventArgs e)
         {
             var settingsEditor = new SettingsEditor();
             settingsEditor.Owner = this;
-            settingsEditor.ShowDialog(); 
-
-
+            settingsEditor.ShowDialog();
         }
 
         //after any navigate (even back/forwards) 
@@ -416,14 +368,14 @@ namespace GemiNaut
 
             //look up the URL that this HTML page shows
             var regex = new Regex(@".*/([a-f0-9]+)\.(.*)");
-            if (regex.IsMatch(uri)) {
-
+            if (regex.IsMatch(uri))
+            {
                 var match = regex.Match(uri);
                 var hash = match.Groups[1].ToString();
 
                 string geminiUrl = _urlsByHash[hash];
-                if (geminiUrl != null) {
-
+                if (geminiUrl != null)
+                {
                     //now show the actual gemini URL in the address bar
                     txtUrl.Text = geminiUrl;
 
@@ -436,17 +388,15 @@ namespace GemiNaut
                         ShowLinkRenderMode(BrowserControl.Document);
                     }
                 }
-                
-             //if a text file (i.e. view->source), explicitly set the charset
-             //to UTF-8 so ascii art looks correct etc.
-              if ("txt" == match.Groups[2].ToString().ToLower())
+
+                //if a text file (i.e. view->source), explicitly set the charset
+                //to UTF-8 so ascii art looks correct etc.
+                if ("txt" == match.Groups[2].ToString().ToLower())
                 {
                     //set text files (GMI source) to be UTF-8 for now
                     var doc = (HTMLDocument)BrowserControl.Document;
                     doc.charset = "UTF-8";
-
                 }
-
             }
 
             BrowserControl.Focus();
@@ -460,7 +410,8 @@ namespace GemiNaut
             var settings = new Settings();
 
             //decrate the current mode
-            if (doc.getElementById(settings.WebRenderMode) != null ) {
+            if (doc.getElementById(settings.WebRenderMode) != null)
+            {
                 var modeLink = doc.getElementById(settings.WebRenderMode);
                 modeLink.innerText = "[" + modeLink.innerText + "]";
                 modeLink.style.fontWeight = "bold";
@@ -484,21 +435,19 @@ namespace GemiNaut
 
         private void BuildThemeMenu()
         {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+            var appDir = AppDomain.CurrentDomain.BaseDirectory;
             var finder = new ResourceFinder();
 
             var themeFolder = finder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
 
-
-            foreach (var file in Directory.EnumerateFiles(themeFolder, "*.htm")) {
-
+            foreach (var file in Directory.EnumerateFiles(themeFolder, "*.htm"))
+            {
                 var newMenu = new MenuItem();
                 newMenu.Header = Path.GetFileNameWithoutExtension(Path.Combine(themeFolder, file));
                 newMenu.Click += ViewThemeItem_Click;
 
                 mnuTheme.Items.Add(newMenu);
             }
-
         }
 
         private void TickSelectedThemeMenu()
@@ -508,9 +457,7 @@ namespace GemiNaut
             foreach (MenuItem themeMenu in mnuTheme.Items)
             {
                 themeMenu.IsChecked = (themeMenu.Header.ToString() == settings.Theme);
-   
             }
-            
         }
 
         private void ViewThemeItem_Click(object sender, RoutedEventArgs e)
@@ -529,7 +476,6 @@ namespace GemiNaut
                 //redisplay
                 BrowserControl.Navigate(txtUrl.Text);
             }
-
         }
 
         private void BrowserControl_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
@@ -537,7 +483,6 @@ namespace GemiNaut
             var doc = (HTMLDocument)BrowserControl.Document;
 
             ShowTitle(doc);
-
 
             //we need to turn on/off other elements so focus doesnt move elsewhere
             //in that case the keyboard events go elsewhere and you have to click 
@@ -551,7 +496,6 @@ namespace GemiNaut
             var bmManager = new BookmarkManager(this, BrowserControl);
             bmManager.AddBookmark(txtUrl.Text, ((HTMLDocument)BrowserControl.Document).title);
             var url = txtUrl.Text;
-
         }
 
         private void mnuMenuBookmarksEdit_Click(object sender, RoutedEventArgs e)
@@ -563,7 +507,6 @@ namespace GemiNaut
             //show modally
             winBookmarks.Owner = this;
             winBookmarks.ShowDialog();
-
         }
 
         public void mnuMenuBookmarksGo_Click(object sender, RoutedEventArgs e)
@@ -571,16 +514,12 @@ namespace GemiNaut
             var menuItem = (MenuItem)sender;
 
             BrowserControl.Navigate(menuItem.CommandParameter.ToString());
-
         }
-
-
 
         private void MenuFileNew_Click(object sender, RoutedEventArgs e)
         {
             //start a completely new GemiNaut session, with the current URL
             Process.Start(System.Reflection.Assembly.GetEntryAssembly().Location, txtUrl.Text);
-
         }
     }
 }

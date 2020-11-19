@@ -19,21 +19,16 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
-
 using GemiNaut.Properties;
 using GemiNaut.Singletons;
 using System.IO;
-
 
 namespace GemiNaut
 {
     public static class AppInit
     {
-
-
         public static void UpgradeSettings()
         {
-
             //can also use 
             //Settings.Default.GetPreviousVersion for more finegrained control if necessary
 
@@ -43,7 +38,6 @@ namespace GemiNaut
                 Settings.Default.UpgradeNeeded = false;
                 Settings.Default.Save();
             }
-
         }
 
         public static void CopyAssets()
@@ -62,8 +56,6 @@ namespace GemiNaut
             {
                 File.Copy(file, Path.Combine(assetsTarget, Path.GetFileName(file)), true);
             }
-
-
         }
     }
 }

@@ -7,9 +7,8 @@ namespace GemiNaut
 {
     public class AboutNavigator
     {
-
-        private MainWindow mMainWindow;
-        private WebBrowser mWebBrowser;
+        private readonly MainWindow mMainWindow;
+        private readonly WebBrowser mWebBrowser;
 
         public AboutNavigator(MainWindow window, WebBrowser browser)
         {
@@ -36,7 +35,6 @@ namespace GemiNaut
             string hash;
             hash = HashService.GetMd5Hash(fullQuery);
 
-
             var hashFile = Path.Combine(sessionPath, hash + ".txt");
             var htmlCreateFile = Path.Combine(sessionPath, hash + ".htm");
 
@@ -46,8 +44,6 @@ namespace GemiNaut
 
             //use a specific theme so about pages look different to user theme
             var templateBaseName = Path.Combine(helpFolder, "help-theme");
-
-
 
             if (File.Exists(helpFile))
             {
@@ -59,7 +55,6 @@ namespace GemiNaut
                 mMainWindow.ToastNotify("No content was found for: " + fullQuery, ToastMessageStyles.Warning);
                 e.Cancel = true;
             }
-
         }
     }
 }

@@ -19,25 +19,23 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
-using System;
 using System.Collections.Generic;
-
 
 namespace GemiNaut.Response
 {
     public class HttpResponse
     {
-        public int StatusCode;
-        public string Status;
-        public string ContentType;
-        public List<string> Info;
-        public List<string> Errors;
-        public List<string> Notes;
-        public bool Redirected;
-        public bool AbandonedSize;
-        public bool AbandonedTimeout;
-        public string FinalUrl;
-        public string RequestedUrl;
+        public int StatusCode { get; private set; }
+        public string Status { get; private set; }
+        public string ContentType { get; private set; }
+        public List<string> Info { get; }
+        public List<string> Errors { get; }
+        public List<string> Notes { get; }
+        public bool Redirected { get; private set; }
+        public bool AbandonedSize { get; private set; }
+        public bool AbandonedTimeout { get; private set; }
+        public string FinalUrl { get; private set; }
+        public string RequestedUrl { get; }
 
         public HttpResponse(string url)
         {
@@ -56,8 +54,7 @@ namespace GemiNaut.Response
 
         public void ParseGemGet(string response)
         {
-
-            string[] split = response.Split(new Char[] { '\n' });
+            string[] split = response.Split(new char[] { '\n' });
 
             foreach (string s in split)
             {
@@ -67,7 +64,6 @@ namespace GemiNaut.Response
 
                 if (line != "")
                 {
-
                     if (line.Substring(0, 12) == "StatusCode: ")
                     {
                         StatusCode = int.Parse(line.Substring(12));
@@ -87,7 +83,6 @@ namespace GemiNaut.Response
                         FinalUrl = line;
                         Redirected = true;
                     }
-
                     else if (line.Substring(0, 7) == "Error: ")
                     {
                         Errors.Add(line.Substring(7));
@@ -99,22 +94,21 @@ namespace GemiNaut.Response
                         if (message.Contains("File is larger than max size limit"))
                         {
                             AbandonedSize = true;
-                        } else if (message.Contains("Download timed out"))
+                        }
+                        else if (message.Contains("Download timed out"))
                         {
                             AbandonedTimeout = true;
-                        } else
+                        }
+                        else
                         {
                             Info.Add(message);
                         }
-
                     }
                     else
                     {
                         Notes.Add(line);
                     }
                 }
-
-
             }
         }
     }

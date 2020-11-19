@@ -21,21 +21,18 @@
 
 using System;
 
-
 namespace GemiNaut
 {
-    static class UriTester
+    internal static class UriTester
     {
-
         public static bool TextIsUri(string text)
         {
             Uri outUri;
-            return (Uri.TryCreate(text, UriKind.Absolute, out outUri));
+            return Uri.TryCreate(text, UriKind.Absolute, out outUri);
         }
 
         static public int DefaultPort(Uri uri)
         {
-
             var port = -1;
 
             if (uri.Scheme == "gemini") { port = 1965; }
@@ -43,12 +40,11 @@ namespace GemiNaut
             if (uri.Scheme == "http") { port = 80; }
             if (uri.Scheme == "https") { port = 443; }
 
-            return (port);
+            return port;
         }
 
         static public Uri NormaliseUri(Uri uri)
         {
-
             UriBuilder outUri = new UriBuilder();
 
             outUri.Scheme = uri.Scheme;

@@ -23,7 +23,7 @@ namespace GemiNaut
 {
     public class ExternalNavigator
     {
-        private MainWindow mMainWindow;
+        private readonly MainWindow mMainWindow;
 
         public ExternalNavigator(MainWindow Window)
         {
@@ -35,6 +35,5 @@ namespace GemiNaut
             System.Diagnostics.Process.Start(uri);
             mMainWindow.ToastNotify("Launching in system browser: " + uri);
         }
-
     }
 }

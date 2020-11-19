@@ -24,9 +24,8 @@ using System.Windows;
 
 namespace GemiNaut
 {
-    static class WindowGeometry
+    internal static class WindowGeometry
     {
-
         //get the position of the centre of a window
         public static Tuple<int, int> WindowCentre(Window window)
         {

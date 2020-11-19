@@ -19,15 +19,13 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
-
 using System;
 using System.Text;
 
 namespace GemiNaut
 {
-    static class Base64Service
+    internal static class Base64Service
     {
-
         /// <summary>
         /// base 64 function from https://stackoverflow.com/questions/11743160/how-do-i-encode-and-decode-a-base64-string
         /// </summary>

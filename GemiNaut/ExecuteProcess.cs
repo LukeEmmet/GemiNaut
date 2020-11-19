@@ -27,9 +27,8 @@ using System.Linq;
 
 namespace GemiNaut.Serialization.Commandline
 {
-    class ExecuteProcess
+    internal class ExecuteProcess
     {
-
         private string _debugLog;
 
         public string DebugLog
@@ -38,10 +37,8 @@ namespace GemiNaut.Serialization.Commandline
             set
             {
                 _debugLog = value;
-
             }
         }
-
 
         public Tuple<int, string, string> ExecuteCommand(string fileName, bool captureStdOut, bool captureStdErr)
         {
@@ -53,7 +50,7 @@ namespace GemiNaut.Serialization.Commandline
             p.StartInfo.RedirectStandardError = captureStdErr;
             p.StartInfo.FileName = fileName;
             p.StartInfo.CreateNoWindow = true;
-            p.StartInfo.WorkingDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            p.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
             p.Start();
             // Do not wait for the child process to exit before
             // reading to the end of its redirected stream.
@@ -76,10 +73,7 @@ namespace GemiNaut.Serialization.Commandline
             //string errors = p.StandardError.ReadToEnd();
             int exitCode = p.ExitCode;
 
-
             return new Tuple<int, string, string>(exitCode, stdOut, stdErr);
-
-
         }
         /// <summary>
         /// Execute Command line and return results as a tuple: (exitCode,stdout,stderr)
@@ -97,7 +91,7 @@ namespace GemiNaut.Serialization.Commandline
             p.StartInfo.RedirectStandardError = true;
             p.StartInfo.FileName = fileName;
             p.StartInfo.CreateNoWindow = true;
-            p.StartInfo.WorkingDirectory = System.AppDomain.CurrentDomain.BaseDirectory;
+            p.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
             p.Start();
             // Do not wait for the child process to exit before
             // reading to the end of its redirected stream.
@@ -107,12 +101,10 @@ namespace GemiNaut.Serialization.Commandline
             string errors = p.StandardError.ReadToEnd();
             int exitCode = p.ExitCode;
 
-
             LogCommand(fileName);
             LogCommand("exit code: " + exitCode);
             LogCommand("errors: " + errors);
             LogCommand("======================================");
-
 
             p.WaitForExit();
 
@@ -121,7 +113,7 @@ namespace GemiNaut.Serialization.Commandline
 
         private void LogCommand(string command)
         {
-            var appDir = System.AppDomain.CurrentDomain.BaseDirectory;
+            var appDir = AppDomain.CurrentDomain.BaseDirectory;
             var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var logLocation = Path.GetFullPath(desktopPath + "\\GemiNautCommandLog.log");
 
@@ -136,7 +128,6 @@ namespace GemiNaut.Serialization.Commandline
         /// <param name="command"></param>
         /// <returns></returns>
         /// 
-
         public Tuple<int, string, string> LoggedExecute(string command)
         {
             var exec = new ExecuteProcess();
@@ -166,7 +157,6 @@ namespace GemiNaut.Serialization.Commandline
                 log.Log("  errors (first 100 chars): " + truncatedErrors + "...");
             }
 
-
             if (output.Length > 0)
             {
                 string truncatedOut = new string(output.Take(200).ToArray());
@@ -175,13 +165,10 @@ namespace GemiNaut.Serialization.Commandline
 
             log.Log("\n");
             return result;
-
         }
 
-    
-
         public Tuple<int, string, string> LoggedExecute(string command, bool captureStdOut, bool captureStdErr)
-        { 
+        {
             var exec = new ExecuteProcess();
 
             var log = SimpleLogger.Instance;
@@ -206,21 +193,17 @@ namespace GemiNaut.Serialization.Commandline
             if (errors.Length > 0)
             {
                 string truncatedErrors = new string(errors.Take(200).ToArray());
-                log.Log( "  errors (first 100 chars): " + truncatedErrors + "...");
+                log.Log("  errors (first 100 chars): " + truncatedErrors + "...");
             }
-
 
             if (output.Length > 0)
             {
                 string truncatedOut = new string(output.Take(200).ToArray());
-                log.Log( "  output (first 100 chars): " + truncatedOut + "...");
+                log.Log("  output (first 100 chars): " + truncatedOut + "...");
             }
 
-            log.Log( "\n");
+            log.Log("\n");
             return result;
-
         }
-
-
     }
 }

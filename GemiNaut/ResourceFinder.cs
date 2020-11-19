@@ -19,18 +19,12 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GemiNaut
 {
     public class ResourceFinder
     {
-
         //return the expected location of a file in two possible folders, preferring the local one
         //(only checks for folder existence, not file)
         public string LocalOrDevFile(string startFolder, string localFolder, string devFolder, string filename)

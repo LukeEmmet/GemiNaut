@@ -1,12 +1,4 @@
-﻿using GemiNaut.Properties;
-using mshtml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-//===================================================
+﻿//===================================================
 //    GemiNaut, a friendly browser for Gemini space on Windows
 
 //    Copyright (C) 2020, Luke Emmet 
@@ -27,6 +19,10 @@ using System.Threading.Tasks;
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 
+using GemiNaut.Properties;
+using mshtml;
+using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using static GemiNaut.MainWindow;
@@ -35,14 +31,13 @@ namespace GemiNaut
 {
     public class BookmarkManager
     {
-        private MainWindow mMainWindow;
-        private WebBrowser mWebBrowser;
+        private readonly MainWindow mMainWindow;
+        private readonly WebBrowser mWebBrowser;
 
         public BookmarkManager(MainWindow window, WebBrowser browser)
         {
             mMainWindow = window;
             mWebBrowser = browser;
-
         }
         public string[] BookmarkLines()
         {
@@ -50,8 +45,7 @@ namespace GemiNaut
             string[] array = new string[2];
             array[0] = "\r\n";
 
-            return (settings.Bookmarks.Split(array, StringSplitOptions.RemoveEmptyEntries));
-
+            return settings.Bookmarks.Split(array, StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void AddBookmark(string url, string title)
@@ -59,7 +53,6 @@ namespace GemiNaut
             var settings = new Settings();
 
             var doc = (HTMLDocument)mWebBrowser.Document;
-
 
             foreach (var line in BookmarkLines())
             {
@@ -100,7 +93,6 @@ namespace GemiNaut
                     bmMenu.Click += clickHandler;
 
                     mnuBookMarks.Items.Add(bmMenu);
-
                 }
                 else if (line.Substring(0, 2) == "--")
                 {
@@ -113,12 +105,7 @@ namespace GemiNaut
                 {
                     //anything else in the bookmarks file ignored for now
                 }
-
-
             }
-
-
-
         }
         public string[] ParseGeminiLink(string line)
         {
@@ -136,7 +123,6 @@ namespace GemiNaut
                 {
                     array[1] = array[0];
                 }
-
             }
             else
             {
@@ -145,7 +131,7 @@ namespace GemiNaut
                 array[1] = null;
             }
 
-            return (array);
+            return array;
         }
     }
 }
