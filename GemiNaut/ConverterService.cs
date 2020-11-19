@@ -38,12 +38,7 @@ namespace GemiNaut
             //for some unknown reason, the -m flag (numbered citations) must not be last when calling from this context
             //-e (show embedded images as links)
             //-n (number links)
-            var command = string.Format("\"{0}\" -mne -i \"{1}\" -o \"{2}\"",
-                converterPath,
-                rawPath,
-                outPath
-
-                );
+            var command = $"\"{converterPath}\" -mne -i \"{rawPath}\" -o \"{outPath}\"";
 
             var execProcess = new ExecuteProcess();
 
@@ -71,9 +66,7 @@ namespace GemiNaut
                 rebolPath,
                 scriptPath,
                 Base64Service.Base64Encode(rawPath),
-                Base64Service.Base64Encode(outPath)
-
-                );
+                Base64Service.Base64Encode(outPath));
 
             var execProcess = new ExecuteProcess();
 
@@ -104,9 +97,7 @@ namespace GemiNaut
                 scriptPath,
                 Base64Service.Base64Encode(gopherPath),
                 Base64Service.Base64Encode(outPath),
-                Base64Service.Base64Encode(uri)
-
-                );
+                Base64Service.Base64Encode(uri));
 
             var execProcess = new ExecuteProcess();
 
@@ -126,8 +117,8 @@ namespace GemiNaut
             var rebolPath = finder.LocalOrDevFile(appDir, @"Rebol", @"..\..\..\Rebol", "r3-core.exe");
             var scriptPath = finder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\..\GmiConverters", "GmiToHtml.r3");
 
-            var identiconUri = new System.Uri(siteIdentity.IdenticonImagePath());
-            var fabricUri = new System.Uri(siteIdentity.FabricImagePath());
+            var identiconUri = new Uri(siteIdentity.IdenticonImagePath());
+            var fabricUri = new Uri(siteIdentity.FabricImagePath());
 
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
             //working with command line parameters, so we need to escape quotes
@@ -144,9 +135,7 @@ namespace GemiNaut
                 Base64Service.Base64Encode(fabricUri.AbsoluteUri),
                 Base64Service.Base64Encode(siteIdentity.GetId()),
                 Base64Service.Base64Encode(siteIdentity.GetSiteId()),
-                Base64Service.Base64Encode(showWebHeader ? "true" : "false")
-
-                );
+                Base64Service.Base64Encode(showWebHeader ? "true" : "false"));
 
             var execProcess = new ExecuteProcess();
 
