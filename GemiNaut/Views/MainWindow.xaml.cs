@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Text.RegularExpressions;
 using GemiNaut.Properties;
 using mshtml;
+using System.Windows.Navigation;
 
 namespace GemiNaut.Views
 {
@@ -94,7 +95,7 @@ namespace GemiNaut.Views
             GridMain.IsEnabled = toState;
         }
 
-        private void BrowserControl_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        private void BrowserControl_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             var normalisedUri = UriTester.NormaliseUri(e.Uri);
 
@@ -184,11 +185,9 @@ namespace GemiNaut.Views
             }
         }
 
-        public void ShowImage(string sourceUrl, string imgFile, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        public void ShowImage(string sourceUrl, string imgFile, NavigatingCancelEventArgs e)
         {
-            string hash;
-
-            hash = HashService.GetMd5Hash(sourceUrl);
+            var hash = HashService.GetMd5Hash(sourceUrl);
 
             _urlsByHash[hash] = sourceUrl;
 
@@ -199,7 +198,7 @@ namespace GemiNaut.Views
             BrowserControl.Navigate(@"file:///" + imgFile);
         }
 
-        public void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, SiteIdentity siteIdentity, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        public void ShowUrl(string sourceUrl, string gmiFile, string htmlFile, string themePath, SiteIdentity siteIdentity, NavigatingCancelEventArgs e)
         {
             var hash = HashService.GetMd5Hash(sourceUrl);
 
@@ -363,7 +362,7 @@ namespace GemiNaut.Views
 
         //after any navigate (even back/forwards) 
         //update the address box depending on the current location
-        private void BrowserControl_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        private void BrowserControl_Navigated(object sender, NavigationEventArgs e)
         {
             var uri = e.Uri.ToString();
 
@@ -481,7 +480,7 @@ namespace GemiNaut.Views
             }
         }
 
-        private void BrowserControl_LoadCompleted(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        private void BrowserControl_LoadCompleted(object sender, NavigationEventArgs e)
         {
             var doc = ((WebBrowser)sender).Document;
 
