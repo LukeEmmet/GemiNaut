@@ -46,12 +46,7 @@ namespace GemiNaut
             mFinder = new ResourceFinder();
         }
 
-        public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity)
-        {
-            NavigateGeminiScheme(fullQuery, e, siteIdentity, true);
-        }
-
-        public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity, bool requireSecure)
+        public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity, bool requireSecure = true)
         {
             string geminiUri;
             geminiUri = e.Uri.OriginalString;
