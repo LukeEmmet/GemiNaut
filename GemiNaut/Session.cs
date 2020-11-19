@@ -28,7 +28,7 @@ namespace GemiNaut.Singletons
     /// simple singleton logger, based on
     /// http://csharpindepth.com/Articles/General/Singleton.aspx#cctor
     /// </summary>
-    public class Session : ObservableObject
+    public class Session : ObservableObject, IDisposable
     {
         private static readonly Session instance = new Session();
 
