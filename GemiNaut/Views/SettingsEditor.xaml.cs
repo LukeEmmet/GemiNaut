@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace GemiNaut
+namespace GemiNaut.Views
 {
     /// <summary>
     /// Interaction logic for SettingsEditor.xaml

@@ -1,7 +1,8 @@
 ﻿using GemiNaut.Singletons;
+using GemiNaut.Views;
 using System.IO;
 using System.Windows.Controls;
-using static GemiNaut.MainWindow;
+using static GemiNaut.Views.MainWindow;
 
 namespace GemiNaut
 {

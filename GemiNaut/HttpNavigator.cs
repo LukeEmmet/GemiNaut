@@ -22,12 +22,13 @@
 using GemiNaut.Properties;
 using GemiNaut.Serialization.Commandline;
 using GemiNaut.Singletons;
+using GemiNaut.Views;
 using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using static GemiNaut.MainWindow;
+using static GemiNaut.Views.MainWindow;
 
 namespace GemiNaut
 {

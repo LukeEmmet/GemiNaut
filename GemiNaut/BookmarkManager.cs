@@ -20,12 +20,13 @@
 //===================================================
 
 using GemiNaut.Properties;
+using GemiNaut.Views;
 using mshtml;
 using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-using static GemiNaut.MainWindow;
+using static GemiNaut.Views.MainWindow;
 
 namespace GemiNaut
 {

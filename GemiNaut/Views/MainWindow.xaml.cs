@@ -14,7 +14,7 @@ using System.Text.RegularExpressions;
 using GemiNaut.Properties;
 using mshtml;
 
-namespace GemiNaut
+namespace GemiNaut.Views
 {
     public partial class MainWindow : Window
 

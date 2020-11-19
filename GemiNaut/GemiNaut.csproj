@@ -93,10 +93,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ResourceFinder.cs" />
-    <Compile Include="SettingsEditor.xaml.cs">
+    <Compile Include="Views\SettingsEditor.xaml.cs">
       <DependentUpon>SettingsEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Bookmarks.xaml.cs">
+    <Compile Include="Views\Bookmarks.xaml.cs">
       <DependentUpon>Bookmarks.xaml</DependentUpon>
     </Compile>
     <Compile Include="GeminiNavigator.cs" />
@@ -107,15 +107,15 @@
     <Compile Include="SiteIdentity.cs" />
     <Compile Include="UriTester.cs" />
     <Compile Include="WindowGeometry.cs" />
-    <Page Include="SettingsEditor.xaml">
+    <Page Include="Views\SettingsEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Bookmarks.xaml">
+    <Page Include="Views\Bookmarks.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -124,7 +124,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExecuteProcess.cs" />
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
