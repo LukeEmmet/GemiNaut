@@ -44,7 +44,7 @@ either not none? arg-block [
     in-path: to-rebol-file join folder {gophermap.txt}
     out-path: to-rebol-file join folder {gophermap.gmi}
      uri: "gopher://foo/"
-     in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_wzol1ojq.b5f\test2.txt}
+     in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_cnd2spns.ani\b7d44840a0ccbeffbb000a49c2f729fd.txt}
 ]
 
 
@@ -61,10 +61,10 @@ supported-link-selectors: "0174569gI;d"     ;text, gophermap, query and addition
 append out join "# " gopher-uri-to-title uri false  ;get a nice title without trimming any trailing extension since this is a map
 
 foreach line lines [
-    
-    if line <> "." [
+        
+    if 2 < length? (parse/all line tab) [
         ;print ""
-        selector:   take-left  line 1
+        selector:   take-left   line 1
         rest: take-from line 2
         
         ;split on tabs
