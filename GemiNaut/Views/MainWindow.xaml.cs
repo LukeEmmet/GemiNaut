@@ -450,7 +450,7 @@ namespace GemiNaut.Views
         {
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
 
-            var themeFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+            var themeFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\..\GmiConverters\themes");
 
             foreach (var file in Directory.EnumerateFiles(themeFolder, "*.htm"))
             {

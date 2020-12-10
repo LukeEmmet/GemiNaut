@@ -1,3 +1,12 @@
+html {
+	scrollbar-face-color:#D6D7D6 ;
+scrollbar-shadow-color: #FFFFFF;
+scrollbar-highlight-color:#EFEFEF;
+scrollbar-3dlight-color: #FFFFFF;
+
+scrollbar-track-color: #FFFFFF;
+scrollbar-arrow-color:  #000000;}
+
 body {
 	background-color: #222827;
 	color: #e0e0e0;
@@ -6,7 +15,9 @@ body {
 	margin-left:3.5em;
 	margin-right:3.5em;
 	line-height:1.4em;
-	
+	scrollbar-face-color: #222827;
+    scrollbar-track-color: #222827;
+
 }
 
 a {
@@ -169,3 +180,12 @@ a.toc {
 a.toc:hover {
 	background:#505050;
 }
+
+
+pre {
+    scrollbar-face-color: #222827;
+    scrollbar-track-color: #222827;
+	scrollbar-arrow-color: #a0a0a0;
+	scrollbar-highlight-color: #222827;
+	scrollbar-3dlight-color: #a0a0a0;
+  }

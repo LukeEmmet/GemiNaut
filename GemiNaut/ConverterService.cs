@@ -51,8 +51,8 @@ namespace GemiNaut
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
             //otherwise we use the development ones which are version controlled
-            var rebolPath = ResourceFinder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = ResourceFinder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", "TextAsIs.r3");
+            var rebolPath = ResourceFinder.LocalOrDevFile(appDir, @"Rebol", @"..\..\..\Rebol", "r3-core.exe");
+            var scriptPath = ResourceFinder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\..\GmiConverters", "TextAsIs.r3");
 
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
             //working with command line parameters, so we need to escape quotes
@@ -77,8 +77,8 @@ namespace GemiNaut
 
             //allow for rebol and converters to be in sub folder of exe (e.g. when deployed)
             //otherwise we use the development ones which are version controlled
-            var rebolPath = ResourceFinder.LocalOrDevFile(appDir, @"Rebol", @"..\..\Rebol", "r3-core.exe");
-            var scriptPath = ResourceFinder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\GmiConverters", parseScript);
+            var rebolPath = ResourceFinder.LocalOrDevFile(appDir, @"Rebol", @"..\..\..\Rebol", "r3-core.exe");
+            var scriptPath = ResourceFinder.LocalOrDevFile(appDir, @"GmiConverters", @"..\..\..\GmiConverters", parseScript);
 
             //due to bug in rebol 3 at the time of writing (mid 2020) there is a known bug in rebol 3 in 
             //working with command line parameters, so we need to escape quotes

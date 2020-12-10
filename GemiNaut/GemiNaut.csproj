@@ -9,6 +9,9 @@
     <ApplicationIcon>Resources\pretty-text.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="DebugTemp.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -25,23 +28,19 @@
     <PackageReference Include="Unofficial.Microsoft.mshtml" Version="7.0.3300" />
   </ItemGroup>
   <ItemGroup>
-	<None Update="Rebol\*">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Update="Docs\*">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Update="Docs\images\*">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-  <None Update="GmiConverters\*">
-    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-  </None>
-	<None Update="GmiConverters\Themes\*">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-  <None Update="GmiConverters\Themes\Assets*">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
+    <ProjectReference Include="..\..\..\..\GeminiGet\SmolNetSharp\SmolNetSharp.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

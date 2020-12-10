@@ -44,7 +44,7 @@ either not none? arg-block [
     in-path: to-rebol-file join folder {gophermap.txt}
     out-path: to-rebol-file join folder {gophermap.gmi}
      uri: "gopher://foo/"
-     in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_zyqy1s2x.xru\9f00ad7ca312df9bbb27c8b5f7fa3188.txt}
+     in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_wzol1ojq.b5f\test2.txt}
 ]
 
 
@@ -62,68 +62,71 @@ append out join "# " gopher-uri-to-title uri false  ;get a nice title without tr
 
 foreach line lines [
     
-    ;print ""
-    selector:   take-left line 1
-    rest: take-from line 2
-    
-    ;split on tabs
-    fields: split rest #"^-"        ;--better than parse which also loses quotes
-    
-    path: copy fields/2
-    replace/all path " " "%20"      ;v simplistic escaping spaces only
-    
-    ;probe fields
-    result: any [
-        ;--use == to be case sensitive test
-       if (selector == "i") [
-            gopher-escape fields/1       ;effectively escapes the result from further processing, removed by GmiToHTML
-        ]      
-        if (selector == "h") or (selector == "H") [
-            rejoin [
-                "=> " (extract-url fields/2) 
-                " "
-                fields/1
-            ]
-        ]
+    if line <> "." [
+        ;print ""
+        selector:   take-left  line 1
+        rest: take-from line 2
         
-        if (selector == "3") [
-            ;an error
-            rejoin [
-                "* ERROR "
-                fields/1
-                " "
-                fields/2
+        ;split on tabs
+        fields: split rest #"^-"        ;--better than parse which also loses quotes
+        
+        path: copy fields/2
+        replace/all path " " "%20"      ;v simplistic escaping spaces only
+        
+        ;probe fields
+        result: any [
+            ;--use == to be case sensitive test
+           if (selector == "i") [
+                gopher-escape fields/1       ;effectively escapes the result from further processing, removed by GmiToHTML
+            ]      
+            if (selector == "h") or (selector == "H") [
+                rejoin [
+                    "=> " (extract-url fields/2) 
+                    " "
+                    fields/1
+                ]
             ]
-        ]
-       
-       if (find supported-link-selectors selector) [
-            rejoin [
-                "=> gopher://" 
+            
+            if (selector == "3") [
+                ;an error
+                rejoin [
+                    "* ERROR "
+                    fields/1
+                    " "
+                    fields/2
+                ]
+            ]
+           
+           if (find supported-link-selectors selector) [
+                rejoin [
+                    "=> gopher://" 
+                    fields/3
+                    (either (fields/4 = "70") [""] [join ":" fields/4])
+                    "/" 
+                    selector
+                    path
+                    " "
+                    fields/1 
+                ]
+            ]
+           
+            
+            ;unknown selector or unsupported one, render as a bullet
+              rejoin [
+                "* [Unknown or unsupported gopher selector " selector ": "
+                 fields/1
+                " "
                 fields/3
-                (either (fields/4 = "70") [""] [join ":" fields/4])
-                "/" 
-                selector
-                path
-                " "
-                fields/1 
+                "]"
+            
             ]
+
         ]
-       
-        
-        ;unknown selector or unsupported one, render as a bullet
-          rejoin [
-            "* [Unknown or unsupported gopher selector " selector ": "
-             fields/1
-            " "
-            fields/3
-            "]"
-        
-        ]
+        append out result 
     ]
 
-    append out result 
-
 ]
+
 out-string: copy ""
 
 foreach line out [

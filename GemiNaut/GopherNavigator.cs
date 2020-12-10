@@ -19,7 +19,6 @@
 //    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //===================================================
 using GemiNaut.Properties;
-using GemiNaut.Serialization.Commandline;
 using GemiNaut.Singletons;
 using GemiNaut.Views;
 using Microsoft.VisualBasic;
@@ -27,7 +26,9 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Windows.Controls;
+using SmolNetSharp.Protocols;
 using static GemiNaut.Views.MainWindow;
+
 
 namespace GemiNaut
 {
@@ -83,6 +84,23 @@ namespace GemiNaut
             }
         }
 
+        private Tuple<bool, string, string> GopherGet(string fullQuery, string gopherFile)
+        {
+            //get the content from Gopher using SmolNetSharp
+            try
+            {
+                var response = Gopher.Fetch(new Uri(fullQuery));
+
+                File.WriteAllBytes(gopherFile, response.pyld.ToArray());
+                return new Tuple<bool, string, string>(true, response.mime, "");
+
+            } catch (Exception e)
+            {
+                return new Tuple<bool, string, string>(false, "", "Could not connect to " + fullQuery + ": " + e.Message);
+            }
+
+        }
+
         public void NavigateGopherScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity)
         {
             var sessionPath = Session.Instance.SessionPath;
@@ -101,8 +119,6 @@ namespace GemiNaut
                 return;
             }
 
-            //use local or dev binary for gemget
-            var gopherClient = ResourceFinder.LocalOrDevFile(appDir, "GopherGet", "..\\..\\..\\GopherGet", "gopher-get.exe");
 
             var hash = HashService.GetMd5Hash(fullQuery);
 
@@ -118,27 +134,23 @@ namespace GemiNaut
             //delete any existing html file to encourage webbrowser to reload it
             File.Delete(gmiFile);
 
-            //save to the file
-            var command = string.Format("\"{0}\" \"{1}\" \"{2}\"", gopherClient, fullQuery, gopherFile);
-
-            var result = ExecuteProcess.ExecuteCommand(command, true, true);
-
-            var exitCode = result.Item1;
-            var stdOut = result.Item2;
-
-            if (exitCode != 0)
+            var gopherGet = GopherGet(fullQuery, gopherFile);
+            if (!gopherGet.Item1)
             {
-                mMainWindow.ToastNotify(result.Item3, ToastMessageStyles.Error);
+                mMainWindow.ToastNotify(gopherGet.Item3, ToastMessageStyles.Error);
                 mMainWindow.ToggleContainerControlsForBrowser(true);    //reenable browser
                 e.Cancel = true;
                 return;
             }
 
+            var mime = gopherGet.Item2;
+            var result = new Tuple<int, string, string>(gopherGet.Item1 ? 0 : -1, mime, gopherGet.Item3);
+
             if (File.Exists(gopherFile))
             {
                 string parseFile;
 
-                if (stdOut.Contains("DIR") || stdOut.Contains("QRY"))
+                if (mime == "application/gopher-menu")
                 {
                     //convert gophermap to text/gemini
 
@@ -146,7 +158,7 @@ namespace GemiNaut
                     result = ConverterService.GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Map);
                     parseFile = gmiFile;
                 }
-                else if (stdOut.Contains("TXT"))
+                else if (mime == "text/plain")
                 {
                     result = ConverterService.GophertoGmi(gopherFile, gmiFile, fullQuery, GopherParseTypes.Text);
                     parseFile = gmiFile;
@@ -163,7 +175,7 @@ namespace GemiNaut
 
                     File.Copy(gopherFile, binFile, true); //rename overwriting
 
-                    if (stdOut.Contains("IMG") || stdOut.Contains("GIF"))
+                    if (mime == "image/png" || mime == "image/gif" || mime == "image/jpeg")
                     {
                         //show the image
                         mMainWindow.ShowImage(fullQuery, binFile, e);
@@ -208,7 +220,7 @@ namespace GemiNaut
                 else
                 {
                     var settings = new Settings();
-                    var userThemesFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+                    var userThemesFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\..\GmiConverters\themes");
 
                     var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 

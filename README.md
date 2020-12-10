@@ -42,6 +42,15 @@ You can download a pre-built application for Windows from the <a href="https://w
 
 GPL 3
 
+# Building and development
+
+The GemiNaut solution references and uses the [SmolNetSharp] (https://github.com/LukeEmmet/SmolNetSharp) client library project, which needs to be checked out into a sibiling folder, e.g.
+
+```
+projects\GemiNaut
+projects\SmolNetSharp
+```
+
 # Screenshots
 
 Fabric theme (site specific themes):
@@ -53,6 +62,12 @@ Dark theme:
 ![Screenshot](GemiNaut/Docs/images/dark_theme.png)
 
 # History
+
+## 0.8.9 (in development, no binary release yet)
+
+* use local client for gemini and gopher 
+* should have fewer false positives from antivirus 
+* better logic detection of redirects combined with input
 
 ## 0.8.8, 7-Oct-2020
 

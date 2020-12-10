@@ -292,7 +292,7 @@ namespace GemiNaut
                     httpUri = fullQuery;
                 }
 
-                var userThemesFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\GmiConverters\themes");
+                var userThemesFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\..\GmiConverters\themes");
 
                 var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
