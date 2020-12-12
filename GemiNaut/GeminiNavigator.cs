@@ -31,9 +31,15 @@ using System.IO.MemoryMappedFiles;
 using System.Windows.Controls;
 using SmolNetSharp.Protocols;
 using static GemiNaut.Views.MainWindow;
+using System.Collections.Generic;
+using GeminiProtocol;
+using System.Net;
+using System.Text;
 
 namespace GemiNaut
 {
+ 
+
     public class GeminiNavigator
     {
         private readonly MainWindow mMainWindow;
@@ -94,7 +100,7 @@ namespace GemiNaut
         }
 
 
-
+       
 
         public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity, bool requireSecure = true)
         {
@@ -123,7 +129,30 @@ namespace GemiNaut
 
             try
             {
-                var geminiResponse = (GeminiResponse)Gemini.Fetch(new Uri(fullQuery), settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+
+                GeminiResponse geminiResponse;
+                try
+                {
+                 geminiResponse = (GeminiResponse)Gemini.Fetch(new Uri(fullQuery), settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+
+                } catch
+                {
+                    //very strange situation, for some servers, they work every other request, and in between send a malformed response. 
+                    //Maybe a particular flavour of server has the problem
+                    //for example
+                    //gemini://calcuode.com/
+                    //not seen in some other clients, so may need investigating **FIXME
+
+                    try
+                    {
+                        //send the request again
+                        geminiResponse = (GeminiResponse)Gemini.Fetch(new Uri(fullQuery), settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                    } catch 
+                    {
+                        //re raise
+                        throw;
+                    }
+                }
 
                 if (geminiResponse.codeMajor == '1')
                 {
@@ -139,15 +168,6 @@ namespace GemiNaut
                     //success
                     File.WriteAllBytes(rawFile, geminiResponse.pyld.ToArray());
 
-
-
-
-                    //var geminiResponse = new Response.GeminiResponse(fullQuery);
-
-                    //geminiResponse.ParseGemGet(result.Item2);   //parse stdout   
-                    //geminiResponse.ParseGemGet(result.Item3);   //parse stderr
-
-                    //ToastNotify(geminiResponse.Status + " " + geminiResponse.Meta);
 
                     //in these early days of Gemini we dont forbid visiting a site with an expired cert or mismatched host name
                     //but we do give a warning each time

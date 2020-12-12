@@ -28,7 +28,7 @@
     <PackageReference Include="Unofficial.Microsoft.mshtml" Version="7.0.3300" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\GeminiGet\SmolNetSharp\SmolNetSharp.csproj" />
+    <ProjectReference Include="..\..\SmolNetSharp\SmolNetSharp\SmolNetSharp.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
