@@ -72,11 +72,13 @@ namespace GemiNaut
             //delete any existing html file to encourage webbrowser to reload it
             File.Delete(htmlFile);
 
-            //not implemented yet...
-            //if (scheme != "gemini")
-            //{
-            //    //use a proxy
-            //} 
+            var uri = new Uri(fullQuery);
+            //use a proxy for any other scheme that is not gemini
+            var proxy = "";     //use none
+            if (uri.Scheme != "gemini") 
+            {
+                proxy = settings.HttpSchemeProxy;
+            } 
 
                 try
                 {
@@ -84,7 +86,7 @@ namespace GemiNaut
                 GeminiResponse geminiResponse;
                 try
                 {
-                 geminiResponse = (GeminiResponse)Gemini.Fetch(new Uri(fullQuery), settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                 geminiResponse = (GeminiResponse)Gemini.Fetch(uri, proxy, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
                 } catch
                 {
@@ -97,7 +99,7 @@ namespace GemiNaut
                     try
                     {
                         //send the request again
-                        geminiResponse = (GeminiResponse)Gemini.Fetch(new Uri(fullQuery), settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                        geminiResponse = (GeminiResponse)Gemini.Fetch(uri, proxy, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
                     } catch 
                     {
                         //re raise
