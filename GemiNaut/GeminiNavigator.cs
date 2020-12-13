@@ -27,14 +27,10 @@ using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Windows.Controls;
 using SmolNetSharp.Protocols;
 using static GemiNaut.Views.MainWindow;
-using System.Collections.Generic;
-using GeminiProtocol;
-using System.Net;
-using System.Text;
+
 
 namespace GemiNaut
 {
@@ -51,56 +47,6 @@ namespace GemiNaut
             mWebBrowser = browserControl;
         }
 
-
-        private Tuple<int, string, string> GemGet(string fullQuery, string rawFile, string scheme, bool requireSecure)
-        {
-            var sessionPath = Session.Instance.SessionPath;
-            var appDir = AppDomain.CurrentDomain.BaseDirectory;
-
-            //use local or dev binary for gemget
-            var gemGet = ResourceFinder.LocalOrDevFile(appDir, "Gemget", "..\\..\\..\\..\\..\\Gemget", "gemget-windows-386.exe");
-            var settings = new Settings();
-            string command = "";
-
-            var secureFlag = requireSecure ? "" : " -i ";
-
-            if (scheme == "gemini")
-            {
-                //pass options to gemget for download
-                command = string.Format(
-                    "\"{0}\" {1} --header --no-progress-bar -m \"{2}\"Mb -t {3} -o \"{4}\" \"{5}\"",
-                    gemGet,
-                    secureFlag,
-                    settings.MaxDownloadSizeMb,
-                    settings.MaxDownloadTimeSeconds,
-                    rawFile,
-                    fullQuery);
-            }
-            else
-            {
-                //pass options to gemget for download using the assigned http proxy, such as 
-                //duckling-proxy https://github.com/LukeEmmet/duckling-proxy
-                //this should obviously be a trusted server since it is in the middle of the 
-                //request
-                command = string.Format(
-                    "\"{0}\" {1} --header --no-progress-bar -m \"{2}\"Mb -t {3} -o \"{4}\"  -p \"{5}\" \"{6}\"",
-                    gemGet,
-                    secureFlag,
-                    settings.MaxDownloadSizeMb,
-                    settings.MaxDownloadTimeSeconds,
-                    rawFile,
-                    settings.HttpSchemeProxy,
-                    fullQuery);
-            }
-
-            var result = ExecuteProcess.ExecuteCommand(command, true, true);
-
-            return (result);
-
-        }
-
-
-       
 
         public void NavigateGeminiScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity, bool requireSecure = true)
         {
@@ -126,9 +72,14 @@ namespace GemiNaut
             //delete any existing html file to encourage webbrowser to reload it
             File.Delete(htmlFile);
 
+            //not implemented yet...
+            //if (scheme != "gemini")
+            //{
+            //    //use a proxy
+            //} 
 
-            try
-            {
+                try
+                {
 
                 GeminiResponse geminiResponse;
                 try
