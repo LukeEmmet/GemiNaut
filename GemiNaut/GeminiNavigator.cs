@@ -75,34 +75,59 @@ namespace GemiNaut
             var uri = new Uri(fullQuery);
             //use a proxy for any other scheme that is not gemini
             var proxy = "";     //use none
+            var connectInsecure = false;
+
             if (uri.Scheme != "gemini") 
             {
                 proxy = settings.HttpSchemeProxy;
+                connectInsecure = true;             //always just connect to proxies as they are man in the middle, so security is already reduced
             } 
 
                 try
                 {
-
-                GeminiResponse geminiResponse;
+                    GeminiResponse geminiResponse;
                 try
                 {
-                 geminiResponse = (GeminiResponse)Gemini.Fetch(uri, proxy, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                    geminiResponse = (GeminiResponse)Gemini.Fetch(uri, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
-                } catch
+                }
+                catch (Exception err)
                 {
-                    //very strange situation, for some servers, they work every other request, and in between send a malformed response. 
-                    //Maybe a particular flavour of server has the problem
-                    //for example
-                    //gemini://calcuode.com/
-                    //not seen in some other clients, so may need investigating **FIXME
 
-                    try
+                    //warn, but continue if there are server validation errors
+                    //in these early days of Gemini we dont forbid visiting a site with an expired cert or mismatched host name
+                    //but we do give a warning each time
+                    if (err.Message == "The remote certificate was rejected by the provided RemoteCertificateValidationCallback.")
                     {
-                        //send the request again
-                        geminiResponse = (GeminiResponse)Gemini.Fetch(uri, proxy, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
-                    } catch 
+
+                        mMainWindow.ToastNotify("Note: " + err.Message + " for: " + e.Uri.Authority, ToastMessageStyles.Warning);
+
+                        //try again insecure this time
+                        geminiResponse = (GeminiResponse)Gemini.Fetch(uri, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+
+                    }
+                    else if (err.Message.StartsWith("malformed Gemini response"))
                     {
-                        //re raise
+                        //very strange situation, for some servers, they work every other request, and in between send a malformed response. 
+                        //Maybe a particular flavour of server has the problem
+                        //for example
+                        //gemini://calcuode.com/
+                        //not seen in some other clients, so may need investigating **FIXME
+
+                        try
+                        {
+                            //send the request again
+                            geminiResponse = (GeminiResponse)Gemini.Fetch(uri, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                        }
+                        catch
+                        {
+                            //re raise
+                            throw;
+                        }
+                    }
+                    else
+                    {
+                        //reraise
                         throw;
                     }
                 }
@@ -120,32 +145,6 @@ namespace GemiNaut
                 {
                     //success
                     File.WriteAllBytes(rawFile, geminiResponse.pyld.ToArray());
-
-
-                    //in these early days of Gemini we dont forbid visiting a site with an expired cert or mismatched host name
-                    //but we do give a warning each time
-                    //if (result.Item1 == 1 && requireSecure)
-                    //{
-                    //    var tryInsecure = false;
-                    //    var securityError = "";
-                    //    if (geminiResponse.Errors[0].Contains("server cert is expired"))
-                    //    {
-                    //        tryInsecure = true;
-                    //        securityError = "Server certificate is expired";
-                    //    }
-                    //    else if (geminiResponse.Errors[0].Contains("hostname does not verify"))
-                    //    {
-                    //        tryInsecure = true;
-                    //        securityError = "Host name does not verify";
-                    //    }
-                    //    if (tryInsecure)
-                    //    {
-                    //        //give a warning and try again with insecure
-                    //        mMainWindow.ToastNotify("Note: " + securityError + " for: " + e.Uri.Authority, ToastMessageStyles.Warning);
-                    //        NavigateGeminiScheme(fullQuery, e, siteIdentity, false);
-                    //        return;
-                    //    }
-                    //}
 
 
                     if (File.Exists(rawFile))
