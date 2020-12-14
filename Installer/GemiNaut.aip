@@ -10,11 +10,12 @@
     <ROW Property="AI_REQUIRED_DOTNET_VERSION" MultiBuildValue="DefaultBuild:4.6.1" ValueLocId="-"/>
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
+    <ROW Property="ARPPRODUCTICON" Value="prettytext.exe" Type="8"/>
     <ROW Property="Manufacturer" Value="MarmaladeFoo software"/>
     <ROW Property="ProductCode" Value="2057:{55D1C187-4AB6-4805-A68E-DE4C287E8CF1} " Type="16"/>
     <ROW Property="ProductLanguage" Value="2057"/>
     <ROW Property="ProductName" Value="GemiNaut"/>
-    <ROW Property="ProductVersion" Value="0.8.8" Type="32"/>
+    <ROW Property="ProductVersion" Value="0.8.9" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{CA53C1A6-5092-4508-A8E4-D5078CFF425C}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -31,43 +32,42 @@
     <ROW Directory="Assets_Dir" Directory_Parent="Themes_Dir" DefaultDir="Assets"/>
     <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
     <ROW Directory="Docs_Dir" Directory_Parent="APPDIR" DefaultDir="Docs"/>
-    <ROW Directory="Gemget_Dir" Directory_Parent="APPDIR" DefaultDir="Gemget"/>
+    <ROW Directory="GemiNaut_Dir" Directory_Parent="ProgramMenuFolder" DefaultDir="GemiNaut"/>
     <ROW Directory="GmiConverters_Dir" Directory_Parent="APPDIR" DefaultDir="GMICON~1|GmiConverters"/>
     <ROW Directory="Goose_Dir" Directory_Parent="APPDIR" DefaultDir="Goose"/>
-    <ROW Directory="GopherGet_Dir" Directory_Parent="APPDIR" DefaultDir="GOPHER~1|GopherGet"/>
     <ROW Directory="HtmlToGmi_Dir" Directory_Parent="APPDIR" DefaultDir="HTMLTO~1|HtmlToGmi"/>
     <ROW Directory="HttpGet_Dir" Directory_Parent="APPDIR" DefaultDir="HttpGet"/>
     <ROW Directory="ProgramMenuFolder" Directory_Parent="TARGETDIR" DefaultDir="PROGRA~1|ProgramMenuFolder" IsPseudoRoot="1"/>
     <ROW Directory="Rebol_Dir" Directory_Parent="APPDIR" DefaultDir="Rebol"/>
-    <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="Themes_Dir" Directory_Parent="GmiConverters_Dir" DefaultDir="Themes"/>
     <ROW Directory="images_Dir" Directory_Parent="Docs_Dir" DefaultDir="images"/>
+    <ROW Directory="ref_Dir" Directory_Parent="APPDIR" DefaultDir="ref"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="Dark.css" ComponentId="{DC4A6262-6539-465D-83C7-C1B304CC1A56}" Directory_="Themes_Dir" Attributes="0" KeyPath="Dark.css" Type="0"/>
-    <ROW Component="GemiNaut.exe" ComponentId="{4D0109DD-75B3-4A4F-99D7-6D534D6B015A}" Directory_="APPDIR" Attributes="0" KeyPath="GemiNaut.exe"/>
-    <ROW Component="GemiNaut.exe.config" ComponentId="{A26187CB-A4A9-44CE-96C1-E632FA0CAA01}" Directory_="APPDIR" Attributes="0" KeyPath="GemiNaut.exe.config" Type="0"/>
+    <ROW Component="GemiNaut" ComponentId="{E5604CFF-8CF7-4E0E-B226-B7D016DF2D39}" Directory_="GemiNaut_Dir" Attributes="0"/>
+    <ROW Component="GemiNaut.deps.json" ComponentId="{C3188D46-C7A7-441B-B8CC-42498707010D}" Directory_="APPDIR" Attributes="0" KeyPath="GemiNaut.deps.json" Type="0"/>
+    <ROW Component="GemiNaut.dll" ComponentId="{AF4AF15E-3912-4169-8F72-8A4D71F5E58D}" Directory_="ref_Dir" Attributes="0" KeyPath="GemiNaut.dll"/>
+    <ROW Component="GemiNaut.dll_1" ComponentId="{650F914D-56D9-4063-9BC8-E303D4097DE6}" Directory_="APPDIR" Attributes="0" KeyPath="GemiNaut.dll_1"/>
+    <ROW Component="GemiNaut.exe" ComponentId="{E88CF2C1-AE08-45AC-8962-9CCD0862DC8B}" Directory_="APPDIR" Attributes="256" KeyPath="GemiNaut.exe"/>
     <ROW Component="GmiToHtml.r3" ComponentId="{5A88C8E7-CF2E-48EB-A95E-3A2713034DFE}" Directory_="GmiConverters_Dir" Attributes="0" KeyPath="GmiToHtml.r3" Type="0"/>
-    <ROW Component="Jdenticon.dll" ComponentId="{48321852-917D-4741-AC37-5C3D2F33F0DC}" Directory_="APPDIR" Attributes="0" KeyPath="Jdenticon.dll"/>
+    <ROW Component="Jdenticon.dll" ComponentId="{E0FA8EAC-9E9F-4ADC-B22E-3959F4E1B9E5}" Directory_="APPDIR" Attributes="0" KeyPath="Jdenticon.dll"/>
+    <ROW Component="Microsoft.mshtml.dll" ComponentId="{98F436AA-3B77-4A1E-9190-CA6EAF1C36B8}" Directory_="APPDIR" Attributes="0" KeyPath="Microsoft.mshtml.dll"/>
     <ROW Component="ProductInformation" ComponentId="{05BBEB9D-5DBE-45D0-B862-F811EF577258}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
-    <ROW Component="SHORTCUTDIR" ComponentId="{E55F8C92-4F85-4BC4-9449-1BF2F513FF0E}" Directory_="SHORTCUTDIR" Attributes="0"/>
-    <ROW Component="ToastNotifications.Messages.dll" ComponentId="{54813853-5B60-4E09-9C6E-AC5338DC029B}" Directory_="APPDIR" Attributes="0" KeyPath="ToastNotifications.Messages.dll"/>
-    <ROW Component="ToastNotifications.dll" ComponentId="{E7EE1C37-144E-433B-8477-A9FD4C19500F}" Directory_="APPDIR" Attributes="0" KeyPath="ToastNotifications.dll"/>
+    <ROW Component="SmolNetSharp.dll" ComponentId="{DF3F7769-7F3D-4385-BF06-C75B954DF119}" Directory_="APPDIR" Attributes="0" KeyPath="SmolNetSharp.dll"/>
+    <ROW Component="ToastNotifications.Messages.dll" ComponentId="{943450E7-9D27-4AC0-B056-3ACD6108BC09}" Directory_="APPDIR" Attributes="0" KeyPath="ToastNotifications.Messages.dll"/>
+    <ROW Component="ToastNotifications.dll" ComponentId="{B7491194-A523-4D47-B3A1-D918012CD4FB}" Directory_="APPDIR" Attributes="0" KeyPath="ToastNotifications.dll"/>
     <ROW Component="Transparent_circle.svg_500px.png" ComponentId="{97C43846-F05B-4310-98EC-1965EBABA350}" Directory_="Assets_Dir" Attributes="0" KeyPath="Transparent_circle.svg_500px.png_1" Type="0"/>
     <ROW Component="dark_theme.png" ComponentId="{29EFE341-C173-46D0-87A7-6837E7430236}" Directory_="images_Dir" Attributes="0" KeyPath="dark_theme.png" Type="0"/>
-    <ROW Component="gemgetwindows386.exe" ComponentId="{6582260D-9C4E-4619-A0ED-83ABC9DDA14D}" Directory_="Gemget_Dir" Attributes="0" KeyPath="gemgetwindows386.exe"/>
     <ROW Component="goosecli.exe" ComponentId="{0E6AE8D6-6D96-4628-8BF0-D600004910A2}" Directory_="Goose_Dir" Attributes="256" KeyPath="goosecli.exe"/>
-    <ROW Component="gopherget.exe" ComponentId="{3908591B-0CF6-4FC3-9430-6EBC1DD98A2C}" Directory_="GopherGet_Dir" Attributes="0" KeyPath="gopherget.exe"/>
     <ROW Component="helptheme.css" ComponentId="{A251B9EC-EB3B-4698-87B1-38A5465AF27F}" Directory_="Docs_Dir" Attributes="0" KeyPath="helptheme.css" Type="0"/>
     <ROW Component="html2gmi.exe" ComponentId="{17300C5D-0540-43D6-BF88-983896CCFFB1}" Directory_="HtmlToGmi_Dir" Attributes="256" KeyPath="html2gmi.exe"/>
     <ROW Component="httpget.exe" ComponentId="{25C9032F-71D9-468A-AB6B-2B6FA35ED176}" Directory_="HttpGet_Dir" Attributes="256" KeyPath="httpget.exe"/>
     <ROW Component="r3core.exe" ComponentId="{D75BE09A-B7AD-4D3B-9845-57C8B1A87484}" Directory_="Rebol_Dir" Attributes="0" KeyPath="r3core.exe"/>
-    <ROW Component="readme.txt" ComponentId="{D3F63BD6-006A-47F0-847C-E7474F3837BA}" Directory_="Gemget_Dir" Attributes="0" KeyPath="readme.txt" Type="0"/>
-    <ROW Component="readme.txt_1" ComponentId="{38F26295-947C-4D6B-8B0D-14FCFAE49FE8}" Directory_="GopherGet_Dir" Attributes="0" KeyPath="readme.txt_1" Type="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Dark.css GemiNaut.exe GemiNaut.exe.config GmiToHtml.r3 Jdenticon.dll ProductInformation SHORTCUTDIR ToastNotifications.Messages.dll ToastNotifications.dll Transparent_circle.svg_500px.png dark_theme.png gemgetwindows386.exe goosecli.exe gopherget.exe helptheme.css html2gmi.exe httpget.exe r3core.exe readme.txt readme.txt_1"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Dark.css GemiNaut GemiNaut.deps.json GemiNaut.dll GemiNaut.dll_1 GemiNaut.exe GmiToHtml.r3 Jdenticon.dll Microsoft.mshtml.dll ProductInformation SmolNetSharp.dll ToastNotifications.Messages.dll ToastNotifications.dll Transparent_circle.svg_500px.png dark_theme.png goosecli.exe helptheme.css html2gmi.exe httpget.exe r3core.exe"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -77,41 +77,46 @@
     <ROW File="Fabricclassic.htm" Component_="Dark.css" FileName="FABRIC~1.HTM|Fabric (classic).htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Fabric (classic).htm" SelfReg="false" NextFile="Fabricsitespecificthemes.css"/>
     <ROW File="Fabricsitespecificthemes.css" Component_="Dark.css" FileName="FABRIC~2.CSS|Fabric (site specific themes).css" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Fabric (site specific themes).css" SelfReg="false" NextFile="Fabricsitespecificthemes.htm"/>
     <ROW File="Fabricsitespecificthemes.htm" Component_="Dark.css" FileName="FABRIC~2.HTM|Fabric (site specific themes).htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Fabric (site specific themes).htm" SelfReg="false" NextFile="Plain.css"/>
-    <ROW File="GemiNaut.exe" Component_="GemiNaut.exe" FileName="GemiNaut.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\GemiNaut.exe" SelfReg="false" NextFile="GemiNaut.exe.config" DigSign="true"/>
-    <ROW File="GemiNaut.exe.config" Component_="GemiNaut.exe.config" FileName="GEMINA~1.CON|GemiNaut.exe.config" Attributes="0" SourcePath="..\GemiNaut\bin\Build\GemiNaut.exe.config" SelfReg="false" NextFile="Jdenticon.dll"/>
+    <ROW File="GemiNaut.deps.json" Component_="GemiNaut.deps.json" FileName="GEMINA~1.JSO|GemiNaut.deps.json" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\GemiNaut.deps.json" SelfReg="false" NextFile="GemiNaut.dll_1"/>
+    <ROW File="GemiNaut.dll" Component_="GemiNaut.dll" FileName="GemiNaut.dll" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\ref\GemiNaut.dll" SelfReg="false" NextFile="GemiNaut.deps.json"/>
+    <ROW File="GemiNaut.dll.config" Component_="GemiNaut.deps.json" FileName="GEMINA~1.CON|GemiNaut.dll.config" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\GemiNaut.dll.config" SelfReg="false" NextFile="GemiNaut.exe"/>
+    <ROW File="GemiNaut.dll_1" Component_="GemiNaut.dll_1" FileName="GemiNaut.dll" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\GemiNaut.dll" SelfReg="false" NextFile="GemiNaut.dll.config"/>
+    <ROW File="GemiNaut.exe" Component_="GemiNaut.exe" FileName="GemiNaut.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\GemiNaut.exe" SelfReg="false" NextFile="GemiNaut.pdb" DigSign="true"/>
+    <ROW File="GemiNaut.pdb" Component_="GemiNaut.exe" FileName="GemiNaut.pdb" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\GemiNaut.pdb" SelfReg="false" NextFile="GemiNaut.runtimeconfig.dev.json"/>
+    <ROW File="GemiNaut.runtimeconfig.dev.json" Component_="GemiNaut.deps.json" FileName="GEMINA~2.JSO|GemiNaut.runtimeconfig.dev.json" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\GemiNaut.runtimeconfig.dev.json" SelfReg="false" NextFile="GemiNaut.runtimeconfig.json"/>
+    <ROW File="GemiNaut.runtimeconfig.json" Component_="GemiNaut.deps.json" FileName="GEMINA~3.JSO|GemiNaut.runtimeconfig.json" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\GemiNaut.runtimeconfig.json" SelfReg="false" NextFile="Jdenticon.dll"/>
     <ROW File="GmiToHtml.r3" Component_="GmiToHtml.r3" FileName="GMITOH~1.R3|GmiToHtml.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\GmiToHtml.r3" SelfReg="false" NextFile="gopherutils.r3"/>
     <ROW File="GophermapToGmi.r3" Component_="GmiToHtml.r3" FileName="GOPHER~2.R3|GophermapToGmi.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\GophermapToGmi.r3" SelfReg="false" NextFile="GophertextToGmi.r3"/>
     <ROW File="GophertextToGmi.r3" Component_="GmiToHtml.r3" FileName="GOPHER~3.R3|GophertextToGmi.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\GophertextToGmi.r3" SelfReg="false" NextFile="linkbuilder.r3"/>
-    <ROW File="Jdenticon.dll" Component_="Jdenticon.dll" FileName="JDENTI~1.DLL|Jdenticon.dll" Attributes="0" SourcePath="..\GemiNaut\packages\Jdenticon-net.2.2.1\lib\net45\Jdenticon.dll" SelfReg="false" NextFile="ToastNotifications.dll"/>
+    <ROW File="Jdenticon.dll" Component_="Jdenticon.dll" FileName="JDENTI~1.DLL|Jdenticon.dll" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\Jdenticon.dll" SelfReg="false" NextFile="Microsoft.mshtml.dll"/>
+    <ROW File="Microsoft.mshtml.dll" Component_="Microsoft.mshtml.dll" FileName="MICROS~1.DLL|Microsoft.mshtml.dll" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\Microsoft.mshtml.dll" SelfReg="false" NextFile="SmolNetSharp.dll"/>
     <ROW File="Plain.css" Component_="Dark.css" FileName="Plain.css" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Plain.css" SelfReg="false" NextFile="Plain.htm"/>
     <ROW File="Plain.htm" Component_="Dark.css" FileName="Plain.htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Plain.htm" SelfReg="false" NextFile="Terminal.css"/>
+    <ROW File="SmolNetSharp.dll" Component_="SmolNetSharp.dll" FileName="SMOLNE~1.DLL|SmolNetSharp.dll" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\SmolNetSharp.dll" SelfReg="false" NextFile="SmolNetSharp.pdb"/>
+    <ROW File="SmolNetSharp.pdb" Component_="SmolNetSharp.dll" FileName="SMOLNE~1.PDB|SmolNetSharp.pdb" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\SmolNetSharp.pdb" SelfReg="false" NextFile="ToastNotifications.dll"/>
     <ROW File="Terminal.css" Component_="Dark.css" FileName="Terminal.css" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Terminal.css" SelfReg="false" NextFile="Terminal.htm"/>
     <ROW File="Terminal.htm" Component_="Dark.css" FileName="Terminal.htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Terminal.htm" SelfReg="false" NextFile="UnifiedUI.css"/>
     <ROW File="TextAsIs.r3" Component_="GmiToHtml.r3" FileName="TextAsIs.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\TextAsIs.r3" SelfReg="false" NextFile="Transparent_circle.svg_500px.png_1"/>
-    <ROW File="ToastNotifications.Messages.dll" Component_="ToastNotifications.Messages.dll" FileName="TOASTN~2.DLL|ToastNotifications.Messages.dll" Attributes="0" SourcePath="..\GemiNaut\ToastNotifications\ToastNotifications.Messages.dll" SelfReg="false" NextFile="gemgetwindows386.exe"/>
-    <ROW File="ToastNotifications.dll" Component_="ToastNotifications.dll" FileName="TOASTN~1.DLL|ToastNotifications.dll" Attributes="0" SourcePath="..\GemiNaut\ToastNotifications\ToastNotifications.dll" SelfReg="false" NextFile="ToastNotifications.Messages.dll"/>
+    <ROW File="ToastNotifications.Messages.dll" Component_="ToastNotifications.Messages.dll" FileName="TOASTN~2.DLL|ToastNotifications.Messages.dll" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\ToastNotifications.Messages.dll" SelfReg="false"/>
+    <ROW File="ToastNotifications.dll" Component_="ToastNotifications.dll" FileName="TOASTN~1.DLL|ToastNotifications.dll" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net5.0-windows\ToastNotifications.dll" SelfReg="false" NextFile="ToastNotifications.Messages.dll"/>
     <ROW File="Transparent_circle.svg_500px.png_1" Component_="Transparent_circle.svg_500px.png" FileName="TRANSP~1.PNG|Transparent_circle.svg_500px.png" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Assets\Transparent_circle.svg_500px.png" SelfReg="false" NextFile="Dark.css"/>
     <ROW File="UnifiedUI.css" Component_="Dark.css" FileName="UNIFIE~1.CSS|UnifiedUI.css" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\UnifiedUI.css" SelfReg="false" NextFile="UnifiedUI.htm"/>
     <ROW File="UnifiedUI.htm" Component_="Dark.css" FileName="UNIFIE~1.HTM|UnifiedUI.htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\UnifiedUI.htm" SelfReg="false" NextFile="utils.r3"/>
     <ROW File="dark_theme.png" Component_="dark_theme.png" FileName="DARK_T~1.PNG|dark_theme.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\dark_theme.png" SelfReg="false" NextFile="geminaut_home.png"/>
-    <ROW File="gemgetwindows386.exe" Component_="gemgetwindows386.exe" FileName="GEMGET~1.EXE|gemget-windows-386.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\Gemget\gemget-windows-386.exe" SelfReg="false" NextFile="readme.txt" DigSign="true"/>
     <ROW File="geminaut_home.png" Component_="dark_theme.png" FileName="GEMINA~1.PNG|geminaut_home.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\geminaut_home.png" SelfReg="false" NextFile="gemini_home.png"/>
     <ROW File="gemini_home.png" Component_="dark_theme.png" FileName="GEMINI~1.PNG|gemini_home.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\gemini_home.png" SelfReg="false" NextFile="gopher.png"/>
     <ROW File="goosecli.exe" Component_="goosecli.exe" FileName="GOOSE-~1.EXE|goose-cli.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\Goose\goose-cli.exe" SelfReg="false" NextFile="httpget.exe" DigSign="true"/>
     <ROW File="gopher.png" Component_="dark_theme.png" FileName="gopher.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\gopher.png" SelfReg="false" NextFile="gus_home.png"/>
-    <ROW File="gopherget.exe" Component_="gopherget.exe" FileName="GOPHER~1.EXE|gopher-get.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\GopherGet\gopher-get.exe" SelfReg="false" NextFile="readme.txt_1" DigSign="true"/>
     <ROW File="gopherutils.r3" Component_="GmiToHtml.r3" FileName="GOPHER~1.R3|gopher-utils.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\gopher-utils.r3" SelfReg="false" NextFile="GophermapToGmi.r3"/>
     <ROW File="gus_home.png" Component_="dark_theme.png" FileName="gus_home.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\gus_home.png" SelfReg="false" NextFile="plain_theme.png"/>
     <ROW File="help.gmi" Component_="helptheme.css" FileName="help.gmi" Attributes="0" SourcePath="..\GemiNaut\Docs\help.gmi" SelfReg="false" NextFile="dark_theme.png"/>
     <ROW File="helptheme.css" Component_="helptheme.css" FileName="HELP-T~1.CSS|help-theme.css" Attributes="0" SourcePath="..\GemiNaut\Docs\help-theme.css" SelfReg="false" NextFile="helptheme.htm"/>
     <ROW File="helptheme.htm" Component_="helptheme.css" FileName="HELP-T~1.HTM|help-theme.htm" Attributes="0" SourcePath="..\GemiNaut\Docs\help-theme.htm" SelfReg="false" NextFile="help.gmi"/>
     <ROW File="html2gmi.exe" Component_="html2gmi.exe" FileName="html2gmi.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\HtmlToGmi\html2gmi.exe" SelfReg="false" NextFile="helptheme.css" DigSign="true"/>
-    <ROW File="httpget.exe" Component_="httpget.exe" FileName="http-get.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\HttpGet\http-get.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="httpget.exe" Component_="httpget.exe" FileName="http-get.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\HttpGet\http-get.exe" SelfReg="false" NextFile="GemiNaut.dll" DigSign="true"/>
     <ROW File="linkbuilder.r3" Component_="GmiToHtml.r3" FileName="LINK-B~1.R3|link-builder.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\link-builder.r3" SelfReg="false" NextFile="TextAsIs.r3"/>
     <ROW File="plain_theme.png" Component_="dark_theme.png" FileName="PLAIN_~1.PNG|plain_theme.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\plain_theme.png" SelfReg="false" NextFile="terminal_theme.png"/>
     <ROW File="r3core.exe" Component_="r3core.exe" FileName="r3-core.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\Rebol\r3-core.exe" SelfReg="false" NextFile="goosecli.exe" DigSign="true"/>
-    <ROW File="readme.txt" Component_="readme.txt" FileName="readme.txt" Attributes="0" SourcePath="..\Gemget\readme.txt" SelfReg="false" NextFile="gopherget.exe"/>
-    <ROW File="readme.txt_1" Component_="readme.txt_1" FileName="readme.txt" Attributes="0" SourcePath="..\GopherGet\readme.txt" SelfReg="false" NextFile="html2gmi.exe"/>
     <ROW File="terminal_theme.png" Component_="dark_theme.png" FileName="TERMIN~1.PNG|terminal_theme.png" Attributes="0" SourcePath="..\GemiNaut\Docs\images\terminal_theme.png" SelfReg="false" NextFile="GmiToHtml.r3"/>
     <ROW File="utils.r3" Component_="GmiToHtml.r3" FileName="utils.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\utils.r3" SelfReg="false" NextFile="wireup.r3"/>
     <ROW File="wireup.r3" Component_="GmiToHtml.r3" FileName="wire-up.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\wire-up.r3" SelfReg="false" NextFile="r3core.exe"/>
@@ -179,7 +184,7 @@
     <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="203"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
-    <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR" ManualDelete="false"/>
+    <ROW Directory_="GemiNaut_Dir" Component_="GemiNaut" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
@@ -195,6 +200,9 @@
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
+    <ROW Name="prettytext.exe" SourcePath="..\GemiNaut\Resources\pretty-text.ico" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
@@ -224,9 +232,8 @@
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="GemiNaut" Directory_="ProgramMenuFolder" Name="GemiNaut" Component_="GemiNaut.exe" Target="[#GemiNaut.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="GemiNaut.exe" Directory_="SHORTCUTDIR" Name="GemiNaut" Component_="GemiNaut.exe" Target="[#GemiNaut.exe]" Description="GemiNaut.exe" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="GemiNaut.exe_1" Directory_="DesktopFolder" Name="GemiNaut" Component_="GemiNaut.exe" Target="[#GemiNaut.exe]" Description="GemiNaut.exe" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="GemiNaut" Directory_="GemiNaut_Dir" Name="GemiNaut" Component_="GemiNaut.exe" Target="[#GemiNaut.exe]" Description="GemiNaut - Gemini and Gopher browser" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="GemiNaut_1" Directory_="DesktopFolder" Name="GemiNaut" Component_="GemiNaut.exe" Target="[#GemiNaut.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>
