@@ -63,10 +63,15 @@ Dark theme:
 
 # History
 
-## 0.8.9 (in development, no binary release yet)
+## 0.8.9, released 15-Dec-2020
 
-* use local client for gemini and gopher 
-* should have fewer false positives from antivirus 
+
+* new internal C# network library (SmolNetSharp) to retrieve Gemini and Gopher resources
+* fewer false positives from anti-virus utilities falsely marking GemiNaut and its assets as malware
+* use dark scrollbar on dark theme preformatted text areas
+* remove dependency on gopher-get and gemget command line utilities
+* trim long headings in TOC
+* fix bug to allow quotes and angle brackets in labels of preformatted text areas
 * better logic detection of redirects combined with input
 
 ## 0.8.8, 7-Oct-2020
