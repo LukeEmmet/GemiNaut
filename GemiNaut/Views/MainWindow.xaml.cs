@@ -14,6 +14,9 @@ using System.Text.RegularExpressions;
 using GemiNaut.Properties;
 using mshtml;
 using System.Windows.Navigation;
+using Microsoft.Win32;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.VisualBasic;
 
 namespace GemiNaut.Views
 {
@@ -408,13 +411,16 @@ namespace GemiNaut.Views
 
                     ShowTitle(BrowserControl.Document);
 
+
                     var originalUri = new UriBuilder(geminiUrl);
 
                     if (originalUri.Scheme == "http" || originalUri.Scheme == "https")
                     {
                         ShowLinkRenderMode(BrowserControl.Document);
                     }
-                }
+
+                     BuildCertsMenu();
+               }
 
                 //if a text file (i.e. view->source), explicitly set the charset
                 //to UTF-8 so ascii art looks correct etc.
@@ -479,6 +485,112 @@ namespace GemiNaut.Views
 
                 mnuTheme.Items.Add(newMenu);
             }
+        }
+
+        private void BuildCertsMenu()
+        {
+            mnuCerts.Items.Clear();
+
+            Uri uri = new Uri(txtUrl.Text);
+            var domain = uri.Host;
+
+
+            foreach (var hashPair in Session.Instance.CertificatesManager.Certificates)
+            { 
+                var newMenu = new MenuItem();
+                newMenu.Header = hashPair.Value.Subject + ": " + hashPair.Value.Thumbprint;
+                newMenu.Tag = hashPair.Value.Thumbprint + ":" + domain;
+
+                if (Session.Instance.CertificatesManager.Mappings.ContainsKey(domain))
+                {
+                    newMenu.IsChecked = (Session.Instance.CertificatesManager.Mappings[domain] == hashPair.Value.Thumbprint);
+                } else
+                {
+                    newMenu.IsChecked = false;
+                }
+                newMenu.Click += ToggleCertItem_Click;
+                mnuCerts.Items.Add(newMenu);
+            }
+
+            mnuCerts.Items.Add(new Separator());
+            var LoadCertMenu = new MenuItem();
+            LoadCertMenu.Header = "_Load certificate...";
+            LoadCertMenu.Click += LoadCert_Click;
+            mnuCerts.Items.Add(LoadCertMenu);
+        }
+
+        private void LoadCert_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.Filter = "Certificates (*.pfx)|*.pfx|All files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+
+                    var windowCentre = WindowGeometry.WindowCentre(this);
+                    var inputPrompt = "Password for this certificate";
+
+                    //**TBD - use a masked prompt 
+                    string password = Interaction.InputBox(inputPrompt, "Certificate loading", "", windowCentre.Item1, windowCentre.Item2);
+
+                    //load the cert
+                    var certManager = Session.Instance.CertificatesManager;
+                    var cert = new X509Certificate2(openFileDialog.FileName, password);
+
+                    if (!certManager.Certificates.ContainsKey(cert.Thumbprint))
+                    {
+                        certManager.AddCertificate(cert);
+                        ToastNotify("Certificate loaded, and can now be used with a domain/host", ToastMessageStyles.Success);
+                        ToastNotify("Tip: click on a certificate menu entry to toggle its use when on a site.", ToastMessageStyles.Information);
+
+                    }
+                    else
+                    {
+                        ToastNotify("Certificate is already loaded.", ToastMessageStyles.Warning);
+
+                    }
+                }
+                catch (SystemException err)
+                {
+                    ToastNotify("Could not load the certificate: " + err.Message, ToastMessageStyles.Error);
+                }
+
+                BuildCertsMenu();       //update the list of available certificates
+            }
+
+        }
+
+        private void ToggleCertItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menuInfo = ((MenuItem)sender).Tag.ToString().Split(':');
+
+            var certsManager = Session.Instance.CertificatesManager;
+            var mappings = certsManager.Mappings;
+
+            
+            if (mappings.ContainsKey(menuInfo[1]))
+            {
+                if (mappings[menuInfo[1]] == menuInfo[0])
+                {
+                    certsManager.UnRegisterMapping(menuInfo[1]);
+                    ToastNotify("Certificate no longer unassociated with " + menuInfo[1], ToastMessageStyles.Information);
+                }
+                else
+                {
+                    certsManager.RegisterMapping(menuInfo[1], menuInfo[0]);
+                    ToastNotify("Certificate changed for " + menuInfo[1], ToastMessageStyles.Information);
+                }
+            } else
+            {
+                certsManager.RegisterMapping(menuInfo[1], menuInfo[0]);
+                ToastNotify("Certificate now associated with " + menuInfo[1], ToastMessageStyles.Information);
+            }
+
+            BuildCertsMenu();
         }
 
         private void TickSelectedThemeMenu()

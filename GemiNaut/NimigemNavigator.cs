@@ -20,17 +20,13 @@
 //===================================================
 
 using GemiNaut.Properties;
-using GemiNaut.Serialization.Commandline;
 using GemiNaut.Singletons;
 using GemiNaut.Views;
-using Microsoft.VisualBasic;
-using Microsoft.Win32;
 using System;
-using System.IO;
 using System.Windows.Controls;
 using SmolNetSharp.Protocols;
 using static GemiNaut.Views.MainWindow;
-
+using System.Security.Cryptography.X509Certificates;
 
 namespace GemiNaut
 {
@@ -75,14 +71,16 @@ namespace GemiNaut
                 connectInsecure = true;
             }
 
+            X509Certificate2 certificate;
 
+            certificate = Session.Instance.CertificatesManager.GetCertificate(uri.Host);
 
             try
             {
                 NimigemResponse nimigemResponse;
                 try
                 {
-                    nimigemResponse = (NimigemResponse)Nimigem.Fetch(uri, null, payload, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                    nimigemResponse = (NimigemResponse)Nimigem.Fetch(uri, certificate, payload, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
                 }
                 catch (Exception err)
@@ -97,7 +95,7 @@ namespace GemiNaut
                         mMainWindow.ToastNotify("Note: " + err.Message + " for: " + e.Uri.Authority, ToastMessageStyles.Warning);
 
                         //try again insecure this time
-                        nimigemResponse = (NimigemResponse)Nimigem.Fetch(uri, null, payload, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                        nimigemResponse = (NimigemResponse)Nimigem.Fetch(uri, certificate, payload, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
                     }
                     
@@ -138,10 +136,6 @@ namespace GemiNaut
 
                         geminiTarget.NavigateGeminiScheme(successUri.OriginalString, e, siteIdentity);
 
-                        //e.Cancel = true;
-
-
-
                     }
                     else
                     {
@@ -176,7 +170,7 @@ namespace GemiNaut
                 }
                 else if (nimigemResponse.codeMajor == '6')
                 {
-                    mMainWindow.ToastNotify("Certificate required, not yet supported (status 61)\n\n" + e.Uri.ToString(), ToastMessageStyles.Error);
+                    mMainWindow.ToastNotify("Certificate required. Choose one and try again.\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
 
                 }
 

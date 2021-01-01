@@ -29,6 +29,9 @@
                     <MenuItem Header="_Source" IsChecked="False" Click="MenuViewSource_Click"/>
                         
                     <MenuItem Name="mnuTheme" Header="_Theme"/>
+                    
+                    <MenuItem Name="mnuCerts" Header="_Certificates"/>
+                    
                     <Separator></Separator>
 
                     <MenuItem Header="Se_ttings" Click="MenuViewSettings_Click"/>

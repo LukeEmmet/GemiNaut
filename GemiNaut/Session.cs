@@ -21,6 +21,7 @@
 
 using System;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 
 namespace GemiNaut.Singletons
 {
@@ -33,6 +34,7 @@ namespace GemiNaut.Singletons
         private static readonly Session instance = new Session();
 
         private string _sessionPath;
+        private CertificatesManager _certificates;
 
         // Explicit static constructor to tell C# compiler
         // not to mark type as beforefieldinit
@@ -43,6 +45,7 @@ namespace GemiNaut.Singletons
         private Session()
         {
             CreateSessionFolder();
+            _certificates =  new CertificatesManager();
         }
 
         public static Session Instance
@@ -79,6 +82,13 @@ namespace GemiNaut.Singletons
         public string SessionPath
         {
             get { return _sessionPath; }
+        }
+
+        public CertificatesManager CertificatesManager
+        {
+            get {
+                    return _certificates;
+                }
         }
 
         public void Dispose()

@@ -20,7 +20,6 @@
 //===================================================
 
 using GemiNaut.Properties;
-using GemiNaut.Serialization.Commandline;
 using GemiNaut.Singletons;
 using GemiNaut.Views;
 using Microsoft.VisualBasic;
@@ -30,7 +29,7 @@ using System.IO;
 using System.Windows.Controls;
 using SmolNetSharp.Protocols;
 using static GemiNaut.Views.MainWindow;
-
+using System.Security.Cryptography.X509Certificates;
 
 namespace GemiNaut
 {
@@ -75,7 +74,11 @@ namespace GemiNaut
             var uri = new Uri(fullQuery);
             //use a proxy for any other scheme that is not gemini
             var proxy = "";     //use none
-            var connectInsecure = false;     
+            var connectInsecure = false;
+
+            X509Certificate2 certificate;       
+            certificate = Session.Instance.CertificatesManager.GetCertificate(uri.Host);   //may be null if none assigned or available
+            
 
             if (uri.Host == "localhost")
             {
@@ -95,7 +98,7 @@ namespace GemiNaut
                     GeminiResponse geminiResponse;
                 try
                 {
-                    geminiResponse = (GeminiResponse)Gemini.Fetch(uri, null, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                    geminiResponse = (GeminiResponse)Gemini.Fetch(uri, certificate, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
                 }
                 catch (Exception err)
@@ -110,7 +113,7 @@ namespace GemiNaut
                         mMainWindow.ToastNotify("Note: " + err.Message + " for: " + e.Uri.Authority, ToastMessageStyles.Warning);
 
                         //try again insecure this time
-                        geminiResponse = (GeminiResponse)Gemini.Fetch(uri, null, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                        geminiResponse = (GeminiResponse)Gemini.Fetch(uri, certificate, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
                     }
                     else
@@ -304,8 +307,9 @@ namespace GemiNaut
                 }
                 else if (geminiResponse.codeMajor == '6')
                 {
-                    mMainWindow.ToastNotify("Certificate required, not yet supported (status 61)\n\n" + e.Uri.ToString(), ToastMessageStyles.Error);
+                    mMainWindow.ToastNotify("Certificate requried. Choose one and try again.\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
 
+                    
                 }
 
                 else
