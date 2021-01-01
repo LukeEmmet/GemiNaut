@@ -75,7 +75,14 @@ namespace GemiNaut
             var uri = new Uri(fullQuery);
             //use a proxy for any other scheme that is not gemini
             var proxy = "";     //use none
-            var connectInsecure = false;
+            var connectInsecure = false;     
+
+            if (uri.Host == "localhost")
+            {
+                //to support local testing servers, dont require secure connection on localhost
+                //**FIX ME, or have an option
+                connectInsecure = true;
+            }
 
             if (uri.Scheme != "gemini") 
             {
@@ -88,7 +95,7 @@ namespace GemiNaut
                     GeminiResponse geminiResponse;
                 try
                 {
-                    geminiResponse = (GeminiResponse)Gemini.Fetch(uri, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                    geminiResponse = (GeminiResponse)Gemini.Fetch(uri, null, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
                 }
                 catch (Exception err)
@@ -103,27 +110,8 @@ namespace GemiNaut
                         mMainWindow.ToastNotify("Note: " + err.Message + " for: " + e.Uri.Authority, ToastMessageStyles.Warning);
 
                         //try again insecure this time
-                        geminiResponse = (GeminiResponse)Gemini.Fetch(uri, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                        geminiResponse = (GeminiResponse)Gemini.Fetch(uri, null, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
-                    }
-                    else if (err.Message.StartsWith("malformed Gemini response"))
-                    {
-                        //very strange situation, for some servers, they work every other request, and in between send a malformed response. 
-                        //Maybe a particular flavour of server has the problem
-                        //for example
-                        //gemini://calcuode.com/
-                        //not seen in some other clients, so may need investigating **FIXME
-
-                        try
-                        {
-                            //send the request again
-                            geminiResponse = (GeminiResponse)Gemini.Fetch(uri, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
-                        }
-                        catch
-                        {
-                            //re raise
-                            throw;
-                        }
                     }
                     else
                     {
@@ -144,7 +132,7 @@ namespace GemiNaut
                 else if (geminiResponse.codeMajor == '2')
                 {
                     //success
-                    File.WriteAllBytes(rawFile, geminiResponse.pyld.ToArray());
+                    File.WriteAllBytes(rawFile, geminiResponse.bytes.ToArray());
 
 
                     if (File.Exists(rawFile))

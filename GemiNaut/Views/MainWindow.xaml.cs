@@ -124,6 +124,25 @@ namespace GemiNaut.Views
                 var geminiNavigator = new GeminiNavigator(this, this.BrowserControl);
                 geminiNavigator.NavigateGeminiScheme(fullQuery, e, siteIdentity);
             }
+            else if (normalisedUri.Scheme == "nimigem")
+            {
+                var nimigemNavigator = new NimigemNavigator(this, this.BrowserControl);
+
+                var document = (HTMLDocument)BrowserControl.Document;
+
+                var firstTextarea = (IHTMLTextAreaElement)document.getElementsByTagName("textarea").item(0);
+
+                string payload;
+                if (firstTextarea != null)
+                {
+                    payload = firstTextarea.value;
+                } else
+                {
+                    payload = "";
+                }
+
+                nimigemNavigator.NavigateNimigemScheme(fullQuery, e, payload);
+            }
             else if (normalisedUri.Scheme == "gopher")
             {
                 var gopherNavigator = new GopherNavigator(this, this.BrowserControl);

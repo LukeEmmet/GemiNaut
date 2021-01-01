@@ -103,6 +103,7 @@ if  hot-wire-links [
 out: copy []
 
 in-block: false
+in-text-area: false
 
 
 
@@ -181,10 +182,22 @@ foreach line lines [
         in-block: not in-block
         last-element: 'preformat
         
-        append out either in-block [
-             rejoin [{<pre class=inline title="} (markup-escape pre-label) {">} ]
+        either in-text-area or (pre-label = "editable") [
+             either in-block [
+                 in-text-area: true
+                 append out rejoin [{<div class=edit-container><textarea rows=18 title="} (markup-escape pre-label) {">} ]
+            ] [
+                 in-text-area: false
+               append out "</textarea></div>"
+            ] 
         ] [
-            "</pre>"
+            ;normal gemini
+            append out either in-block [
+                 rejoin [{<pre class=inline title="} (markup-escape pre-label) {">} ]
+            ] [
+                "</pre>"
+            ] 
+        
         ]
     ]
     
@@ -361,10 +374,16 @@ foreach line lines [
                 
                 ] [
                     display-html: markup-escape display-part
-                    class: "other"
-                    link-gliph: "&#8669;"   ;---squiggle arrow for non gemini targets to aid recognition
-                    link-class: "other-link"
-
+                    
+                    either "nimigem://" = take-left link 10 [
+                        class: "nimigem"
+                        link-gliph: "&#8203;"   ;---solid arrow, thick
+                        link-class: "nimigem-link"
+                    ] [
+                        class: "other"
+                        link-gliph: "&#8669;"   ;---squiggle arrow for non gemini targets to aid recognition
+                        link-class: "other-link"
+                    ]
                 ]
                 
                link-html: rejoin [
