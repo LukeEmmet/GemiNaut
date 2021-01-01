@@ -98,6 +98,16 @@ span.decorator-gliph {
 	color: #ba9480;
 }
 
+
+div.edit-container {
+	/*
+	border-style: solid;
+	border-color:#000000;
+	*/
+	margin: 0.7em;
+	padding-right:0.4em;
+}
+
 pre.inline {
 	border-width:1px;
 	padding:0.7em;
@@ -111,10 +121,39 @@ pre.inline {
 	overflow-y:hidden;
 	padding-bottom:1.3em;	/*to allow space for scroll bar to appear if necessary*/
 	padding-top:1.3em;	/*same as for bottom for visual balance*/
+	min-width:60%;
+}
+
+textarea:hover {
+		/* horizontal scrollbars appear if necessary when hovered*/
+		border-color:chocolate;
+		overflow-x: auto;
+}
+
+textarea {
+
+	padding:0.4em;
+	min-width:70%;
+	font-family:Consolas;
+	width:99%;		/*tweak to get CSS to work*/
+	background-color: #222827;
+	border-style: solid;
+	border-color:#e0e0e0;
+	border-width:1px;
+	color: #e0e0e0;
+
 }
 /* scrollbars appear if necessary when hovered*/
 pre.inline:hover {
 	overflow-x: auto;
+}
+
+div.content-container{
+	border-radius: 10px;
+	border:1px solid #262018;
+	margin:0.4em;
+	padding:2em;
+	background: #fffdfa;
 }
 
 div.gemini-link {
@@ -179,6 +218,31 @@ a.toc {
 
 a.toc:hover {
 	background:#505050;
+}
+
+
+a.nimigem {
+		text-decoration: none;
+		color:#efefef;
+		display: block;
+		margin-left:0.7em;
+		margin-right:0.7em;
+		border-width: 1px;
+		border-color:#a0a0a0;
+		background:#303030;
+		padding:0.4em;
+		text-align:center;
+		border-style:outset;
+		width:60%;
+		margin:auto;
+		max-width:20em;
+
+/*cursor:default;*/
+}
+
+a.nimigem:hover {
+		color:chocolate; /*to hint at dynamic capability*/
+		border:chocolate;
 }
 
 

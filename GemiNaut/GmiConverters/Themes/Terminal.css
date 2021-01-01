@@ -97,3 +97,25 @@ pre.inline {
 pre.inline:hover {
 	overflow-x: auto;
 }
+
+
+textarea:hover {
+		/* horizontal scrollbars appear if necessary when hovered*/
+		border-color:chocolate;
+		overflow-x: auto;
+}
+
+textarea {
+
+	padding:0.4em;
+	min-width:70%;
+	font-family:Consolas;
+	width:99%;		/*tweak to get CSS to work*/
+
+	background-color: #222827;
+	color: #e0e0e0;
+
+	border-style: solid;
+	border-color:#a0a0a0;
+	border-width:1px;
+}

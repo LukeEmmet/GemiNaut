@@ -84,6 +84,12 @@ div.other-link {
   margin-top:0.15em;
 } 
 
+div.nimigem-link {
+	padding:0px;
+	margin:0px;
+	border:0px;
+} 
+
 div.gopher.other-link {
   text-indent: -1.95em ;
 }
@@ -104,7 +110,14 @@ div.blockquote {
 }
 
 
-
+div.edit-container {
+	/*
+	border-style: solid;
+	border-color:#000000;
+	*/
+	margin: 0.7em;
+	padding-right:0.4em;
+}
 
 pre.inline {
 	background-color: #fafaff;
@@ -120,7 +133,26 @@ pre.inline {
 	overflow-y:hidden;
 	padding-bottom:1.3em;	/*to allow space for scroll bar to appear if necessary*/
 	padding-top:1.3em;	/*same as for bottom for visual balance*/
+	min-width:60%;
+}
+
+textarea:hover {
+		/* horizontal scrollbars appear if necessary when hovered*/
+		border-color:chocolate;
+		overflow-x: auto;
+}
+
+textarea {
+
+	padding:0.4em;
 	min-width:70%;
+	font-family:Consolas;
+	width:99%;		/*tweak to get CSS to work*/
+	background-color: #ffffff;
+	border-style: solid;
+	border-color:navy;
+	border-width:1px;
+
 }
 
 /* scrollbars appear if necessary when hovered*/
@@ -180,6 +212,30 @@ a.toc {
 
 a.toc:hover {
 	background:#efefef;
+}
+
+a.nimigem {
+		text-decoration: none;
+		color:black;
+		display: block;
+		margin-left:0.7em;
+		margin-right:0.7em;
+		border-width: 1px;
+		border-color:#a0a0a0;
+		background:#efefef;
+		padding:0.4em;
+		text-align:center;
+		border-style:outset;
+		width:60%;
+		margin:auto;
+		max-width:20em;
+
+/*cursor:default;*/
+}
+
+a.nimigem:hover {
+		color:chocolate; /*to hint at dynamic capability*/
+		border:chocolate;
 }
 
 #navigation-container-toc {
