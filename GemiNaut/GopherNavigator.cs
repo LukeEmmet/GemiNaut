@@ -84,22 +84,7 @@ namespace GemiNaut
             }
         }
 
-        private Tuple<bool, string, string> GopherGet(string fullQuery, string gopherFile)
-        {
-            //get the content from Gopher using SmolNetSharp
-            try
-            {
-                var response = Gopher.Fetch(new Uri(fullQuery));
 
-                File.WriteAllBytes(gopherFile, response.pyld.ToArray());
-                return new Tuple<bool, string, string>(true, response.mime, "");
-
-            } catch (Exception e)
-            {
-                return new Tuple<bool, string, string>(false, "", "Could not connect to " + fullQuery + ": " + e.Message);
-            }
-
-        }
 
         public void NavigateGopherScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, SiteIdentity siteIdentity)
         {
@@ -119,6 +104,7 @@ namespace GemiNaut
                 return;
             }
 
+            var settings = new Settings();
 
             var hash = HashService.GetMd5Hash(fullQuery);
 
@@ -134,17 +120,26 @@ namespace GemiNaut
             //delete any existing html file to encourage webbrowser to reload it
             File.Delete(gmiFile);
 
-            var gopherGet = GopherGet(fullQuery, gopherFile);
-            if (!gopherGet.Item1)
+            //get the content from Gopher using SmolNetSharp
+            IResponse response;
+            try
             {
-                mMainWindow.ToastNotify(gopherGet.Item3, ToastMessageStyles.Error);
+                 response = Gopher.Fetch(new Uri(fullQuery), settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+
+                File.WriteAllBytes(gopherFile, response.bytes.ToArray());
+
+            }
+            catch (Exception err)
+            {
+            
+                mMainWindow.ToastNotify(err.Message, ToastMessageStyles.Error);
                 mMainWindow.ToggleContainerControlsForBrowser(true);    //reenable browser
                 e.Cancel = true;
                 return;
             }
 
-            var mime = gopherGet.Item2;
-            var result = new Tuple<int, string, string>(gopherGet.Item1 ? 0 : -1, mime, gopherGet.Item3);
+            var mime = response.mime;
+            Tuple<int, string, string> result;
 
             if (File.Exists(gopherFile))
             {
@@ -211,7 +206,7 @@ namespace GemiNaut
                     return;
                 }
 
-                if (!File.Exists(gmiFile))
+                if (!File.Exists(gmiFile) || result.Item1 != 0)
                 {
                     mMainWindow.ToastNotify("Did not create expected GMI file for " + fullQuery + " in " + gmiFile, ToastMessageStyles.Error);
                     mMainWindow.ToggleContainerControlsForBrowser(true);
@@ -219,7 +214,6 @@ namespace GemiNaut
                 }
                 else
                 {
-                    var settings = new Settings();
                     var userThemesFolder = ResourceFinder.LocalOrDevFolder(appDir, @"GmiConverters\themes", @"..\..\..\GmiConverters\themes");
 
                     var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
