@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using Microsoft.Win32;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.VisualBasic;
+using System.Security.Cryptography;
 
 namespace GemiNaut.Views
 {
@@ -512,7 +513,9 @@ namespace GemiNaut.Views
                 mnuCerts.Items.Add(newMenu);
             }
 
-            mnuCerts.Items.Add(new Separator());
+            //show separator if there were some loaded.
+            if (mnuCerts.Items.Count > 0) { mnuCerts.Items.Add(new Separator()); }
+            
             var LoadCertMenu = new MenuItem();
             LoadCertMenu.Header = "_Load certificate...";
             LoadCertMenu.Click += LoadCert_Click;
@@ -523,7 +526,7 @@ namespace GemiNaut.Views
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            openFileDialog.Filter = "Certificates (*.pfx)|*.pfx|All files (*.*)|*.*";
+            openFileDialog.Filter = "PFX Certificate (*.pfx;*.p12)|*.pfx;*.p12|All files (*.*)|*.*";
             openFileDialog.FilterIndex = 1;
 
             if (openFileDialog.ShowDialog() == true)
@@ -533,20 +536,43 @@ namespace GemiNaut.Views
 
                     var windowCentre = WindowGeometry.WindowCentre(this);
                     var inputPrompt = "Password for this certificate";
+                    X509Certificate2 cert;
+                    var uri = new Uri(txtUrl.Text);
 
-                    //**TBD - use a masked prompt 
-                    string password = Interaction.InputBox(inputPrompt, "Certificate loading", "", windowCentre.Item1, windowCentre.Item2);
+
+                    //first try to load with no password
+                    try
+                    {
+                        cert = new X509Certificate2(openFileDialog.FileName, "");
+                    } catch (CryptographicException)
+                    {
+                        //could not load, try with a password
+                        //**TBD - use a masked prompt 
+                        string password = Interaction.InputBox(inputPrompt, "Certificate loading", "", windowCentre.Item1, windowCentre.Item2);
+                        cert = new X509Certificate2(openFileDialog.FileName, password);
+                    }
+
 
                     //load the cert
                     var certManager = Session.Instance.CertificatesManager;
-                    var cert = new X509Certificate2(openFileDialog.FileName, password);
 
                     if (!certManager.Certificates.ContainsKey(cert.Thumbprint))
                     {
                         certManager.AddCertificate(cert);
-                        ToastNotify("Certificate loaded, and can now be used with a domain/host", ToastMessageStyles.Success);
-                        ToastNotify("Tip: click on a certificate menu entry to toggle its use when on a site.", ToastMessageStyles.Information);
 
+                        if (certManager.GetCertificate(uri.Host) == null && 
+                            (uri.Scheme == "gemini" || uri.Scheme == "nimigem"))
+                        {
+                            //no cert associated with the current domain, so use this one
+                            certManager.RegisterMapping(uri.Host, cert.Thumbprint);
+                            ToastNotify("Certificate loaded, and will now be used on: " + uri.Host, ToastMessageStyles.Success);
+                        }
+                        else
+                        {
+                            //one is already associated with this domain, so dont change it.
+                            ToastNotify("Certificate loaded, and can now be used with a domain/host", ToastMessageStyles.Success);
+                            ToastNotify("Tip: click on a certificate menu entry to toggle its use when on a site.", ToastMessageStyles.Information);
+                       }
                     }
                     else
                     {
@@ -571,13 +597,20 @@ namespace GemiNaut.Views
             var certsManager = Session.Instance.CertificatesManager;
             var mappings = certsManager.Mappings;
 
-            
+            //dont try to associate certificate for non gemini/nimigem sites
+            var uri = new Uri(txtUrl.Text);
+            if (uri.Scheme != "gemini" && uri.Scheme != "nimigem")
+            {
+                ToastNotify("Cannot use client certificates for " + uri.Scheme + " sites.", ToastMessageStyles.Warning);
+                return;
+            }
+
             if (mappings.ContainsKey(menuInfo[1]))
             {
                 if (mappings[menuInfo[1]] == menuInfo[0])
                 {
                     certsManager.UnRegisterMapping(menuInfo[1]);
-                    ToastNotify("Certificate no longer unassociated with " + menuInfo[1], ToastMessageStyles.Information);
+                    ToastNotify("Certificate will no longer be used on " + menuInfo[1], ToastMessageStyles.Information);
                 }
                 else
                 {
@@ -587,7 +620,7 @@ namespace GemiNaut.Views
             } else
             {
                 certsManager.RegisterMapping(menuInfo[1], menuInfo[0]);
-                ToastNotify("Certificate now associated with " + menuInfo[1], ToastMessageStyles.Information);
+                ToastNotify("Certificate will now be used on " + menuInfo[1], ToastMessageStyles.Information);
             }
 
             BuildCertsMenu();
