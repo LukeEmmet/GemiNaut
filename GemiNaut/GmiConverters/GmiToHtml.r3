@@ -49,24 +49,22 @@ either not none? arg-block [
 
   ] [
 
-    folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}
+    ;================================
+    ;---this branch of the conditional is just for testing only, not used in production
+    ;---uncomment to test features 
+    ;===============================
+    ;folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}
 
-    in-path: to-rebol-file join folder {test1.gmi}
-    out-path: to-rebol-file join folder {test1.htm}
-    uri: "http://gemini.circumlunar.space/0/users/foo/foo?.gz"
-   identicon-image: "https://fqz04mg9a6.execute-api.eu-west-1.amazonaws.com/Prod/api/identicon/identicon.png"
-    fabric-image: "https://fqz04mg9a6.execute-api.eu-west-1.amazonaws.com/Prod/api/identicon/fabric.png"
-    theme: %Themes/Plain
-    site-id: "domain/foo"
-    image-id: "imageid"
-    show-web-header: false
+    ;in-path: to-rebol-file join folder {test1.gmi}
+    ;out-path: to-rebol-file join folder {test1.htm}
+    ;uri: "[server-uri-placeholder]"
+   ;identicon-image: "[example-identicon-placeholder"
+    ;fabric-image: "[example-image-placeholder]"
+    ;theme: %Themes/Plain
+    ;site-id: "domain/foo"
+    ;image-id: "imageid"
+    ;show-web-header: false
     
-     ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\b8667ef276b02664b2c1980b5a5bcbe2.gmi}
-     ;in-path: to-rebol-file {C:\Users\lukee\Desktop\geminaut\9fdfcb2ef4244d6821091d62e3a0e06a.gmi}
-   
-   ;in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_4axq2vlp.3qz\0524a1573e578f797cd22fd8cd36ff83.gmi}
-   
-   ; in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_g1erlqb5.ivb\fa05d16b14d60da41efc204acf7e20ac.txt}
      
 ]
 

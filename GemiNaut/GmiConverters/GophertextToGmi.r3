@@ -39,15 +39,16 @@ either not none? arg-block [
     uri:  to-string debase/base arg-block/3 64
 
 ] [
-    
-    folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}
+    ;================================
+    ;---this branch of the conditional is just for testing only, not used in production
+    ;---uncomment to test features 
+    ;===============================
+    ;folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}
 
-    in-path: to-rebol-file join folder {gophertext.txt}
-    out-path: to-rebol-file join folder {gophertext.gmi}
-    uri: "gopher://test/foomd/hello-wrld"
-    
-;    in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_fkih3dqz.gj1\0e2734cc9c572d7221c9d09a6f711063.txt}
-     
+    ;in-path: to-rebol-file join folder {gophertext.txt}
+    ;out-path: to-rebol-file join folder {gophertext.gmi}
+    ;uri: "gopher://test/foomd/hello-wrld"
+         
 ]
 
 

@@ -38,13 +38,16 @@ either not none? arg-block [
     
     uri:  (to-string debase/base arg-block/3 64)
  ] [
-    
-    folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}
+    ;================================
+    ;---this branch of the conditional is just for testing only, not used in production
+    ;---uncomment to test features 
+    ;===============================
+    ;folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}
 
-    in-path: to-rebol-file join folder {gophermap.txt}
-    out-path: to-rebol-file join folder {gophermap.gmi}
-     uri: "gopher://foo/"
-     in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_cnd2spns.ani\b7d44840a0ccbeffbb000a49c2f729fd.txt}
+    ;in-path: to-rebol-file join folder {gophermap.txt}
+    ;out-path: to-rebol-file join folder {gophermap.gmi}
+    ; uri: "gopher://foo/"
+    ; in-path: to-rebol-file {C:\Users\lukee\AppData\Local\Temp\geminaut_cnd2spns.ani\b7d44840a0ccbeffbb000a49c2f729fd.txt}
 ]
 
 
@@ -80,6 +83,12 @@ foreach line lines [
                 gopher-escape fields/1       ;effectively escapes the result from further processing, removed by GmiToHTML
             ]      
             if (selector == "h") or (selector == "H") [
+            
+                ;---trim off any leading "URI:" that some authors add to web links
+                if "uri:" = lowercase (take-left fields/2 4) [
+                    fields/2: take-from fields/2 5
+                ]
+                
                 rejoin [
                     "=> " (extract-url fields/2) 
                     " "
