@@ -27,6 +27,7 @@ using System.Windows.Controls;
 using SmolNetSharp.Protocols;
 using static GemiNaut.Views.MainWindow;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace GemiNaut
 {
@@ -56,6 +57,9 @@ namespace GemiNaut
         {
             var NimigemUri = e.Uri.OriginalString;
 
+            //at present we only support UTF8 plain text payloads
+            byte[] nimigemBody = Encoding.UTF8.GetBytes(payload);
+            var mime = "text/plain; charset=utf-8";
 
             var settings = new Settings();
 
@@ -80,7 +84,7 @@ namespace GemiNaut
                 NimigemResponse nimigemResponse;
                 try
                 {
-                    nimigemResponse = (NimigemResponse)Nimigem.Fetch(uri, certificate, payload, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                    nimigemResponse = (NimigemResponse)Nimigem.Fetch(uri, nimigemBody, mime, certificate, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
                 }
                 catch (Exception err)
@@ -95,7 +99,7 @@ namespace GemiNaut
                         mMainWindow.ToastNotify("Note: " + err.Message + " for: " + e.Uri.Authority, ToastMessageStyles.Warning);
 
                         //try again insecure this time
-                        nimigemResponse = (NimigemResponse)Nimigem.Fetch(uri, certificate, payload, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                        nimigemResponse = (NimigemResponse)Nimigem.Fetch(uri, nimigemBody, mime, certificate, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
                     }
                     
