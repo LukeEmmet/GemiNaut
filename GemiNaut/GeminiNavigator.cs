@@ -76,26 +76,20 @@ namespace GemiNaut
             var proxy = "";     //use none
             var connectInsecure = false;
 
-            X509Certificate2 certificate;       
+            X509Certificate2 certificate;
             certificate = Session.Instance.CertificatesManager.GetCertificate(uri.Host);   //may be null if none assigned or available
-            
 
-            if (uri.Host == "localhost")
-            {
-                //to support local testing servers, dont require secure connection on localhost
-                //**FIX ME, or have an option
-                connectInsecure = true;
-            }
 
-            if (uri.Scheme != "gemini") 
+        
+
+            if (uri.Scheme != "gemini")
             {
                 proxy = settings.HttpSchemeProxy;
-                connectInsecure = true;             //always just connect to proxies as they are man in the middle, so security is already reduced
-            } 
+            }
 
-                try
-                {
-                    GeminiResponse geminiResponse;
+            try
+            {
+                GeminiResponse geminiResponse;
                 try
                 {
                     geminiResponse = (GeminiResponse)Gemini.Fetch(uri, certificate, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
@@ -110,10 +104,10 @@ namespace GemiNaut
                     if (err.Message == "The remote certificate was rejected by the provided RemoteCertificateValidationCallback.")
                     {
 
-                        mMainWindow.ToastNotify("Note: " + err.Message + " for: " + e.Uri.Authority, ToastMessageStyles.Warning);
+                        mMainWindow.ToastNotify("Note: the certificate from: " + e.Uri.Authority + " is expired or invalid.", ToastMessageStyles.Warning);
 
                         //try again insecure this time
-                        geminiResponse = (GeminiResponse)Gemini.Fetch(uri, certificate, proxy, connectInsecure, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
+                        geminiResponse = (GeminiResponse)Gemini.Fetch(uri, certificate, proxy, true, settings.MaxDownloadSizeMb * 1024, settings.MaxDownloadTimeSeconds);
 
                     }
                     else
@@ -284,9 +278,9 @@ namespace GemiNaut
                         var userThemeBase = Path.Combine(userThemesFolder, settings.Theme);
 
                         mMainWindow.ShowUrl(geminiUri, gmiFile, htmlFile, userThemeBase, siteIdentity, e);
-                    } 
+                    }
                 }
-                
+
                 // codemajor = 3 is redirect - should eventually end in success or raise an error
 
                 else if (geminiResponse.codeMajor == '4')
@@ -309,18 +303,18 @@ namespace GemiNaut
                 {
                     mMainWindow.ToastNotify("Certificate requried. Choose one and try again.\n\n" + e.Uri.ToString(), ToastMessageStyles.Warning);
 
-                    
+
                 }
 
                 else
                 {
                     mMainWindow.ToastNotify("Unexpected output from server " +
                         "(status " + geminiResponse.codeMajor + "." + geminiResponse.codeMinor + ") " +
-                        geminiResponse.meta + "\n\n" 
+                        geminiResponse.meta + "\n\n"
                         + e.Uri.ToString(), ToastMessageStyles.Warning);
 
                 }
-                
+
             }
             catch (Exception err)
             {
