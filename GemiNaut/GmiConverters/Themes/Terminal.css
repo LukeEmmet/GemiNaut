@@ -119,3 +119,8 @@ textarea {
 	border-color:#a0a0a0;
 	border-width:1px;
 }
+
+.screenreader {
+	position: absolute;
+    left:-9999px;
+}

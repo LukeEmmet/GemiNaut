@@ -279,4 +279,7 @@ div.placeholder-mask-container {
 	
 }
 
-		
+.screenreader {
+	position: absolute;
+    left:-9999px;
+}

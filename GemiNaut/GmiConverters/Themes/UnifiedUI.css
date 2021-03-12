@@ -122,3 +122,8 @@ textarea {
 	border-color:#808080;
 	border-width:1px;
 }
+
+.screenreader {
+	position: absolute;
+    left:-9999px;
+}

@@ -57,8 +57,8 @@ either not none? arg-block [
 
     ;in-path: to-rebol-file join folder {test1.gmi}
     ;out-path: to-rebol-file join folder {test1.htm}
-    ;uri: "[server-uri-placeholder]"
-   ;identicon-image: "[example-identicon-placeholder"
+    ;uri: "gemini://test/"
+    ;identicon-image: "[example-identicon-placeholder"
     ;fabric-image: "[example-image-placeholder]"
     ;theme: %Themes/Plain
     ;site-id: "domain/foo"
@@ -113,6 +113,7 @@ first-text-line: copy ""
 table-of-contents: copy []
 table-of-contents-string: copy ""
 heading-count: 0
+preformatted-count: 0
 
 make-toc-entry: funct [heading-text heading-level id] [
         
@@ -187,13 +188,23 @@ foreach line lines [
             ] [
                  in-text-area: false
                append out "</textarea></div>"
+
+
             ] 
         ] [
             ;normal gemini
+                if in-block [preformatted-count: preformatted-count + 1]
+
             append out either in-block [
-                 rejoin [{<pre class=inline title="} (markup-escape pre-label) {">} ]
+                 rejoin [
+                    {<div class=screenreader><a href="#end-preformatted}  preformatted-count {">Skip over } (either (0 < length? trim pre-label) [join "preformatted section: " markup-escape pre-label] ["unlabelled preformatted section"]) {</a></div>}
+                    {<pre class=inline title="} (markup-escape pre-label) {">} 
+                ]
             ] [
-                "</pre>"
+               rejoin [
+                    "</pre>"
+                    {<div class=screenreader><a name="end-preformatted}  preformatted-count {"></a></div>}
+                ]
             ] 
         
         ]

@@ -36,6 +36,7 @@ h1 {
 	margin-bottom: 0;
 }
 
+
 h2 {
 	font-size: 1.1em;
 	margin-top: 0.2em;
@@ -184,4 +185,9 @@ a.toc {
 
 a.toc:hover {
 	background:#505050;
+}
+
+.screenreader {
+	position: absolute;
+    left:-9999px;
 }
