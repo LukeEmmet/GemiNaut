@@ -21,6 +21,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 namespace GemiNaut
@@ -34,6 +36,46 @@ namespace GemiNaut
         {
             Clear();
 
+            //automatically load certificates from the user profile that do not need a password
+            var settings = new UserSettings();
+            AutoLoadUserCertificates(settings.ClientCertificatesFolder, "");
+        }
+
+        /// <summary>
+        /// Automatically load all *.pfx and *.p12 certificates in some folder, that may be loaded with some default password (typically ""). 
+        /// Other certificates will need to be loaded individually and passwords provided
+        /// </summary>
+        /// <param name="certsFolder"></param>
+        /// <returns>returns an array of any certs that could not be automatically loaded without the password</returns>
+        private List<string> AutoLoadUserCertificates(string certsFolder, string defaultPassword)
+        {
+            var result = new List<string>();
+            foreach (var fileName in Directory.GetFiles(certsFolder))
+            {
+                X509Certificate2 cert;
+                var ext = Path.GetExtension(fileName).ToLower();
+                if (ext == ".pfx" || ext == ".p12")
+                {
+                    var certFile = Path.Combine(certsFolder, fileName);
+                    try
+                    {
+                        //load the certificate with the default password
+                        cert = new X509Certificate2(certFile, defaultPassword);
+                        if (!_certificates.ContainsKey(cert.Thumbprint))
+                        {
+                            AddCertificate(cert);
+                        }
+                    }
+                    catch (CryptographicException)
+                    {
+                        //could not load - add to the list of ones we will return
+                        result.Add(fileName);
+                    }
+                    
+                }
+            }
+
+            return result;
         }
 
         public Dictionary<string, X509Certificate2> Certificates

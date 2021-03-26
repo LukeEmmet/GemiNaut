@@ -19,6 +19,7 @@ namespace GemiNaut
         //also best suited to attributes that are not chaning very frequently
 
         private DirectoryInfo _settingsFolder;
+        private DirectoryInfo _clientCertsFolder;
         private System.Xml.XmlDocument _settingsDom;
         private string _settingsPath;
         private string _bookmarksPath;
@@ -45,6 +46,7 @@ namespace GemiNaut
 
             //create folder if it doesnt exist
             _settingsFolder = Directory.CreateDirectory(Path.Combine(appData, fvi.ProductName + "\\" + version));
+            _clientCertsFolder = Directory.CreateDirectory(Path.Combine(_settingsFolder.FullName, "certificates"));
 
             _settingsPath = Path.Combine(_settingsFolder.FullName, "settings.xml");
             _bookmarksPath = Path.Combine(_settingsFolder.FullName, "bookmarks.gmi");
@@ -115,6 +117,12 @@ namespace GemiNaut
             SaveSettings();
         }
         
+        public string ClientCertificatesFolder
+        {
+            get {
+                return _clientCertsFolder.FullName;
+            }
+        }
         public string HomeUrl
         {
             get
