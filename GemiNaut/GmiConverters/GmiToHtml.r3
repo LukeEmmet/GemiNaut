@@ -181,7 +181,7 @@ foreach line lines [
         in-block: not in-block
         last-element: 'preformat
         
-        either in-text-area or (pre-label = "editable") [
+        either in-text-area or ("✏️" = first parse pre-label none) [        ;---pencil character U+270F as lead indicates content may be bound to subsequent nimigem link
              either in-block [
                  in-text-area: true
                  append out rejoin [{<div class=edit-container><textarea rows=18 title="} (markup-escape pre-label) {">} ]
