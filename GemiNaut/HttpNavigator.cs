@@ -59,7 +59,7 @@ namespace GemiNaut
 
             var hash = HashService.GetMd5Hash(fullQuery);
 
-            var settings = new Settings();
+            var settings = new UserSettings();
 
             //uses .txt as extension so content loaded as text/plain not interpreted by the browser
             //if user requests a view-source.

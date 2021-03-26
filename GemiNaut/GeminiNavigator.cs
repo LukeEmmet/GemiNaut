@@ -54,7 +54,7 @@ namespace GemiNaut
             var sessionPath = Session.Instance.SessionPath;
             var appDir = AppDomain.CurrentDomain.BaseDirectory;
 
-            var settings = new Settings();
+            var settings = new UserSettings();
 
             var hash = HashService.GetMd5Hash(fullQuery);
 

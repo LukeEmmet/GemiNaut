@@ -57,7 +57,7 @@ namespace GemiNaut.Views
 
             _bookmarkManager.RefreshBookmarkMenu();
 
-            var settings = new Settings();
+            var settings = new UserSettings();
             var launchUri = settings.HomeUrl;
 
             string[] args = App.Args;
@@ -117,7 +117,7 @@ namespace GemiNaut.Views
                 e.Cancel = true;
             }
 
-            var settings = new Settings();
+            var settings = new UserSettings();
 
             ToggleContainerControlsForBrowser(false);
 
@@ -235,7 +235,7 @@ namespace GemiNaut.Views
 
             var usedShowWebHeaderInfo = false;
 
-            var settings = new Settings();
+            var settings = new UserSettings();
             var uri = new UriBuilder(sourceUrl);
 
             //only show web header for self generated content, not proxied
@@ -308,7 +308,7 @@ namespace GemiNaut.Views
 
         private void BrowseHome_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var settings = new Settings();
+            var settings = new UserSettings();
             BrowserControl.Navigate(settings.HomeUrl);
         }
 
@@ -443,7 +443,7 @@ namespace GemiNaut.Views
         private static void ShowLinkRenderMode(dynamic document)
         {
             var doc = (HTMLDocument)document;
-            var settings = new Settings();
+            var settings = new UserSettings();
 
             //decrate the current mode
             if (doc.getElementById(settings.WebRenderMode) != null)
@@ -628,7 +628,7 @@ namespace GemiNaut.Views
 
         private void TickSelectedThemeMenu()
         {
-            var settings = new Settings();
+            var settings = new UserSettings();
 
             foreach (MenuItem themeMenu in mnuTheme.Items)
             {
@@ -641,7 +641,7 @@ namespace GemiNaut.Views
             var menu = (MenuItem)sender;
             var themeName = menu.Header.ToString();
 
-            var settings = new Settings();
+            var settings = new UserSettings();
             if (settings.Theme != themeName)
             {
                 settings.Theme = themeName;

@@ -16,7 +16,7 @@ namespace GemiNaut.Views
         {
             InitializeComponent();
 
-            var settings = new Settings();
+            var settings = new UserSettings();
             txtBookmarks.Text = settings.Bookmarks;
 
             _mainWindow = window;
@@ -30,7 +30,7 @@ namespace GemiNaut.Views
 
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
-            var settings = new Settings();
+            var settings = new UserSettings();
             settings.Bookmarks = txtBookmarks.Text;
             settings.Save();
 

@@ -1,35 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="GemiNaut.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
   <Profiles />
-  <Settings>
-    <Setting Name="HomeUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)">gemini://gemini.circumlunar.space/</Value>
-    </Setting>
-    <Setting Name="Theme" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Fabric (site specific themes)</Value>
-    </Setting>
-    <Setting Name="Bookmarks" Type="System.String" Scope="User">
-      <Value Profile="(Default)">=&gt; gemini://gemini.marmaladefoo.com/geminaut GemiNaut home page
-=&gt; gemini://gemini.circumlunar.space/ Gemini project home page
-=&gt; gemini://gus.guru/ GUS search engine</Value>
-    </Setting>
-    <Setting Name="UpgradeNeeded" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="MaxDownloadSizeMb" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">10</Value>
-    </Setting>
-    <Setting Name="MaxDownloadTimeSeconds" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">10</Value>
-    </Setting>
-    <Setting Name="WebRenderMode" Type="System.String" Scope="User">
-      <Value Profile="(Default)">web-switch-simplified</Value>
-    </Setting>
-    <Setting Name="HttpSchemeProxy" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="HandleWebLinks" Type="System.String" Scope="User">
-      <Value Profile="(Default)">System web browser</Value>
-    </Setting>
-  </Settings>
+  <Settings />
 </SettingsFile>

@@ -29,15 +29,15 @@ namespace GemiNaut
     {
         public static void UpgradeSettings()
         {
-            //can also use 
-            //Settings.Default.GetPreviousVersion for more finegrained control if necessary
+            ////can also use 
+            ////Settings.Default.GetPreviousVersion for more finegrained control if necessary
 
-            if (Settings.Default.UpgradeNeeded)
-            {
-                Settings.Default.Upgrade();
-                Settings.Default.UpgradeNeeded = false;
-                Settings.Default.Save();
-            }
+            //if (Settings.Default.UpgradeNeeded)
+            //{
+            //    Settings.Default.Upgrade();
+            //    Settings.Default.UpgradeNeeded = false;
+            //    Settings.Default.Save();
+            //}
         }
 
         public static void CopyAssets()

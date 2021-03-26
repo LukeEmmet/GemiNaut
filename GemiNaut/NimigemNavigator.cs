@@ -61,7 +61,7 @@ namespace GemiNaut
             byte[] nimigemBody = Encoding.UTF8.GetBytes(payload);
             var mime = "text/plain; charset=utf-8";
 
-            var settings = new Settings();
+            var settings = new UserSettings();
 
             var uri = new Uri(fullQuery);
             //use a proxy for any other scheme that is not Nimigem

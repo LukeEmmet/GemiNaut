@@ -13,7 +13,7 @@ namespace GemiNaut.Views
         {
             InitializeComponent();
 
-            var settings = new Settings();
+            var settings = new UserSettings();
             txtUrl.Text = settings.HomeUrl;
             MaxDownloadSize.Text = settings.MaxDownloadSizeMb.ToString();
             MaxDownloadTime.Text = settings.MaxDownloadTimeSeconds.ToString();
@@ -31,7 +31,7 @@ namespace GemiNaut.Views
 
         private void btnOk_Click(object sender, RoutedEventArgs e)
         {
-            var settings = new Settings();
+            var settings = new UserSettings();
             settings.HomeUrl = txtUrl.Text;
             settings.MaxDownloadSizeMb = int.Parse(MaxDownloadSize.Text);
             settings.MaxDownloadTimeSeconds = int.Parse(MaxDownloadTime.Text);

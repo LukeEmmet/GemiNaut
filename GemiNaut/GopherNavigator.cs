@@ -104,7 +104,7 @@ namespace GemiNaut
                 return;
             }
 
-            var settings = new Settings();
+            var settings = new UserSettings();
 
             var hash = HashService.GetMd5Hash(fullQuery);
 

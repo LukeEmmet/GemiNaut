@@ -43,7 +43,7 @@ namespace GemiNaut
 
         public static string[] BookmarkLines()
         {
-            var settings = new Settings();
+            var settings = new UserSettings();
             string[] array = new string[2];
             array[0] = "\r\n";
 
@@ -52,7 +52,7 @@ namespace GemiNaut
 
         public void AddBookmark(string url, string title)
         {
-            var settings = new Settings();
+            var settings = new UserSettings();
 
             var doc = (HTMLDocument)mWebBrowser.Document;
 
