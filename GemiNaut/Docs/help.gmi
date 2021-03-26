@@ -120,8 +120,6 @@ Even with GemiNaut set to display web pages, you can open any web link in the sy
 GemiNaut makes use of a number of third party libraries and utilities:
 
 => https://github.com/rebol/rebol Rebol 
-=> https://github.com/makeworld-the-better-one/gemget gemget - gemini client in Go
-=> https://github.com/prologic/go-gopher go-gopher - gopher library in Go
 => https://github.com/rafallopatka/ToastNotifications/issues ToastNotifications
 => https://github.com/dmester/jdenticon-net/ Jdenticon-net - .NET library to generate identicons
 
