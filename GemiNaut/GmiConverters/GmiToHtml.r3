@@ -506,7 +506,7 @@ either (1 < length? table-of-contents ) [
 
 if  show-web-header and ((page-scheme = 'http) or (page-scheme = 'https)) [
     insert head out-string rejoin [
-        {<div style="font-size:small;margin-bottom:1em;text-align:center;margin-left:3em; width:450px">
+        {<div style="font-size:small;margin-bottom:1em;text-align:center;margin-left:3em; width:34em">
                 
                     <i>Simplified web page with reduced interactivity and tracking. <br>
                         Some content may not be visible.</i>
