@@ -34,6 +34,7 @@ Gopher is a simpler text and link based format that is one of the inspirations b
 * Page based table of contents
 * Bookmarks
 * Option to view a simplified rendering of linked web pages
+* Client certificates
 
 These are described in more detail below.
 
@@ -94,6 +95,16 @@ Images can be viewed, and linked binary files are downloaded.
 ### View source
 
 You can view the source of any GMI page via the "View->Source" menu.
+
+### Client Certificates/Identities
+
+Some Gemini sites will require you to present a client certificate to access the content. This is similar to "logging in" to a website. In Gemini, however, you are in control of which sites to present a certificate.
+
+You can create as many client certificates as you like, and you can use the same certificate on many sites. When you create a certificate you need to provide a name for it, typically this will be your chosen username, although you can call them whatever you want. 
+
+Once you have created a certificate, choose it within the menu when you are on a site, and GemiNaut will use it for subsequent requests within the current session.  It will be shown with a tick in its menu to indicate it is the active certificate for the current site.
+
+Client certificates are stored in the "certificates" folder beneath the user profile for GemiNaut.
 
 ### Bookmarks
 

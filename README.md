@@ -36,6 +36,8 @@ You can download a pre-built application for Windows from the <a href="https://w
 * Autolinking of urls in Gopher text pages
 * View source
 * Option to view a simplified rendering of linked web pages
+* Client certificates
+* Accessible to screen readers
 
 
 # License 
@@ -63,6 +65,17 @@ Dark theme:
 ![Screenshot](GemiNaut/Docs/images/dark_theme.png)
 
 # History
+
+## 0.8.11, released 4-Apr-2021
+
+* new feature: generate and use client certificates
+* accessibility feature: hidden links to skip over preformatted text areas for screen readers
+* save user settings in persistent folder in profile
+* fix: require certificates for proxy servers
+* update jdenticon and toast notification libraries
+* use SelfCertSharp client certificate library
+* report expired server certificates
+
 
 ## 0.8.9, released 15-Dec-2020
 

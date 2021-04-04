@@ -351,7 +351,7 @@ namespace GemiNaut.Views
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             string version = fvi.FileVersion;
 
-            var message = "GemiNaut v" + version + ", copyright Luke Emmet 2020\n";
+            var message = "GemiNaut v" + version + ", copyright Luke Emmet 2020-2021\n";
 
             ToastNotify(message, ToastMessageStyles.Information);
         }
