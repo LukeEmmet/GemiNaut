@@ -18,6 +18,7 @@ using Microsoft.Win32;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.VisualBasic;
 using System.Security.Cryptography;
+using System.Linq;
 
 namespace GemiNaut.Views
 {
@@ -499,8 +500,25 @@ namespace GemiNaut.Views
             foreach (var hashPair in Session.Instance.CertificatesManager.Certificates)
             { 
                 var newMenu = new MenuItem();
-                newMenu.Header = hashPair.Value.Subject + ": " + hashPair.Value.Thumbprint;
+
+                var displayName = hashPair.Value.Subject;
+                if (displayName.Substring(0,3).ToUpper() == "CN=")
+                {
+                    displayName = displayName.Substring(3);     //trim leading "CN=
+                }
+
+                var maxLen = 30;
+
+                if (displayName.Length > maxLen)
+                {
+                    displayName = displayName.Substring(0, maxLen - 1) + "…";
+                }
+
+                displayName = displayName.PadRight(maxLen);
+
+                newMenu.Header = displayName + "\t" + hashPair.Value.Thumbprint;
                 newMenu.Tag = hashPair.Value.Thumbprint + ":" + domain;
+                newMenu.FontFamily = new System.Windows.Media.FontFamily("Consolas");
 
                 if (Session.Instance.CertificatesManager.Mappings.ContainsKey(domain))
                 {
@@ -515,80 +533,85 @@ namespace GemiNaut.Views
 
             //show separator if there were some loaded.
             if (mnuCerts.Items.Count > 0) { mnuCerts.Items.Add(new Separator()); }
-            
-            var LoadCertMenu = new MenuItem();
-            LoadCertMenu.Header = "_Load certificate...";
-            LoadCertMenu.Click += LoadCert_Click;
-            mnuCerts.Items.Add(LoadCertMenu);
+           
+            var CreateCertMenu = new MenuItem();
+            CreateCertMenu.Header = "_Create certificate...";
+            CreateCertMenu.Click += CreateCert_Click;
+            mnuCerts.Items.Add(CreateCertMenu);
+
         }
 
-        private void LoadCert_Click(object sender, RoutedEventArgs e)
+        public static string CleanFileName(string filename)
+        {
+            var target = filename;
+            string regexSearch = new string(Path.GetInvalidFileNameChars());
+            Regex r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
+            target = r.Replace(target, ""); 
+            
+            return target;
+        }
+
+        private void CreateCert_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            DateTime validFrom = DateTime.Today.AddDays(-1);         //from yesterday, in case server we might want to use it on is still within the previous calendar day
+            DateTime validTo = new DateTime(9999, 12, 31);          //dont ever expire.
 
-            openFileDialog.Filter = "PFX Certificate (*.pfx;*.p12)|*.pfx;*.p12|All files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
+            var windowCentre = WindowGeometry.WindowCentre(this);
+            var inputPrompt = "Name of this identity that will be visible to servers as the certificate 'Common Name'. For example you can use your name/username. " +
+                "\n\nDo not include any sensitive information, such as a password.";
 
-            if (openFileDialog.ShowDialog() == true)
+            string commonName = Interaction.InputBox(inputPrompt, "Name of the identity/certificate", "", windowCentre.Item1, windowCentre.Item2);
+            
+            if (commonName == "")
             {
-                try
-                {
-
-                    var windowCentre = WindowGeometry.WindowCentre(this);
-                    var inputPrompt = "Password for this certificate";
-                    X509Certificate2 cert;
-                    var uri = new Uri(txtUrl.Text);
-
-
-                    //first try to load with no password
-                    try
-                    {
-                        cert = new X509Certificate2(openFileDialog.FileName, "");
-                    } catch (CryptographicException)
-                    {
-                        //could not load, try with a password
-                        //**TBD - use a masked prompt 
-                        string password = Interaction.InputBox(inputPrompt, "Certificate loading", "", windowCentre.Item1, windowCentre.Item2);
-                        cert = new X509Certificate2(openFileDialog.FileName, password);
-                    }
-
-
-                    //load the cert
-                    var certManager = Session.Instance.CertificatesManager;
-
-                    if (!certManager.Certificates.ContainsKey(cert.Thumbprint))
-                    {
-                        certManager.AddCertificate(cert);
-
-                        if (certManager.GetCertificate(uri.Host) == null && 
-                            (uri.Scheme == "gemini" || uri.Scheme == "nimigem"))
-                        {
-                            //no cert associated with the current domain, so use this one
-                            certManager.RegisterMapping(uri.Host, cert.Thumbprint);
-                            ToastNotify("Certificate loaded, and will now be used on: " + uri.Host, ToastMessageStyles.Success);
-                        }
-                        else
-                        {
-                            //one is already associated with this domain, so dont change it.
-                            ToastNotify("Certificate loaded, and can now be used with a domain/host", ToastMessageStyles.Success);
-                            ToastNotify("Tip: click on a certificate menu entry to toggle its use when on a site.", ToastMessageStyles.Information);
-                       }
-                    }
-                    else
-                    {
-                        ToastNotify("Certificate is already loaded.", ToastMessageStyles.Warning);
-
-                    }
-                }
-                catch (SystemException err)
-                {
-                    ToastNotify("Could not load the certificate: " + err.Message, ToastMessageStyles.Error);
-                }
-
-                BuildCertsMenu();       //update the list of available certificates
+                //user pressed cancel or left it empty
+                ToastNotify("Identity certificate creation abandoned - identity name was not provided", ToastMessageStyles.Warning);
+                return;
             }
 
+            var cert = CertificateCreator.GenSelfSignedCert(commonName, validFrom, validTo);
+            var fileBase = CleanFileName(commonName).Trim();
+            if (fileBase.Length > 20)
+            {
+                fileBase = fileBase.Substring(0, 20);
+            }
+
+            //make a filename based on the common name and thumbprint
+            fileBase = fileBase + "_" + cert.Thumbprint.Substring(0, 6) + ".pfx";    //Foo_ABC1.pfx, with forbidden chars removed
+
+            var settings = new UserSettings();
+
+            var certBytes = cert.Export(X509ContentType.Pfx);       //save with no password
+
+            var certFile = Path.Combine(settings.ClientCertificatesFolder, fileBase);
+
+            using (FileStream fileStream = new FileStream(certFile, FileMode.Create))
+            {
+
+                for (int i = 0; i < certBytes.Length; i++)
+                {
+                    fileStream.WriteByte(certBytes[i]);
+                }
+
+                fileStream.Seek(0, SeekOrigin.Begin);
+                fileStream.Close();
+            }
+            ToastNotify("Certificate created and saved in user profile", ToastMessageStyles.Success);
+
+
+            //load the cert
+            var certManager = Session.Instance.CertificatesManager;
+            
+            certManager.AddCertificate(cert);
+            
+            
+
+            ToastNotify("Certificate loaded - select it on in the menu to use it on any site");
+            
+            BuildCertsMenu();
         }
+
 
         private void ToggleCertItem_Click(object sender, RoutedEventArgs e)
         {

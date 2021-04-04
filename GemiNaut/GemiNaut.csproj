@@ -29,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SmolNetSharp\SmolNetSharp\SmolNetSharp.csproj" />
+    <ProjectReference Include="..\..\SelfCertSharp\Pluralsight.Crypto\Pluralsight.Crypto.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
