@@ -15,7 +15,7 @@
     <ROW Property="ProductCode" Value="2057:{55D1C187-4AB6-4805-A68E-DE4C287E8CF1} " Type="16"/>
     <ROW Property="ProductLanguage" Value="2057"/>
     <ROW Property="ProductName" Value="GemiNaut"/>
-    <ROW Property="ProductVersion" Value="0.8.11" Type="32"/>
+    <ROW Property="ProductVersion" Value="0.8.11.0" Type="32" TargetFile="GemiNaut.exe"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{CA53C1A6-5092-4508-A8E4-D5078CFF425C}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
