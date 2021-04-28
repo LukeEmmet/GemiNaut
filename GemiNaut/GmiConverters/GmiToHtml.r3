@@ -53,18 +53,20 @@ either not none? arg-block [
     ;---this branch of the conditional is just for testing only, not used in production
     ;---uncomment to test features 
     ;===============================
-    ;folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}
-
-    ;in-path: to-rebol-file join folder {test1.gmi}
-    ;out-path: to-rebol-file join folder {test1.htm}
-    ;uri: "gemini://test/"
-    ;identicon-image: "[example-identicon-placeholder"
-    ;fabric-image: "[example-image-placeholder]"
-    ;theme: %Themes/Plain
-    ;site-id: "domain/foo"
-    ;image-id: "imageid"
-    ;show-web-header: false
     
+    ;--change 'do to 'comment to comment out this test config
+    comment [
+        folder: {C:\Users\lukee\Desktop\programming\projects\GemiNaut\GemiNaut\GmiConverters\TestContent\}
+        in-path: to-rebol-file join folder {nimigem.gmi}
+        out-path: to-rebol-file join folder {nimigem.htm}
+        uri: "gemini://test/"
+        identicon-image: "[example-identicon-placeholder"
+        fabric-image: "[example-image-placeholder]"
+        theme: %Themes/Plain
+        site-id: "domain/foo"
+        image-id: "imageid"
+        show-web-header: false
+    ]
      
 ]
 
@@ -169,6 +171,10 @@ process-heading: func [line level] [
          rejoin [{<h} level { id="} (join "id" heading-count) {">} (apply-citation-set (markup-escape display) hotlinks  false) {</h} level {>}]
 ]    
 
+append-to-last-item: funct [series content] [
+    ;appends the content to the last item of the series
+    poke series (length? series) join (last series) content
+]
 
 foreach line lines [
 
@@ -182,14 +188,15 @@ foreach line lines [
         last-element: 'preformat
         
         either in-text-area or ("✏️" = first parse pre-label none) [        ;---pencil character U+270F as lead indicates content may be bound to subsequent nimigem link
-             either in-block [
+            either in-block [
                  in-text-area: true
+                 ;--can add spellcheck=true attribute which adds spell checking and auto correct to the text area.
+                 ;--but maybe it is better to have this turn on with the user's consent and choice
                  append out rejoin [{<div class=edit-container><textarea rows=18 title="} (markup-escape pre-label) {">} ]
             ] [
-                 in-text-area: false
-               append out "</textarea></div>"
-
-
+               ;--close off the text area without adding any additional line, by appending into the last item in 'out
+                append-to-last-item out   "</textarea></div>"
+                in-text-area: false
             ] 
         ] [
             ;normal gemini
@@ -216,8 +223,25 @@ foreach line lines [
 
     
     
-    either not  in-block [
-    
+    either  in-block [
+        ;--inside preformatted block or text area
+        if ((take-left line 3) <> "```") [
+            last-element: 'preformat
+            
+           ;---trim off any escaped preformatted markers at the start of any line (zero  width space)
+           ;---this allows us to include gemtext inside a nimigem edit region or gemini preformatted area
+           if 4 <= length? line [
+                ;---look for a non breaking space &#8203; followed by three back ticks ```
+                ;---which is a nimigem "escaped" preformatted marker
+                if #{E2808B606060} = to-binary reduce [line/1 line/2 line/3 line/4] [
+                    ;trim off the first character
+                    line:  next line
+                ]
+
+            ]
+            append/only out markup-escape line
+        ]
+    ] [
         append/only out any [
             
             
@@ -450,12 +474,7 @@ foreach line lines [
                 
             ]
         ]
-    ] [
-            if ((take-left line 3) <> "```") [
-                last-element: 'preformat
-                append/only out markup-escape line
-            ]
-    ]
+    ] 
 
 ]
 
