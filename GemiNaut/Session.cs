@@ -71,12 +71,22 @@ namespace GemiNaut.Singletons
         private void DestroySessionFolder()
         {
             //assumes the any file viewers do not retain a lock on any files therein
-            //(for example acrobat will, but we use moonpdf)
             GC.Collect();
 
             //**TBD would be nice to handle this gracefully by marking
             //any files or folder for deletion on reboot...
-            Directory.Delete(_sessionPath, true);
+
+            //check folder exists - it might have been deleted on a separate thread on closing down
+            if (Directory.Exists(_sessionPath)) {
+
+                try
+                {
+                    Directory.Delete(_sessionPath, true);
+                } catch (Exception e)
+                {
+                    //**log this maybe ??
+                }
+            }
         }
 
         public string SessionPath
