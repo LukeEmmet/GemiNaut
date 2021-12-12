@@ -53,13 +53,19 @@ namespace GemiNaut
         }
 
 
+
         public void NavigateNimigemScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, string payload, bool requireSecure = true)
         {
-            var NimigemUri = e.Uri.OriginalString;
-
             //at present we only support UTF8 plain text payloads
             byte[] nimigemBody = Encoding.UTF8.GetBytes(payload);
             var mime = "text/plain; charset=utf-8";
+
+            NavigateNimigemScheme(fullQuery, e, nimigemBody, mime, requireSecure);
+        }
+
+        public void NavigateNimigemScheme(string fullQuery, System.Windows.Navigation.NavigatingCancelEventArgs e, byte[] nimigemBody, string mime, bool requireSecure = true)
+        {
+            var NimigemUri = e.Uri.OriginalString;
 
             var settings = new UserSettings();
 
@@ -68,12 +74,6 @@ namespace GemiNaut
             var proxy = "";     //use none
 
             var connectInsecure = false;
-            if (uri.Host == "localhost")
-            {
-                //to support local testing servers, dont require secure connection on localhost
-                //**FIX ME, or have an option
-                connectInsecure = true;
-            }
 
             X509Certificate2 certificate;
 

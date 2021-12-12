@@ -19,6 +19,7 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.VisualBasic;
 using System.Security.Cryptography;
 using System.Linq;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace GemiNaut.Views
 {
@@ -101,6 +102,17 @@ namespace GemiNaut.Views
             GridMain.IsEnabled = toState;
         }
 
+        private string GetMimeForExt(string fileName)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+            string contentType;
+            if (!provider.TryGetContentType(fileName, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+            return contentType;
+        }
+
         private void BrowserControl_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             _isNavigating = true;
@@ -132,21 +144,49 @@ namespace GemiNaut.Views
             else if (normalisedUri.Scheme == "nimigem")
             {
                 var nimigemNavigator = new NimigemNavigator(this, this.BrowserControl);
-
+                var nimigemClass = "";
                 var document = (HTMLDocument)BrowserControl.Document;
-
-                var firstTextarea = (IHTMLTextAreaElement)document.getElementsByTagName("textarea").item(0);
-
-                string payload;
-                if (firstTextarea != null)
+                if (document?.activeElement != null)
                 {
-                    payload = firstTextarea.value;
-                } else
-                {
-                    payload = "";
+                    nimigemClass = document.activeElement.className;
                 }
 
-                nimigemNavigator.NavigateNimigemScheme(fullQuery, e, payload);
+
+                if (nimigemClass.Contains("send-attachment"))
+                {
+                    var dialog = new OpenFileDialog();
+                    dialog.Title = "Choose a file to be uploaded";
+
+                    //check user selected a file that exists
+                    if ((dialog.ShowDialog(this) == true) && (File.Exists(dialog.FileName)))
+                    {
+                        var mime = GetMimeForExt(dialog.FileName);
+                        var payload = File.ReadAllBytes(dialog.FileName);
+
+                        nimigemNavigator.NavigateNimigemScheme(fullQuery, e, payload, mime);
+                    } else
+                    {
+                        ToggleContainerControlsForBrowser(true);
+                        e.Cancel = true;
+                    }
+                    
+
+                } else
+                {
+                    var firstTextarea = (IHTMLTextAreaElement)document.getElementsByTagName("textarea").item(0);
+
+                    string payload;
+                    if (firstTextarea != null)
+                    {
+                        payload = firstTextarea.value;
+                    } else
+                    {
+                        payload = "";
+                    }
+
+                    nimigemNavigator.NavigateNimigemScheme(fullQuery, e, payload);
+                }
+
             }
             else if (normalisedUri.Scheme == "gopher")
             {

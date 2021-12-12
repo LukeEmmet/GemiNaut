@@ -104,6 +104,7 @@ out: copy []
 
 in-block: false
 in-text-area: false
+expect-nimigem-link-bind: false
 
 
 
@@ -193,6 +194,8 @@ foreach line lines [
                  ;--can add spellcheck=true attribute which adds spell checking and auto correct to the text area.
                  ;--but maybe it is better to have this turn on with the user's consent and choice
                  append out rejoin [{<div class=edit-container><textarea rows=18 title="} (markup-escape pre-label) {">} ]
+                 expect-nimigem-link-bind: true
+
             ] [
                ;--close off the text area without adding any additional line, by appending into the last item in 'out
                 append-to-last-item out   "</textarea></div>"
@@ -419,6 +422,23 @@ foreach line lines [
                     ]
                 ]
                 
+                
+                 
+                if ("nimigem://" = take-left link 10) [
+                 ;--nimigem links that hint to an empty payload don't need the marker prefix
+                 ;---#{E28885} is empty set unicode character U+2205
+                    either (#{E28885} = to-binary display-part/1) [
+                        display-html: next display-html         ;---trim leading character
+                    ] [
+                        if (not expect-nimigem-link-bind) [
+                    
+                    
+                            display-html: rejoin [" ⚡ " display-html " ⚡ "]
+                            class: join class "  send-attachment"
+                        ]
+                    ]
+                ]
+                             
                link-html: rejoin [
                     {<div class="} link-class " "  page-scheme {">}
                 {<span class="link-gliph">} link-gliph {</span>} 
@@ -426,8 +446,31 @@ foreach line lines [
                         { href="} link {"}
                         { title="} link {"}
                         { class="} class {"}
-                        {>}   (trim display-html) "</a></div>"
+                        {>}   (trim display-html) "</a>"
+                        
+                        
+                        (
+                             ;--nimigem links that dont hint to an empty payload also have an option to choose a file
+                             ;---#{E28885} is empty set unicode character U+2205
+                             either  ((#{E28885} != to-binary display-part/1) and ("nimigem://" = take-left link 10) and expect-nimigem-link-bind) [
+                                rejoin [
+                                    { <a } 
+                                    { href="} link {"}
+                                    { title="Send a file to: } link {"}
+                                    { class="} class { send-attachment"}
+                                    {>⚡ Send file ⚡</a>}
+                                ]
+                            ] [
+                                ""
+                            ]
+                        )
+                        "</div>"
                 ]
+                
+                  if  ("nimigem://" = take-left link 10) [
+                    expect-nimigem-link-bind: off           ;the first link after any text area would be bound so we can untoggle this now
+                 ]
+                
                 
                 keep: true
                 
