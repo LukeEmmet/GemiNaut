@@ -66,6 +66,11 @@ Dark theme:
 
 # History
 
+## 0.8.12, development build
+
+* fewer runtime dependencies for .NET
+* fix typo in default bookmark list
+
 ## 0.8.11, released 4-Apr-2021
 
 * new feature: generate and use client certificates

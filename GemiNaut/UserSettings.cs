@@ -68,8 +68,8 @@ namespace GemiNaut
                 //**TBD could upgrade from earlier version if it exists?
                 //for now just reset
                 var bookmarks = "" +
-                    "=> gemini://circumlunar.space Gemini Project home page\r\n" +
-                    "=> gemini://gemini.marmaladefoo.com GemiNaut home page\r\n" +
+                    "=> gemini://gemini.circumlunar.space Gemini Project home page\r\n" +
+                    "=> gemini://gemini.marmaladefoo.com/geminaut GemiNaut home page\r\n" +
                     "=> gemini://geminispace.info Gemini search engine\r\n";
 
                 Bookmarks = bookmarks;      //this will save the content
