@@ -9,11 +9,11 @@ body {
 }
 
 a {
-	color: navy;
+	color: #3d3d3d;
 }
 
 a.other {
-	color: #404040;
+	color: #2b2b2b;
 }
 a.gemini {
 	color: navy;

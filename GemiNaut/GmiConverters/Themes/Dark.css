@@ -253,3 +253,8 @@ pre {
 	scrollbar-highlight-color: #222827;
 	scrollbar-3dlight-color: #a0a0a0;
   }
+  
+  .screenreader {
+	position: absolute;
+    left:-9999px;
+}

@@ -11,7 +11,7 @@ body {
 
 
 a.other {
-	color: #585858;
+	color: #30211e;
 }
 a.gemini {
 	color: navy;
@@ -87,9 +87,10 @@ div.other-link {
 } 
 
 div.nimigem-link {
-	padding:0px;
-	margin:0px;
+	padding:1em;
+	margin:0em;;
 	border:0px;
+	text-align:center;
 } 
 
 div.gopher.other-link {
@@ -218,7 +219,6 @@ a.toc:hover {
 a.nimigem {
 		text-decoration: none;
 		color:black;
-		display: block;
 		margin-left:0.7em;
 		margin-right:0.7em;
 		border-width: 1px;
@@ -232,6 +232,10 @@ a.nimigem {
 		max-width:20em;
 
 /*cursor:default;*/
+}
+
+a.send-attachment {
+		font-style:italic;
 }
 
 a.nimigem:hover {
