@@ -46,7 +46,7 @@ GPL 3
 
 # Building and development
 
-The GemiNaut solution references and uses the [SmolNetSharp] (https://github.com/LukeEmmet/SmolNetSharp) and [SelfCertSharp](https://github.com/LukeEmmet/SelfCertSharp) client library projects, which need to be checked out into a sibiling folder, e.g.
+The GemiNaut solution references and uses the [SmolNetSharp](https://github.com/LukeEmmet/SmolNetSharp) and [SelfCertSharp](https://github.com/LukeEmmet/SelfCertSharp) client library projects, which need to be checked out into a sibiling folder, e.g.
 
 ```
 projects\GemiNaut
