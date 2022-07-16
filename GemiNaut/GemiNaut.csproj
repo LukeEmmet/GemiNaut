@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows7.0</TargetFramework>
     <OutputType>WinExe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\pretty-text.ico</ApplicationIcon>
+    <StartupObject>GemiNaut.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="DebugTemp.cs" />
@@ -30,7 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SelfCertSharp\Pluralsight.Crypto\Pluralsight.Crypto.csproj" />
-    <ProjectReference Include="..\..\SmolNetSharp\SmolNetSharp\SmolNetSharp.Net4Framework\SmolNetSharp.csproj" />
+    <ProjectReference Include="..\..\SmolNetSharp\SmolNetSharp\SmolNetSharp.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
