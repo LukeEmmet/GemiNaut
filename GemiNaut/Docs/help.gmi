@@ -61,7 +61,6 @@ GemiNaut has a number of rendering themes to present the content. This allows th
 * Dark - a variable font theme whose colours are inspired by dark themes of code editors.
 * Plain - a simple plain text theme, black text on a white background.
 * Terminal - a monospaced terminal theme - white text on a black background.
-* Unified - a theme showing common navigation links and search options on every page.
 
 To switch between themes, choose the options below the "View->Themes" menu.
 
