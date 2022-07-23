@@ -39,14 +39,13 @@ You can download a pre-built application for Windows from the <a href="https://w
 * Client certificates
 * Accessible to screen readers
 
-
-# License 
+# License
 
 GPL 3
 
 # Building and development
 
-The GemiNaut solution references and uses the [SmolNetSharp] (https://github.com/LukeEmmet/SmolNetSharp) and [SelfCertSharp](https://github.com/LukeEmmet/SelfCertSharp) client library projects, which need to be checked out into a sibiling folder, e.g.
+The GemiNaut solution references and uses the [[SmolNetSharp](https://github.com/LukeEmmet/SmolNetSharp)] and [SelfCertSharp](https://github.com/LukeEmmet/SelfCertSharp) client library projects, which need to be checked out into a sibiling folder, e.g.
 
 ```
 projects\GemiNaut
@@ -66,6 +65,20 @@ Dark theme:
 
 # History
 
+## 0.8.13, released 23-Jul-2022
+
+* build against .NET 6.0
+
+* allow install on Windows 11
+
+* use updated html2gmi for better web rendering
+
+* minor tweaks to themes so font for web links are more readable due to increased contrast in fabric themes
+
+* remove legacy "Unified" theme
+
+* better support for TLS 1.3
+
 ## 0.8.12, development build
 
 * fewer runtime dependencies for .NET
@@ -81,9 +94,7 @@ Dark theme:
 * use SelfCertSharp client certificate library
 * report expired server certificates
 
-
 ## 0.8.9, released 15-Dec-2020
-
 
 * new internal C# network library (SmolNetSharp) to retrieve Gemini and Gopher resources
 * fewer false positives from anti-virus utilities falsely marking GemiNaut and its assets as malware
@@ -112,7 +123,6 @@ Sailing the small web
 * fix bug to correctly render mailto: links
 * create application installer
 * slighly more whitespace (increased line spacing) in themes to improve readability
-
 
 ## 0.8.7, 8-Aug-2020
 
@@ -229,7 +239,6 @@ First public release
 * empty cache on close
 * prettify links, headings and bullets
 
-
 # Intrinsic features in virture of using a web browser
 
 * go back and forward remembers scroll offset
@@ -243,4 +252,3 @@ First public release
 * Ctrl+F to find in current page
 * Select all, copy to clipboard
 * Ctrl+P to print page
-
