@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="14.5.2" version="19.7" Modules="simple" RootPath="." Language="en_GB" Id="{1639EF86-8DFC-439C-BCC4-94512F907D6D}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="14.5.2" version="19.8.1" Modules="simple" RootPath="." Language="en_GB" Id="{1639EF86-8DFC-439C-BCC4-94512F907D6D}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="HiddenItems" Value="AppXAppDetailsComponent;FixupComponent;AppXCapabilitiesComponent;AppXDependenciesComponent;AppXProductDetailsComponent;AppXVisualAssetsComponent;AppXAppDeclarationsComponent;AppXUriRulesComponent;MsiXDiffComponent;MsixManifestEditorComponent"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_CURRENT_YEAR" Value="2022" ValueLocId="-"/>
-    <ROW Property="AI_PACKAGING_TOOL" Value="Advanced Installer 19.7 build b6fe2030" ValueLocId="-"/>
+    <ROW Property="AI_PACKAGING_TOOL" Value="Advanced Installer 19.8.1 build ff1d5dfa" ValueLocId="-"/>
     <ROW Property="AI_PREDEF_LCONDS_PROPS" Value="AI_DETECTED_DOTNET_CORE_VERSION"/>
     <ROW Property="AI_REQUIRED_DOTNET_CORE_DISPLAY" MultiBuildValue="DefaultBuild:6.0" ValueLocId="-"/>
     <ROW Property="AI_REQUIRED_DOTNET_CORE_VERSION" MultiBuildValue="DefaultBuild:6.0" ValueLocId="-"/>
@@ -73,7 +73,7 @@
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="html2gmi.exe" Component_="html2gmi.exe" FileName="html2gmi.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\HtmlToGmi\html2gmi.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="html2gmi.exe" Component_="html2gmi.exe" FileName="html2gmi.exe" Attributes="0" SourcePath="..\HtmlToGmi\html2gmi.exe" SelfReg="false" DigSign="true"/>
     <ROW File="helptheme.css" Component_="helptheme.css" FileName="HELP-T~1.CSS|help-theme.css" Attributes="0" SourcePath="..\GemiNaut\Docs\help-theme.css" SelfReg="false"/>
     <ROW File="helptheme.htm" Component_="helptheme.css" FileName="HELP-T~1.HTM|help-theme.htm" Attributes="0" SourcePath="..\GemiNaut\Docs\help-theme.htm" SelfReg="false"/>
     <ROW File="help.gmi" Component_="helptheme.css" FileName="help.gmi" Attributes="0" SourcePath="..\GemiNaut\Docs\help.gmi" SelfReg="false"/>
@@ -103,9 +103,9 @@
     <ROW File="Terminal.htm" Component_="Dark.css" FileName="Terminal.htm" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\Themes\Terminal.htm" SelfReg="false"/>
     <ROW File="utils.r3" Component_="GmiToHtml.r3" FileName="utils.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\utils.r3" SelfReg="false"/>
     <ROW File="wireup.r3" Component_="GmiToHtml.r3" FileName="wire-up.r3" Attributes="0" SourcePath="..\GemiNaut\GmiConverters\wire-up.r3" SelfReg="false"/>
-    <ROW File="r3core.exe" Component_="r3core.exe" FileName="r3-core.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\Rebol\r3-core.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="goosecli.exe" Component_="goosecli.exe" FileName="GOOSE-~1.EXE|goose-cli.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\Goose\goose-cli.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="httpget.exe" Component_="httpget.exe" FileName="http-get.exe" Attributes="0" SourcePath="..\GemiNaut\bin\Build\HttpGet\http-get.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="r3core.exe" Component_="r3core.exe" FileName="r3-core.exe" Attributes="0" SourcePath="..\GemiNaut\Rebol\r3-core.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="goosecli.exe" Component_="goosecli.exe" FileName="GOOSE-~1.EXE|goose-cli.exe" Attributes="0" SourcePath="..\Goose\goose-cli.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="httpget.exe" Component_="httpget.exe" FileName="http-get.exe" Attributes="0" SourcePath="..\HttpGet\http-get.exe" SelfReg="false" DigSign="true"/>
     <ROW File="GemiNaut.deps.json" Component_="GemiNaut.deps.json" FileName="GEMINA~1.JSO|GemiNaut.deps.json" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net6.0-windows7.0\GemiNaut.deps.json" SelfReg="false"/>
     <ROW File="GemiNaut.dll_1" Component_="GemiNaut.dll_1" FileName="GemiNaut.dll" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net6.0-windows7.0\GemiNaut.dll" SelfReg="false"/>
     <ROW File="GemiNaut.dll.config" Component_="GemiNaut.deps.json" FileName="GEMINA~1.CON|GemiNaut.dll.config" Attributes="0" SourcePath="..\GemiNaut\bin\Release\net6.0-windows7.0\GemiNaut.dll.config" SelfReg="false"/>
