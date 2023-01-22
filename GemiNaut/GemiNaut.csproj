@@ -21,7 +21,7 @@
     <Resource Include="Resources\pretty-text.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Jdenticon-net" Version="3.1.1" />
+    <PackageReference Include="Jdenticon-net" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
