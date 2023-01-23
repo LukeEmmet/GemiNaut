@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0-windows7.0</TargetFramework>
     <OutputType>WinExe</OutputType>
@@ -30,7 +30,6 @@
     <PackageReference Include="Unofficial.Microsoft.mshtml" Version="7.0.3300" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SelfCertSharp\Pluralsight.Crypto\Pluralsight.Crypto.csproj" />
     <ProjectReference Include="..\..\SmolNetSharp\SmolNetSharp\SmolNetSharp.csproj" />
   </ItemGroup>
   <ItemGroup>
